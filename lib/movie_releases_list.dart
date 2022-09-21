@@ -16,7 +16,7 @@ class MovieReleasesList extends StatelessWidget {
             final item = cart.movieReleases[index];
             return ListTile(
               title: Text(item.name),
-              subtitle: Text(item.mediaType == MediaType.dvd ? "DVD" : "Other"),
+              subtitle: Text(item.mediaType.toUiString()),
             );
           });
     });

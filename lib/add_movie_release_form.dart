@@ -17,10 +17,12 @@ class AddMovieReleaseForm extends StatefulWidget {
 class AddMovieReleaseState extends State<AddMovieReleaseForm> {
   final _formKey = GlobalKey<FormState>();
 
-  final myController = TextEditingController();
+  final _myController = TextEditingController();
+
+  MediaType mediaTypeValue = mediaTypeValues.first;
 
   void _printLatestValue() {
-    print('Second text field: ${myController.text}');
+    print('Second text field: ${_myController.text}');
   }
 
   @override
@@ -28,17 +30,17 @@ class AddMovieReleaseState extends State<AddMovieReleaseForm> {
     super.initState();
 
     // Start listening to changes.
-    myController.addListener(_printLatestValue);
+    _myController.addListener(_printLatestValue);
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
-      void submit(String releaseName) {
+      void submit(MovieRelease release) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Adding release')),
         );
-        cart.add(MovieRelease(name: releaseName, mediaType: MediaType.dvd));
+        cart.add(release);
         Navigator.pop(context);
       }
 
@@ -53,14 +55,28 @@ class AddMovieReleaseState extends State<AddMovieReleaseForm> {
                 }
                 return null;
               },
-              controller: myController,
+              controller: _myController,
+            ),
+            DropdownButton<MediaType>(
+              value: mediaTypeValue,
+              icon: const Icon(Icons.arrow_downward),
+              onChanged: (MediaType? selected) {
+                setState(() {
+                  mediaTypeValue = selected!;
+                });
+              },
+              items: mediaTypeValues.map((MediaType value) {
+                return DropdownMenuItem<MediaType>(
+                    value: value, child: Text(value.toUiString()));
+              }).toList(),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    submit(myController.text);
+                    submit(MovieRelease(
+                        name: _myController.text, mediaType: mediaTypeValue));
                   }
                 },
                 child: const Text('Submit'),
