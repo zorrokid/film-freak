@@ -1,3 +1,4 @@
+import 'package:film_freak/barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/models/enums.dart';
@@ -23,6 +24,15 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
 
   void _printLatestValue() {
     print('Second text field: ${_myController.text}');
+  }
+
+  void pushScan() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Scan barcode')),
+        body: const BarcodeScanner(),
+      );
+    }));
   }
 
   @override
@@ -82,6 +92,14 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 }).toList(),
               )
             ]),
+            Row(
+              children: [
+                const Text(
+                  'barcode',
+                ),
+                TextButton(onPressed: pushScan, child: const Text('Scan')),
+              ],
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
