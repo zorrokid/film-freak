@@ -9,12 +9,12 @@ class AddMovieReleaseForm extends StatefulWidget {
   const AddMovieReleaseForm({super.key});
 
   @override
-  AddMovieReleaseState createState() {
-    return AddMovieReleaseState();
+  State<AddMovieReleaseForm> createState() {
+    return _AddMovieReleaseFormState();
   }
 }
 
-class AddMovieReleaseState extends State<AddMovieReleaseForm> {
+class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   final _formKey = GlobalKey<FormState>();
 
   final _myController = TextEditingController();
@@ -56,20 +56,32 @@ class AddMovieReleaseState extends State<AddMovieReleaseForm> {
                 return null;
               },
               controller: _myController,
+              decoration: const InputDecoration(
+                  label: Text.rich(TextSpan(children: <InlineSpan>[
+                WidgetSpan(child: Text('Release name')),
+                WidgetSpan(
+                    child: Text(
+                  '*',
+                  style: TextStyle(color: Colors.red),
+                )),
+              ]))),
             ),
-            DropdownButton<MediaType>(
-              value: mediaTypeValue,
-              icon: const Icon(Icons.arrow_downward),
-              onChanged: (MediaType? selected) {
-                setState(() {
-                  mediaTypeValue = selected!;
-                });
-              },
-              items: mediaTypeValues.map((MediaType value) {
-                return DropdownMenuItem<MediaType>(
-                    value: value, child: Text(value.toUiString()));
-              }).toList(),
-            ),
+            Row(children: [
+              const Text('Media type:'),
+              DropdownButton<MediaType>(
+                value: mediaTypeValue,
+                icon: const Icon(Icons.arrow_downward),
+                onChanged: (MediaType? selected) {
+                  setState(() {
+                    mediaTypeValue = selected!;
+                  });
+                },
+                items: mediaTypeValues.map((MediaType value) {
+                  return DropdownMenuItem<MediaType>(
+                      value: value, child: Text(value.toUiString()));
+                }).toList(),
+              )
+            ]),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
