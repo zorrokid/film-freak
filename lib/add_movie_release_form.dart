@@ -1,5 +1,6 @@
-import 'package:film_freak/barcode_scanner.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/models/enums.dart';
 import 'package:film_freak/models/movie_release.dart';
@@ -19,28 +20,34 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   final _formKey = GlobalKey<FormState>();
 
   final _myController = TextEditingController();
-
+  //final _barcodeController = TextEditingController();
+  String _barcode = '';
   MediaType mediaTypeValue = mediaTypeValues.first;
 
-  void _printLatestValue() {
-    print('Second text field: ${_myController.text}');
-  }
-
-  void pushScan() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Scan barcode')),
-        body: const BarcodeScanner(),
-      );
-    }));
+  Future<void> barcodeScan() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.QR);
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+    if (!mounted) return;
+    // _barcodeController.text = barcodeScanRes;
+    setState(() => {_barcode = barcodeScanRes});
   }
 
   @override
   void initState() {
     super.initState();
+  }
 
-    // Start listening to changes.
-    _myController.addListener(_printLatestValue);
+  @override
+  void dispose() {
+    _myController.dispose();
+    //_barcodeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -94,10 +101,8 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
             ]),
             Row(
               children: [
-                const Text(
-                  'barcode',
-                ),
-                TextButton(onPressed: pushScan, child: const Text('Scan')),
+                Text(_barcode),
+                TextButton(onPressed: barcodeScan, child: const Text('Scan')),
               ],
             ),
             Padding(
@@ -106,7 +111,9 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     submit(MovieRelease(
-                        name: _myController.text, mediaType: mediaTypeValue));
+                        name: _myController.text,
+                        mediaType: mediaTypeValue,
+                        barcode: _barcode));
                   }
                 },
                 child: const Text('Submit'),

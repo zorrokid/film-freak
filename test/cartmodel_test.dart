@@ -13,6 +13,6 @@ void main() {
       expect(model.totalMovieReleases, 1);
     });
 
-    model.add(MovieRelease(mediaType: MediaType.dvd, name: 'Star Wars'));
+    model.add(MovieRelease(mediaType: MediaType.dvd, name: 'Star Wars', barcode: ''));
   });
 }
