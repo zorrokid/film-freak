@@ -27,6 +27,7 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   MediaType mediaTypeValue = mediaTypeValues.first;
   final _repository =
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
+  int _rows = 0;
 
   Future<void> barcodeScan() async {
     String barcodeScanRes;
@@ -62,7 +63,8 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
           const SnackBar(content: Text('Adding release')),
         );
         cart.add(release);
-        _repository.insertRelease(release);
+        await _repository.insertRelease(release);
+        _rows = await _repository.queryRowCount();
       }
 
       return Form(
@@ -115,6 +117,7 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 TextButton(onPressed: barcodeScan, child: const Text('Scan')),
               ],
             ),
+            Text('Rows: $_rows'),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(

@@ -13,6 +13,11 @@ class MovieRelease {
       required this.barcode});
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'name': name, 'mediaType': mediaType, 'barcode': barcode};
+    return {
+      'id': id,
+      'name': name,
+      'mediaType': mediaType.index,
+      'barcode': barcode
+    };
   }
 }

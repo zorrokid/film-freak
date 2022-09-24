@@ -11,4 +11,11 @@ class ReleaseRepository {
     Database db = await databaseProvider.database;
     return await db.insert(table, release.toMap());
   }
+
+  Future<int> queryRowCount() async {
+    Database db = await databaseProvider.database;
+    List<Map<String, Object?>> result =
+        await db.rawQuery('SELECT COUNT(*) FROM $table');
+    return Sqflite.firstIntValue(result) ?? 0;
+  }
 }

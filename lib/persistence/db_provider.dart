@@ -2,7 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 const String initSql =
-    'CREATE TABLE releases(id INTEGER PRIMARY KEY, name TEXT, barcode TEXT)';
+    'CREATE TABLE releases(id INTEGER PRIMARY KEY, name TEXT, barcode TEXT, mediaType INTEGER)';
 const String dbName = 'film_freak_database.db';
 const int dbVersion = 1;
 
