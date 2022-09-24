@@ -20,7 +20,7 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   final _formKey = GlobalKey<FormState>();
 
   final _myController = TextEditingController();
-  //final _barcodeController = TextEditingController();
+  final _barcodeController = TextEditingController();
   String _barcode = '';
   MediaType mediaTypeValue = mediaTypeValues.first;
 
@@ -29,12 +29,12 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', 'Cancel', true, ScanMode.QR);
+          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
     if (!mounted) return;
-    // _barcodeController.text = barcodeScanRes;
+    _barcodeController.text = barcodeScanRes;
     setState(() => {_barcode = barcodeScanRes});
   }
 
@@ -46,7 +46,7 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   @override
   void dispose() {
     _myController.dispose();
-    //_barcodeController.dispose();
+    _barcodeController.dispose();
     super.dispose();
   }
 
@@ -99,9 +99,15 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 }).toList(),
               )
             ]),
+            TextFormField(
+              controller: _barcodeController,
+              decoration: const InputDecoration(
+                  label: Text.rich(TextSpan(children: <InlineSpan>[
+                WidgetSpan(child: Text('Barcode')),
+              ]))),
+            ),
             Row(
               children: [
-                Text(_barcode),
                 TextButton(onPressed: barcodeScan, child: const Text('Scan')),
               ],
             ),
