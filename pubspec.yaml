@@ -41,6 +41,9 @@ dependencies:
 
     flutter_barcode_scanner: ^2.0.0
 
+    sqflite:
+    path:
+
 dev_dependencies:
     flutter_test:
         sdk: flutter

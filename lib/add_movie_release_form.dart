@@ -1,3 +1,5 @@
+import 'package:film_freak/persistence/db_provider.dart';
+import 'package:film_freak/persistence/release_repository.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +25,8 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   final _barcodeController = TextEditingController();
   String _barcode = '';
   MediaType mediaTypeValue = mediaTypeValues.first;
+  final _repository =
+      ReleaseRepository(databaseProvider: DatabaseProvider.instance);
 
   Future<void> barcodeScan() async {
     String barcodeScanRes;
@@ -53,12 +57,12 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
-      void submit(MovieRelease release) {
+      Future<void> submit(MovieRelease release) async {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Adding release')),
         );
         cart.add(release);
-        Navigator.pop(context);
+        _repository.insertRelease(release);
       }
 
       return Form(
@@ -117,6 +121,7 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     submit(MovieRelease(
+                        id: 1,
                         name: _myController.text,
                         mediaType: mediaTypeValue,
                         barcode: _barcode));
