@@ -1,8 +1,8 @@
+import 'package:film_freak/barcode_scanner_view.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:film_freak/text_scanning_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/models/enums.dart';
 import 'package:film_freak/models/movie_release.dart';
@@ -23,24 +23,40 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
 
   final _myController = TextEditingController();
   final _barcodeController = TextEditingController();
+  final _textController = TextEditingController();
   String _barcode = '';
   MediaType mediaTypeValue = mediaTypeValues.first;
   final _repository =
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
   int _rows = 0;
+  String _text = '';
 
   Future<void> barcodeScan() async {
-    String barcodeScanRes;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
-    } on PlatformException {
-      barcodeScanRes = 'Failed to get platform version.';
-    }
+    final barcode = await Navigator.push<String>(context,
+        MaterialPageRoute<String>(builder: (context) {
+      return const BarcodeScannerView();
+    }));
+
     if (!mounted) return;
-    _barcodeController.text = barcodeScanRes;
-    setState(() => {_barcode = barcodeScanRes});
+    setState(() {
+      _barcode = barcode ?? "";
+    });
+
+    _barcodeController.text = barcode ?? "";
+  }
+
+  Future<void> textScan() async {
+    final text = await Navigator.push<String>(context,
+        MaterialPageRoute<String>(builder: (context) {
+      return const TextScanningView();
+    }));
+
+    if (!mounted) return;
+    setState(() {
+      _text = text ?? "";
+    });
+
+    _textController.text = text ?? "";
   }
 
   @override
@@ -112,12 +128,12 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 WidgetSpan(child: Text('Barcode')),
               ]))),
             ),
-            Row(
-              children: [
-                TextButton(onPressed: barcodeScan, child: const Text('Scan')),
-              ],
-            ),
+            TextButton(onPressed: barcodeScan, child: const Text('Scan')),
             Text('Rows: $_rows'),
+            TextFormField(
+              controller: _textController,
+            ),
+            TextButton(onPressed: textScan, child: const Text('Scan')),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(

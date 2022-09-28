@@ -1,16 +1,21 @@
 # film_freak
 
-A new Flutter project.
+# Debugging over wi-fi
 
-## Getting Started
+-   Set "use wireless debuggin" on from your device
 
-This project is a starting point for a Flutter application.
+-   connect device with USB
 
-A few resources to get you started if this is your first Flutter project:
+    $ adb devices
+    List of devices attached
+    R3CT30KJA0L device
 
--   [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
--   [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+    $ adb tcpip 5555
+    restarting in TCP mode port: 5555
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+-   get the device IP from device settings
+
+    e.g. 192.168.32.4
+
+    adb connect 192.168.32.4
+    connected to 192.168.32.4:5555
