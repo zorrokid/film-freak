@@ -3,6 +3,7 @@ import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
 import 'package:film_freak/text_scanning_view.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/models/enums.dart';
 import 'package:film_freak/models/movie_release.dart';
@@ -28,8 +29,8 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   MediaType mediaTypeValue = mediaTypeValues.first;
   final _repository =
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
-  int _rows = 0;
   String _text = '';
+  String _scannedText = '';
 
   Future<void> barcodeScan() async {
     final barcode = await Navigator.push<String>(context,
@@ -46,17 +47,21 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   }
 
   Future<void> textScan() async {
-    final text = await Navigator.push<String>(context,
-        MaterialPageRoute<String>(builder: (context) {
+    final textBlocks = await Navigator.push<List<TextBlock>>(context,
+        MaterialPageRoute<List<TextBlock>>(builder: (context) {
       return const TextScanningView();
     }));
-
-    if (!mounted) return;
-    setState(() {
-      _text = text ?? "";
-    });
-
-    _textController.text = text ?? "";
+    if (mounted && textBlocks != null && textBlocks.isNotEmpty) {
+      List<String> blocks = [];
+      for (final block in textBlocks) {
+        blocks.add(block.text);
+      }
+      _scannedText = blocks.join(" ");
+      setState(() {
+        _text = _scannedText;
+      });
+      _textController.text = _scannedText;
+    }
   }
 
   @override
@@ -80,7 +85,6 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
         );
         cart.add(release);
         await _repository.insertRelease(release);
-        _rows = await _repository.queryRowCount();
       }
 
       return Form(
@@ -129,9 +133,9 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
               ]))),
             ),
             TextButton(onPressed: barcodeScan, child: const Text('Scan')),
-            Text('Rows: $_rows'),
             TextFormField(
               controller: _textController,
+              maxLines: 10,
             ),
             TextButton(onPressed: textScan, child: const Text('Scan')),
             Padding(

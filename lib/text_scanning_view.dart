@@ -39,7 +39,7 @@ class _TextScanningViewState extends State<TextScanningView> {
     if (mounted && recognizedText.blocks.isNotEmpty) {
       _isReady = true;
       // Navigate back along with first scanned text value as return value
-      Navigator.of(context).pop(recognizedText.text);
+      Navigator.of(context).pop(recognizedText.blocks);
     }
     _isBusy = false;
   }
