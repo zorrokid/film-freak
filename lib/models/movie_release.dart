@@ -13,11 +13,14 @@ class MovieRelease {
       required this.barcode});
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'mediaType': mediaType.index,
-      'barcode': barcode
-    };
+    return {'name': name, 'mediaType': mediaType.index, 'barcode': barcode};
+  }
+
+  static MovieRelease fromMap(Map<String, Object?> map) {
+    return MovieRelease(
+        id: map['id'] as int,
+        name: map['name'] as String,
+        mediaType: MediaType.values[map['mediaType'] as int],
+        barcode: map['barcode'] as String);
   }
 }

@@ -20,4 +20,8 @@ class CollectionModel extends ChangeNotifier {
     _movieReleases.clear();
     notifyListeners();
   }
+
+  void setInitialState(List<MovieRelease> releases) {
+    _movieReleases.addAll(releases);
+  }
 }

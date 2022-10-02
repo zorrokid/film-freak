@@ -18,4 +18,12 @@ class ReleaseRepository {
         await db.rawQuery('SELECT COUNT(*) FROM $table');
     return Sqflite.firstIntValue(result) ?? 0;
   }
+
+  Future<Iterable<MovieRelease>> queryReleases() async {
+    Database db = await databaseProvider.database;
+    List<Map<String, Object?>> queryResult =
+        await db.rawQuery('SELECT * FROM $table');
+    var result = queryResult.map<MovieRelease>((e) => MovieRelease.fromMap(e));
+    return result;
+  }
 }
