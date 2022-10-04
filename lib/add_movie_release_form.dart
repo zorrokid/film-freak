@@ -21,14 +21,16 @@ class AddMovieReleaseForm extends StatefulWidget {
 
 class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   final _formKey = GlobalKey<FormState>();
-
   final _myController = TextEditingController();
   final _barcodeController = TextEditingController();
   final _textController = TextEditingController();
-  String _barcode = '';
-  MediaType mediaTypeValue = mediaTypeValues.first;
   final _repository =
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
+
+  // state
+  String _barcode = '';
+  MediaType _mediaTypeValue = mediaTypeValues.first;
+  CaseType _caseTypeValue = caseTypeValues.first;
   String _text = '';
   String _scannedText = '';
 
@@ -112,15 +114,31 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
             Row(children: [
               const Text('Media type:'),
               DropdownButton<MediaType>(
-                value: mediaTypeValue,
+                value: _mediaTypeValue,
                 icon: const Icon(Icons.arrow_downward),
                 onChanged: (MediaType? selected) {
                   setState(() {
-                    mediaTypeValue = selected!;
+                    _mediaTypeValue = selected!;
                   });
                 },
                 items: mediaTypeValues.map((MediaType value) {
                   return DropdownMenuItem<MediaType>(
+                      value: value, child: Text(value.toUiString()));
+                }).toList(),
+              )
+            ]),
+            Row(children: [
+              const Text('Case type:'),
+              DropdownButton<CaseType>(
+                value: _caseTypeValue,
+                icon: const Icon(Icons.arrow_downward),
+                onChanged: (CaseType? selected) {
+                  setState(() {
+                    _caseTypeValue = selected!;
+                  });
+                },
+                items: caseTypeValues.map((CaseType value) {
+                  return DropdownMenuItem<CaseType>(
                       value: value, child: Text(value.toUiString()));
                 }).toList(),
               )
@@ -146,8 +164,9 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                     submit(MovieRelease(
                         id: 1,
                         name: _myController.text,
-                        mediaType: mediaTypeValue,
-                        barcode: _barcode));
+                        mediaType: _mediaTypeValue,
+                        barcode: _barcode,
+                        caseType: _caseTypeValue));
                   }
                 },
                 child: const Text('Submit'),

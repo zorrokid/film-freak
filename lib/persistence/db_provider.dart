@@ -31,7 +31,12 @@ class DatabaseProvider {
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    await db.execute(initialCreate);
+    if (!migrationScripts.containsKey(version)) {
+      throw Exception('Migration for version $version missing!');
+    }
+    await db.execute(migrationScripts[version]!);
+    var setVersionCommand = 'PRAGMA user_version=$version';
+    await db.execute(setVersionCommand);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -41,8 +46,10 @@ class DatabaseProvider {
     //     Sqflite.firstIntValue(migrationHistoryVersionResult) ?? 0;
 
     for (var entry in migrationScripts.entries) {
-      if (entry.key <= oldVersion) continue;
+      if (entry.key <= oldVersion || entry.key > newVersion) continue;
       await db.execute(entry.value);
+      var setVersionCommand = 'PRAGMA user_version=${entry.key}';
+      await db.execute(setVersionCommand);
       // await db.execute(
       //     '''INSERT INTO migration_history (version) values (${entry.key})''');
     }
