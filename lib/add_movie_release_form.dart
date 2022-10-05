@@ -111,38 +111,48 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 )),
               ]))),
             ),
-            Row(children: [
-              const Text('Media type:'),
-              DropdownButton<MediaType>(
-                value: _mediaTypeValue,
-                icon: const Icon(Icons.arrow_downward),
-                onChanged: (MediaType? selected) {
-                  setState(() {
-                    _mediaTypeValue = selected!;
-                  });
-                },
-                items: mediaTypeValues.map((MediaType value) {
-                  return DropdownMenuItem<MediaType>(
-                      value: value, child: Text(value.toUiString()));
-                }).toList(),
-              )
-            ]),
-            Row(children: [
-              const Text('Case type:'),
-              DropdownButton<CaseType>(
-                value: _caseTypeValue,
-                icon: const Icon(Icons.arrow_downward),
-                onChanged: (CaseType? selected) {
-                  setState(() {
-                    _caseTypeValue = selected!;
-                  });
-                },
-                items: caseTypeValues.map((CaseType value) {
-                  return DropdownMenuItem<CaseType>(
-                      value: value, child: Text(value.toUiString()));
-                }).toList(),
-              )
-            ]),
+            DropdownButtonFormField<MediaType>(
+              value: _mediaTypeValue,
+              icon: const Icon(Icons.arrow_downward),
+              onChanged: (MediaType? selected) {
+                setState(() {
+                  _mediaTypeValue = selected!;
+                });
+              },
+              items: mediaTypeValues.map((MediaType value) {
+                return DropdownMenuItem<MediaType>(
+                    value: value, child: Text(value.toUiString()));
+              }).toList(),
+              decoration: const InputDecoration(
+                label: Text.rich(TextSpan(children: <InlineSpan>[
+                  WidgetSpan(child: Text('Media type')),
+                  WidgetSpan(
+                    child: Text('*', style: TextStyle(color: Colors.red)),
+                  ),
+                ])),
+              ),
+            ),
+            DropdownButtonFormField<CaseType>(
+              value: _caseTypeValue,
+              icon: const Icon(Icons.arrow_downward),
+              onChanged: (CaseType? selected) {
+                setState(() {
+                  _caseTypeValue = selected!;
+                });
+              },
+              items: caseTypeValues.map((CaseType value) {
+                return DropdownMenuItem<CaseType>(
+                    value: value, child: Text(value.toUiString()));
+              }).toList(),
+              decoration: const InputDecoration(
+                label: Text.rich(TextSpan(children: <InlineSpan>[
+                  WidgetSpan(child: Text('Case type')),
+                  WidgetSpan(
+                    child: Text('*', style: TextStyle(color: Colors.red)),
+                  ),
+                ])),
+              ),
+            ),
             TextFormField(
               controller: _barcodeController,
               decoration: const InputDecoration(
