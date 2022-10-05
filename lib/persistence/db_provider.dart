@@ -40,18 +40,11 @@ class DatabaseProvider {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // List<Map<String, Object?>> migrationHistoryVersionResult =
-    //     await db.rawQuery('''SELECT PRAGMA user_version''');
-    // var currentVersion =
-    //     Sqflite.firstIntValue(migrationHistoryVersionResult) ?? 0;
-
     for (var entry in migrationScripts.entries) {
       if (entry.key <= oldVersion || entry.key > newVersion) continue;
       await db.execute(entry.value);
       var setVersionCommand = 'PRAGMA user_version=${entry.key}';
       await db.execute(setVersionCommand);
-      // await db.execute(
-      //     '''INSERT INTO migration_history (version) values (${entry.key})''');
     }
   }
 }
