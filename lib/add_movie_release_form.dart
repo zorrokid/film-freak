@@ -2,6 +2,7 @@ import 'package:film_freak/barcode_scanner_view.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
 import 'package:film_freak/text_scanning_view.dart';
+import 'package:film_freak/views/drop_down_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:provider/provider.dart';
@@ -78,6 +79,18 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
     super.dispose();
   }
 
+  void onMediaTypeSelected(MediaType? selected) {
+    setState(() {
+      _mediaTypeValue = selected!;
+    });
+  }
+
+  void onCaseTypeSelected(CaseType? selected) {
+    setState(() {
+      _caseTypeValue = selected!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
@@ -111,48 +124,16 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 )),
               ]))),
             ),
-            DropdownButtonFormField<MediaType>(
-              value: _mediaTypeValue,
-              icon: const Icon(Icons.arrow_downward),
-              onChanged: (MediaType? selected) {
-                setState(() {
-                  _mediaTypeValue = selected!;
-                });
-              },
-              items: mediaTypeValues.map((MediaType value) {
-                return DropdownMenuItem<MediaType>(
-                    value: value, child: Text(value.toUiString()));
-              }).toList(),
-              decoration: const InputDecoration(
-                label: Text.rich(TextSpan(children: <InlineSpan>[
-                  WidgetSpan(child: Text('Media type')),
-                  WidgetSpan(
-                    child: Text('*', style: TextStyle(color: Colors.red)),
-                  ),
-                ])),
-              ),
-            ),
-            DropdownButtonFormField<CaseType>(
-              value: _caseTypeValue,
-              icon: const Icon(Icons.arrow_downward),
-              onChanged: (CaseType? selected) {
-                setState(() {
-                  _caseTypeValue = selected!;
-                });
-              },
-              items: caseTypeValues.map((CaseType value) {
-                return DropdownMenuItem<CaseType>(
-                    value: value, child: Text(value.toUiString()));
-              }).toList(),
-              decoration: const InputDecoration(
-                label: Text.rich(TextSpan(children: <InlineSpan>[
-                  WidgetSpan(child: Text('Case type')),
-                  WidgetSpan(
-                    child: Text('*', style: TextStyle(color: Colors.red)),
-                  ),
-                ])),
-              ),
-            ),
+            DropDownFormField<MediaType?>(
+                initialValue: _mediaTypeValue,
+                values: mediaTypeValues,
+                onItemSelected: onMediaTypeSelected,
+                labelText: 'Media type'),
+            DropDownFormField<CaseType?>(
+                initialValue: _caseTypeValue,
+                values: caseTypeValues,
+                onItemSelected: onCaseTypeSelected,
+                labelText: 'Case type'),
             TextFormField(
               controller: _barcodeController,
               decoration: const InputDecoration(
