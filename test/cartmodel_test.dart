@@ -14,6 +14,10 @@ void main() {
     });
 
     model.add(const MovieRelease(
-        id: 1, mediaType: MediaType.dvd, name: 'Star Wars', barcode: ''));
+        id: 1,
+        mediaType: MediaType.dvd,
+        name: 'Star Wars',
+        barcode: '',
+        caseType: CaseType.regularDvd));
   });
 }
