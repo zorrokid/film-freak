@@ -1,4 +1,6 @@
-import 'package:film_freak/models/enums.dart';
+import 'package:film_freak/models/case_type.dart';
+
+import 'media_type.dart';
 
 class MovieRelease {
   final int id;

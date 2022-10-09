@@ -1,14 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-enum MediaType { vhs, dvd, bluRay }
-
-extension MediaTypeExtension on MediaType {
-  String toUiString() {
-    return describeEnum(this).toUpperCase();
-  }
-}
-
-const mediaTypeValues = [MediaType.bluRay, MediaType.dvd, MediaType.vhs];
+import 'enum_form_field.dart';
 
 enum CaseType {
   unknown,
@@ -46,3 +38,19 @@ const caseTypeValues = [
   CaseType.steelbook,
   CaseType.tincase
 ];
+
+class CaseTypeFormField extends EnumFormField<CaseType> {
+  final CaseType caseType;
+  CaseTypeFormField({required this.caseType});
+
+  @override
+  String toUiString() {
+    return caseType.toUiString();
+  }
+
+  @override
+  get value => caseType;
+}
+
+final Iterable<CaseTypeFormField> caseTypeFormFieldValues =
+    caseTypeValues.map((e) => CaseTypeFormField(caseType: e));

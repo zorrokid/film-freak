@@ -1,5 +1,6 @@
 import 'package:film_freak/collection_model.dart';
-import 'package:film_freak/models/enums.dart';
+import 'package:film_freak/models/case_type.dart';
+import 'package:film_freak/models/media_type.dart';
 import 'package:film_freak/models/movie_release.dart';
 import 'package:flutter_test/flutter_test.dart';
 

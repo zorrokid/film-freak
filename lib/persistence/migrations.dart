@@ -1,4 +1,4 @@
-import '../models/enums.dart';
+import '../models/case_type.dart';
 
 Map<int, String> migrationScripts = {
   // initial create is version 1

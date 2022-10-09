@@ -1,15 +1,17 @@
 import 'package:film_freak/barcode_scanner_view.dart';
+import 'package:film_freak/controllers/dropdown_selection_controller.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
 import 'package:film_freak/text_scanning_view.dart';
-import 'package:film_freak/views/drop_down_form_field.dart';
+import 'package:film_freak/views/drop_down_form_field_stateful.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:provider/provider.dart';
-import 'package:film_freak/models/enums.dart';
+import 'package:film_freak/models/case_type.dart';
 import 'package:film_freak/models/movie_release.dart';
 
 import 'collection_model.dart';
+import 'models/media_type.dart';
 
 class AddMovieReleaseForm extends StatefulWidget {
   const AddMovieReleaseForm({super.key});
@@ -25,13 +27,17 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   final _myController = TextEditingController();
   final _barcodeController = TextEditingController();
   final _textController = TextEditingController();
+  // final _caseTypeSelectionController =
+  //     DropdownSelectionController<CaseTypeFormField>();
+  // final _mediaTypeSelectionController =
+  //     DropdownSelectionController<MediaTypeFormField>();
   final _repository =
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
-
   // state
   String _barcode = '';
-  MediaType _mediaTypeValue = mediaTypeValues.first;
-  CaseType _caseTypeValue = caseTypeValues.first;
+  MediaTypeFormField? _mediaTypeValue = mediaTypeFormFieldValues.first;
+  CaseTypeFormField? _caseTypeValue = caseTypeFormFieldValues.first;
+
   String _text = '';
   String _scannedText = '';
 
@@ -79,15 +85,15 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
     super.dispose();
   }
 
-  void onMediaTypeSelected(MediaType? selected) {
+  void onMediaTypeSelected(MediaTypeFormField? selected) {
     setState(() {
-      _mediaTypeValue = selected!;
+      _mediaTypeValue = selected;
     });
   }
 
-  void onCaseTypeSelected(CaseType? selected) {
+  void onCaseTypeSelected(CaseTypeFormField? selected) {
     setState(() {
-      _caseTypeValue = selected!;
+      _caseTypeValue = selected;
     });
   }
 
@@ -100,6 +106,9 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
         );
         cart.add(release);
         await _repository.insertRelease(release);
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
       }
 
       return Form(
@@ -124,15 +133,17 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 )),
               ]))),
             ),
-            DropDownFormField<MediaType?>(
-                initialValue: _mediaTypeValue,
-                values: mediaTypeValues,
-                onItemSelected: onMediaTypeSelected,
+            DropDownFormFieldStateful<MediaTypeFormField>(
+                initialValue: mediaTypeFormFieldValues.first,
+                values: mediaTypeFormFieldValues.toList(),
+                //controller: _mediaTypeSelectionController,
+                onValueChange: onMediaTypeSelected,
                 labelText: 'Media type'),
-            DropDownFormField<CaseType?>(
-                initialValue: _caseTypeValue,
-                values: caseTypeValues,
-                onItemSelected: onCaseTypeSelected,
+            DropDownFormFieldStateful<CaseTypeFormField>(
+                initialValue: caseTypeFormFieldValues.first,
+                values: caseTypeFormFieldValues.toList(),
+                //controller: _caseTypeSelectionController,
+                onValueChange: onCaseTypeSelected,
                 labelText: 'Case type'),
             TextFormField(
               controller: _barcodeController,
@@ -155,9 +166,9 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                     submit(MovieRelease(
                         id: 1,
                         name: _myController.text,
-                        mediaType: _mediaTypeValue,
+                        mediaType: _mediaTypeValue!.value,
                         barcode: _barcode,
-                        caseType: _caseTypeValue));
+                        caseType: _caseTypeValue!.value));
                   }
                 },
                 child: const Text('Submit'),

@@ -1,6 +1,6 @@
+import 'package:film_freak/models/media_type.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:film_freak/models/enums.dart';
 
 import 'collection_model.dart';
 
