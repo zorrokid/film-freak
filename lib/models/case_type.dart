@@ -1,7 +1,3 @@
-import 'package:flutter/foundation.dart';
-
-import 'enum_form_field.dart';
-
 enum CaseType {
   unknown,
   regularDvd,
@@ -17,40 +13,17 @@ enum CaseType {
   tincase
 }
 
-extension CaseTypeExtension on CaseType {
-  String toUiString() {
-    // TODO: maybe get values from translation resource
-    return describeEnum(this);
-  }
-}
-
-const caseTypeValues = [
-  CaseType.unknown,
-  CaseType.regularDvd,
-  CaseType.slimDvd,
-  CaseType.regularBluRay,
-  CaseType.slimBluRay,
-  CaseType.mediabook,
-  CaseType.digipack,
-  CaseType.boxSetPlastic,
-  CaseType.boxSetCardboard,
-  CaseType.specialCase,
-  CaseType.steelbook,
-  CaseType.tincase
-];
-
-class CaseTypeFormField extends EnumFormField<CaseType> {
-  final CaseType caseType;
-  CaseTypeFormField({required this.caseType});
-
-  @override
-  String toUiString() {
-    return caseType.toUiString();
-  }
-
-  @override
-  get value => caseType;
-}
-
-final Iterable<CaseTypeFormField> caseTypeFormFieldValues =
-    caseTypeValues.map((e) => CaseTypeFormField(caseType: e));
+final Map<CaseType, String> caseTypeFormFieldValues = {
+  CaseType.unknown: "Unknown",
+  CaseType.regularDvd: "DVD (regular)",
+  CaseType.regularBluRay: "Blu-ray (regular)",
+  CaseType.slimDvd: "DVD (slim)",
+  CaseType.slimBluRay: "Blu-ray (slim)",
+  CaseType.digipack: "Digipack",
+  CaseType.mediabook: "Mediabook",
+  CaseType.steelbook: "Steelbook",
+  CaseType.tincase: "Tin case",
+  CaseType.boxSetPlastic: "Plastic case",
+  CaseType.boxSetCardboard: "Cardboard case",
+  CaseType.specialCase: "Special case",
+};

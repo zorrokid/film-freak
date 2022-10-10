@@ -1,37 +1,27 @@
-import 'package:film_freak/models/enum_form_field.dart';
 import 'package:flutter/material.dart';
 
-class DropDownFormField<T extends EnumFormField> extends StatelessWidget {
+class DropDownFormField<T> extends StatelessWidget {
   const DropDownFormField(
       {required this.initialValue,
       required this.values,
-      required this.onItemSelected,
+      required this.onValueChange,
       required this.labelText,
-      this.controller,
       super.key});
 
   final T initialValue;
-  final List<T> values;
-  final ValueChanged<T?> onItemSelected;
+  final Map<T, String> values;
+  final ValueChanged<T?> onValueChange;
   final String labelText;
-  final ChangeNotifier? controller;
-
-  T _getValue() {
-    return values.first;
-  }
 
   @override
   Widget build(BuildContext context) {
-    var listItems = values.map((T value) {
-      return DropdownMenuItem<T>(value: value, child: Text(value.toUiString()));
+    var listItems = values.entries.map((e) {
+      return DropdownMenuItem<T>(value: e.key, child: Text(e.value));
     }).toList();
-
-    //return DropdownButton(items: listItems, onChanged: onItemSelected);
-
     return DropdownButtonFormField<T>(
-      value: initialValue, // _getValue(),
+      value: initialValue,
       icon: const Icon(Icons.arrow_downward),
-      onChanged: onItemSelected,
+      onChanged: onValueChange,
       items: listItems,
       decoration: InputDecoration(
         label: Text.rich(TextSpan(children: <InlineSpan>[
