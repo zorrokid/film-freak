@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'migrations.dart';
@@ -45,6 +47,16 @@ class DatabaseProvider {
       await db.execute(entry.value);
       var setVersionCommand = 'PRAGMA user_version=${entry.key}';
       await db.execute(setVersionCommand);
+    }
+  }
+
+  Future<void> truncateDb() async {
+    await _database?.close();
+    var path = join(await getDatabasesPath(), dbName);
+    var file = File(path);
+    if (await file.exists()) {
+      await file.delete();
+      _database = null;
     }
   }
 }

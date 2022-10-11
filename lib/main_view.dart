@@ -1,3 +1,4 @@
+import 'package:film_freak/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:film_freak/add_movie_release_form.dart';
 import 'package:film_freak/movie_releases_list.dart';
@@ -17,23 +18,7 @@ class MainView extends StatelessWidget {
     }
 
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Text('Drawer header'),
-            ),
-            ListTile(
-              title: const Text('Item 1'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            )
-          ],
-        ),
-      ),
+      drawer: const MainDrawer(),
       appBar: AppBar(
         title: const Text('Movie releases'),
       ),
