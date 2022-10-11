@@ -92,6 +92,13 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
     });
   }
 
+  String? _textInputValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter value';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
@@ -111,12 +118,7 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
         child: Column(
           children: <Widget>[
             TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter release name';
-                }
-                return null;
-              },
+              validator: _textInputValidator,
               controller: _myController,
               decoration: const InputDecoration(
                   label: Text.rich(TextSpan(children: <InlineSpan>[
