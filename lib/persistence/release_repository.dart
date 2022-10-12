@@ -26,4 +26,11 @@ class ReleaseRepository {
     var result = queryResult.map<MovieRelease>((e) => MovieRelease.fromMap(e));
     return result;
   }
+
+  Future<bool> barcodeExists(String barcode) async {
+    Database db = await databaseProvider.database;
+    List<Map<String, Object?>> result = await db
+        .rawQuery("SELECT COUNT(*) FROM $table where barcode='$barcode'");
+    return Sqflite.firstIntValue(result)! > 0;
+  }
 }

@@ -46,6 +46,7 @@ dependencies:
 
     sqflite:
     path:
+    path_provider:
 
 dev_dependencies:
     flutter_test:

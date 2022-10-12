@@ -3,14 +3,14 @@ import 'package:film_freak/models/case_type.dart';
 import 'media_type.dart';
 
 class MovieRelease {
-  final int id;
+  final int? id;
   final String name;
   final MediaType mediaType;
   final String barcode;
   final CaseType caseType;
 
   const MovieRelease(
-      {required this.id,
+      {this.id,
       required this.name,
       required this.mediaType,
       required this.barcode,

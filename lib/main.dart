@@ -1,10 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
+import 'package:film_freak/scan_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/collection_model.dart';
-import 'package:film_freak/main_view.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -26,6 +26,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Film Freak', home: MainView());
+    return const MaterialApp(title: 'Film Freak', home: ScanView());
   }
 }
