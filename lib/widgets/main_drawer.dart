@@ -1,9 +1,9 @@
-import 'package:film_freak/confirm_dialog.dart';
+import 'package:film_freak/widgets/confirm_dialog.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'collection_model.dart';
+import '../persistence/collection_model.dart';
 
 class MainDrawer extends StatefulWidget {
   const MainDrawer({super.key});

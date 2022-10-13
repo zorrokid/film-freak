@@ -1,10 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
-import 'package:film_freak/scan_view.dart';
+import 'package:film_freak/screens/scan_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:film_freak/collection_model.dart';
+import 'package:film_freak/persistence/collection_model.dart';
 
 List<CameraDescription> cameras = [];
 

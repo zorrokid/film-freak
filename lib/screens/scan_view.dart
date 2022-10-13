@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'add_movie_release_form.dart';
 import 'barcode_scanner_view.dart';
-import 'main_drawer.dart';
-import 'models/movie_releases_list_filter.dart';
+import '../widgets/main_drawer.dart';
+import '../models/movie_releases_list_filter.dart';
 import 'movie_releases_list.dart';
 
 class ScanView extends StatefulWidget {

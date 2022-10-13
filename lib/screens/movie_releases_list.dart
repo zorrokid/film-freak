@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'add_movie_release_form.dart';
-import 'collection_model.dart';
-import 'models/movie_release.dart';
+import '../persistence/collection_model.dart';
+import '../models/movie_release.dart';
 
 class MovieReleasesList extends StatelessWidget {
   const MovieReleasesList({this.filter, super.key});

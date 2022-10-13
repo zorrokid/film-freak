@@ -1,4 +1,4 @@
-import 'package:film_freak/collection_model.dart';
+import 'package:film_freak/persistence/collection_model.dart';
 import 'package:film_freak/models/case_type.dart';
 import 'package:film_freak/models/condition.dart';
 import 'package:film_freak/models/media_type.dart';

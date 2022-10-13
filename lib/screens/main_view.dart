@@ -1,7 +1,7 @@
-import 'package:film_freak/main_drawer.dart';
-import 'package:film_freak/scan_view.dart';
+import 'package:film_freak/widgets/main_drawer.dart';
+import 'package:film_freak/screens/scan_view.dart';
 import 'package:flutter/material.dart';
-import 'package:film_freak/add_movie_release_form.dart';
+import 'package:film_freak/screens/add_movie_release_form.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
