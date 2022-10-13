@@ -1,5 +1,6 @@
 import 'package:film_freak/models/media_type.dart';
 import 'package:film_freak/models/movie_releases_list_filter.dart';
+import 'package:film_freak/widgets/condition_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -51,6 +52,7 @@ class MovieReleasesList extends StatelessWidget {
               return ListTile(
                 title: Text(item.barcode),
                 subtitle: Text(mediaTypeFormFieldValues[item.mediaType] ?? ""),
+                trailing: ConditionIcon(condition: item.condition),
               );
             }),
         floatingActionButton: FloatingActionButton(

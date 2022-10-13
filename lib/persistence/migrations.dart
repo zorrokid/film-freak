@@ -1,5 +1,3 @@
-import '../models/case_type.dart';
-
 Map<int, String> migrationScripts = {
   // initial create is version 1
   1: '''CREATE TABLE releases(
@@ -9,5 +7,6 @@ Map<int, String> migrationScripts = {
         mediaType INTEGER
   )''',
   2: 'ALTER TABLE releases ADD COLUMN caseType INTEGER',
-  3: 'UPDATE releases SET caseType = ${CaseType.unknown.index}',
+  3: 'ALTER TABLE releases ADD COLUMN condition INTEGER',
+  4: 'ALTER TABLE releases ADD COLUMN notes TEXT',
 };

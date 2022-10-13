@@ -1,5 +1,6 @@
 import 'package:film_freak/models/case_type.dart';
 
+import 'condition.dart';
 import 'media_type.dart';
 
 class MovieRelease {
@@ -8,20 +9,26 @@ class MovieRelease {
   final MediaType mediaType;
   final String barcode;
   final CaseType caseType;
+  final Condition condition;
+  final String? notes;
 
   const MovieRelease(
       {this.id,
       required this.name,
       required this.mediaType,
       required this.barcode,
-      required this.caseType});
+      required this.caseType,
+      required this.condition,
+      this.notes});
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
       'mediaType': mediaType.index,
       'barcode': barcode,
-      'caseType': caseType.index
+      'caseType': caseType.index,
+      'condition': condition.index,
+      'notes': notes ?? ''
     };
   }
 
@@ -31,6 +38,8 @@ class MovieRelease {
         name: map['name'] as String,
         mediaType: MediaType.values[map['mediaType'] as int],
         barcode: map['barcode'] as String,
-        caseType: CaseType.values[map['caseType'] as int]);
+        caseType: CaseType.values[map['caseType'] as int],
+        condition: Condition.values[map['condition'] as int],
+        notes: map['notes'] as String);
   }
 }

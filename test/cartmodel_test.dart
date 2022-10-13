@@ -1,5 +1,6 @@
 import 'package:film_freak/collection_model.dart';
 import 'package:film_freak/models/case_type.dart';
+import 'package:film_freak/models/condition.dart';
 import 'package:film_freak/models/media_type.dart';
 import 'package:film_freak/models/movie_release.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +20,7 @@ void main() {
         mediaType: MediaType.dvd,
         name: 'Star Wars',
         barcode: '',
-        caseType: CaseType.regularDvd));
+        caseType: CaseType.regularDvd,
+        condition: Condition.unknown));
   });
 }

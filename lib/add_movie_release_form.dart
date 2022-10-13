@@ -13,6 +13,7 @@ import 'package:film_freak/models/case_type.dart';
 import 'package:film_freak/models/movie_release.dart';
 
 import 'collection_model.dart';
+import 'models/condition.dart';
 import 'models/media_type.dart';
 
 class AddMovieReleaseForm extends StatefulWidget {
@@ -31,12 +32,14 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   final _myController = TextEditingController();
   final _barcodeController = TextEditingController();
   final _textController = TextEditingController();
+  final _notesController = TextEditingController();
   final _repository =
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
   // state
-  String _barcode = '';
-  MediaType? _mediaTypeValue = mediaTypeFormFieldValues.keys.first;
-  CaseType? _caseTypeValue = caseTypeFormFieldValues.keys.first;
+  //String _barcode = '';
+  MediaType _mediaTypeValue = MediaType.unknown;
+  CaseType _caseTypeValue = CaseType.unknown;
+  Condition _conditionValue = Condition.unknown;
 
   String _text = '';
   String _scannedText = '';
@@ -53,9 +56,9 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
     }));
 
     if (!mounted) return;
-    setState(() {
-      _barcode = barcode ?? "";
-    });
+    // setState(() {
+    //   _barcode = barcode ?? "";
+    // });
 
     _barcodeController.text = barcode ?? "";
   }
@@ -66,14 +69,6 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
     if (pickedFile != null) {
       _processPickedFile(pickedFile);
     }
-    // final picPath = await Navigator.push<String>(context,
-    //     MaterialPageRoute<String>(builder: (context) {
-    //   return const PhotoView();
-    // }));
-    // if (!mounted || picPath == null) return;
-    // setState(() {
-    //   _picPaths = [..._picPaths, picPath];
-    // });
   }
 
   Future _processPickedFile(XFile? pickedFile) async {
@@ -107,7 +102,7 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
 
   @override
   void initState() {
-    _barcode = widget.barcode ?? '';
+    //_barcode = widget.barcode ?? '';
     _imagePicker = ImagePicker();
     super.initState();
   }
@@ -121,13 +116,19 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
 
   void onMediaTypeSelected(MediaType? selected) {
     setState(() {
-      _mediaTypeValue = selected;
+      _mediaTypeValue = selected ?? MediaType.unknown;
     });
   }
 
   void onCaseTypeSelected(CaseType? selected) {
     setState(() {
-      _caseTypeValue = selected;
+      _caseTypeValue = selected ?? CaseType.unknown;
+    });
+  }
+
+  void onConditionSelected(Condition? selected) {
+    setState(() {
+      _conditionValue = selected ?? Condition.unknown;
     });
   }
 
@@ -152,9 +153,11 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
 
           final release = MovieRelease(
               name: _myController.text,
-              mediaType: _mediaTypeValue!,
-              barcode: _barcode,
-              caseType: _caseTypeValue!);
+              mediaType: _mediaTypeValue,
+              barcode: _barcodeController.text,
+              caseType: _caseTypeValue,
+              condition: _conditionValue,
+              notes: _notesController.text);
           cart.add(release);
           await _repository.insertRelease(release);
           if (mounted) {
@@ -194,15 +197,20 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 ]))),
               ),
               DropDownFormField(
-                  initialValue: mediaTypeFormFieldValues.keys.first,
+                  initialValue: _mediaTypeValue,
                   values: mediaTypeFormFieldValues,
                   onValueChange: onMediaTypeSelected,
                   labelText: 'Media type'),
               DropDownFormField(
-                  initialValue: caseTypeFormFieldValues.keys.first,
+                  initialValue: _caseTypeValue,
                   values: caseTypeFormFieldValues,
                   onValueChange: onCaseTypeSelected,
                   labelText: 'Case type'),
+              DropDownFormField(
+                  initialValue: _conditionValue,
+                  values: conditionFormFieldValues,
+                  onValueChange: onConditionSelected,
+                  labelText: 'Condition'),
               TextFormField(
                 validator: _textInputValidator,
                 controller: _barcodeController,
@@ -218,8 +226,12 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
               ),
               TextButton(onPressed: barcodeScan, child: const Text('Scan')),
               TextFormField(
+                controller: _notesController,
+                maxLines: 3,
+              ),
+              TextFormField(
                 controller: _textController,
-                maxLines: 10,
+                maxLines: 5,
               ),
               TextButton(onPressed: textScan, child: const Text('Scan')),
               Padding(
