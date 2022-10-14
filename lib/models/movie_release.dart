@@ -11,6 +11,7 @@ class MovieRelease {
   final CaseType caseType;
   final Condition condition;
   final String? notes;
+  final DateTime? createdTime;
 
   const MovieRelease(
       {this.id,
@@ -19,7 +20,8 @@ class MovieRelease {
       required this.barcode,
       required this.caseType,
       required this.condition,
-      this.notes});
+      this.notes,
+      this.createdTime});
 
   Map<String, dynamic> toMap() {
     return {
@@ -40,6 +42,7 @@ class MovieRelease {
         barcode: map['barcode'] as String,
         caseType: CaseType.values[map['caseType'] as int],
         condition: Condition.values[map['condition'] as int],
-        notes: map['notes'] as String);
+        notes: map['notes'] as String,
+        createdTime: map['createdTime'] as DateTime?);
   }
 }

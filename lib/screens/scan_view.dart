@@ -2,6 +2,7 @@ import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/recent_list.dart';
 import 'add_movie_release_form.dart';
 import 'barcode_scanner_view.dart';
 import '../widgets/main_drawer.dart';
@@ -54,7 +55,7 @@ class _ScanViewState extends State<ScanView> {
       appBar: AppBar(
         title: const Text('Search'),
       ),
-      body: const Text('TODO'),
+      body: const RecentList(),
       floatingActionButton: FloatingActionButton(
         onPressed: barcodeScan,
         backgroundColor: Colors.green,

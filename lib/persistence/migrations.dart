@@ -9,4 +9,5 @@ Map<int, String> migrationScripts = {
   2: 'ALTER TABLE releases ADD COLUMN caseType INTEGER',
   3: 'ALTER TABLE releases ADD COLUMN condition INTEGER',
   4: 'ALTER TABLE releases ADD COLUMN notes TEXT',
+  5: 'ALTER TABLE releases ADD COLUMN createdTime DATETIME',
 };
