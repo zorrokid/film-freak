@@ -1,9 +1,7 @@
-import 'package:film_freak/models/media_type.dart';
 import 'package:film_freak/models/movie_releases_list_filter.dart';
-import 'package:film_freak/widgets/condition_icon.dart';
+import 'package:film_freak/widgets/release_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'add_movie_release_form.dart';
 import '../persistence/collection_model.dart';
 import '../models/movie_release.dart';
@@ -48,12 +46,7 @@ class MovieReleasesList extends StatelessWidget {
         body: ListView.builder(
             itemCount: items.length,
             itemBuilder: (context, index) {
-              final item = items[index];
-              return ListTile(
-                title: Text(item.barcode),
-                subtitle: Text(mediaTypeFormFieldValues[item.mediaType] ?? ""),
-                trailing: ConditionIcon(condition: item.condition),
-              );
+              return ReleaseListTile(release: items[index]);
             }),
         floatingActionButton: FloatingActionButton(
           onPressed: addRelease,

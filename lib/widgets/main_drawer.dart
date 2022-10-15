@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../persistence/collection_model.dart';
+import '../screens/movie_releases_list.dart';
 
 class MainDrawer extends StatefulWidget {
   const MainDrawer({super.key});
@@ -45,9 +46,11 @@ class _MainDrawerState extends State<MainDrawer> {
               child: Text('Drawer header'),
             ),
             ListTile(
-              title: const Text('Item 1'),
+              title: const Text('Releases'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const MovieReleasesList();
+                }));
               },
             ),
             ListTile(
@@ -55,6 +58,7 @@ class _MainDrawerState extends State<MainDrawer> {
               onTap: () {
                 _deleteDb(context);
                 cart.removeAll();
+                Navigator.pop(context);
               },
             )
           ],
