@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:film_freak/models/case_type.dart';
 
 import 'condition.dart';
@@ -11,7 +13,8 @@ class MovieRelease {
   final CaseType caseType;
   final Condition condition;
   final String? notes;
-  final DateTime? createdTime;
+  final DateTime createdTime;
+  final bool hasSlipCover;
 
   const MovieRelease(
       {this.id,
@@ -20,8 +23,9 @@ class MovieRelease {
       required this.barcode,
       required this.caseType,
       required this.condition,
+      required this.hasSlipCover,
       this.notes,
-      this.createdTime});
+      required this.createdTime});
 
   Map<String, dynamic> toMap() {
     return {
@@ -30,7 +34,9 @@ class MovieRelease {
       'barcode': barcode,
       'caseType': caseType.index,
       'condition': condition.index,
-      'notes': notes ?? ''
+      'notes': notes ?? '',
+      'hasSlipCover': hasSlipCover ? 0 : 1,
+      'createdTime': createdTime.toIso8601String()
     };
   }
 
@@ -43,6 +49,7 @@ class MovieRelease {
         caseType: CaseType.values[map['caseType'] as int],
         condition: Condition.values[map['condition'] as int],
         notes: map['notes'] as String,
-        createdTime: map['createdTime'] as DateTime?);
+        createdTime: DateTime.parse(map['createdTime'] as String),
+        hasSlipCover: (map['hasSlipCover'] as int) == 1 ? true : false);
   }
 }

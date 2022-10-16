@@ -48,6 +48,7 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   ImagePicker? _imagePicker;
   File? _image;
   String? _path;
+  bool _hasSlipCover = false;
 
   Future<void> barcodeScan() async {
     final barcode = await Navigator.push<String>(context,
@@ -132,6 +133,10 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
     });
   }
 
+  void hasSlipCoverChanged(bool? value) {
+    _hasSlipCover = value ?? false;
+  }
+
   String? _textInputValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter value';
@@ -157,7 +162,9 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
               barcode: _barcodeController.text,
               caseType: _caseTypeValue,
               condition: _conditionValue,
-              notes: _notesController.text);
+              hasSlipCover: _hasSlipCover,
+              notes: _notesController.text,
+              createdTime: DateTime.now());
           cart.add(release);
           await _repository.insertRelease(release);
           if (mounted) {
@@ -170,7 +177,7 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
         appBar: AppBar(title: const Text('Add a new release')),
         body: Form(
           key: _formKey,
-          child: Column(
+          child: ListView(
             children: <Widget>[
               _image != null
                   ? SizedBox(
@@ -225,6 +232,13 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 ]))),
               ),
               TextButton(onPressed: barcodeScan, child: const Text('Scan')),
+              Row(
+                children: [
+                  const Text('Has slip cover?'),
+                  Checkbox(
+                      value: _hasSlipCover, onChanged: hasSlipCoverChanged),
+                ],
+              ),
               TextFormField(
                 controller: _notesController,
                 maxLines: 3,
