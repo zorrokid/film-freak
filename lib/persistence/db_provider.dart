@@ -50,13 +50,15 @@ class DatabaseProvider {
     }
   }
 
-  Future<void> truncateDb() async {
+  Future<bool> truncateDb() async {
     await _database?.close();
     var path = join(await getDatabasesPath(), dbName);
     var file = File(path);
     if (await file.exists()) {
       await file.delete();
       _database = null;
+      return true;
     }
+    return false;
   }
 }

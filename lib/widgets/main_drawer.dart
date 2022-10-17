@@ -16,22 +16,26 @@ class MainDrawer extends StatefulWidget {
 }
 
 class _MainDrawerState extends State<MainDrawer> {
-  Future<void> _deleteDb(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ConfirmDialog(
-              title: 'Are you sure?',
-              message:
-                  'Are you really sure you want to delete all the data in database?',
-              onContinue: () {
-                DatabaseProvider.instance.truncateDb();
-                Navigator.of(context).pop();
-              },
-              onCancel: () {
-                Navigator.of(context).pop();
-              });
-        });
+  Future<void> _showDeleteConfirmDialog(
+      BuildContext context, CollectionModel cart) async {
+    var okToDelete = await showDialog<bool>(
+            context: context,
+            builder: (BuildContext context) {
+              return ConfirmDialog(
+                  title: 'Are you sure?',
+                  message:
+                      'Are you really sure you want to delete all the data in database?',
+                  onContinue: () {
+                    Navigator.pop(context, true);
+                  },
+                  onCancel: () {
+                    Navigator.pop(context, false);
+                  });
+            }) ??
+        false;
+    if (okToDelete && await DatabaseProvider.instance.truncateDb()) {
+      cart.removeAll();
+    }
   }
 
   @override
@@ -56,9 +60,7 @@ class _MainDrawerState extends State<MainDrawer> {
             ListTile(
               title: const Text('Delete'),
               onTap: () {
-                _deleteDb(context);
-                cart.removeAll();
-                Navigator.pop(context);
+                _showDeleteConfirmDialog(context, cart);
               },
             )
           ],

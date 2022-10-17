@@ -27,6 +27,7 @@ class CollectionModel extends ChangeNotifier {
 
   void removeAll() {
     _movieReleases.clear();
+    _recent.clear();
     notifyListeners();
   }
 
