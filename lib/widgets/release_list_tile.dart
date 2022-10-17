@@ -1,4 +1,5 @@
 import 'package:film_freak/models/movie_release.dart';
+import 'package:film_freak/screens/release_view.dart';
 import 'package:flutter/material.dart';
 
 import '../models/media_type.dart';
@@ -13,6 +14,13 @@ class ReleaseListTile extends StatelessWidget {
       title: Text(release.barcode),
       subtitle: Text(mediaTypeFormFieldValues[release.mediaType] ?? ""),
       trailing: ConditionIcon(condition: release.condition),
+      onTap: () => {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return ReleaseView(releaseId: release.id!);
+          },
+        ))
+      },
     );
   }
 }
