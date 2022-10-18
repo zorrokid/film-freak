@@ -1,3 +1,4 @@
+import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +20,7 @@ class ReleaseView extends StatelessWidget {
           cart.movieReleases.where((element) => element.id == releaseId).first;
       var title = release.name.isNotEmpty ? release.name : release.barcode;
       return Scaffold(
+        drawer: const MainDrawer(),
         appBar: AppBar(
           title: Text(title),
         ),

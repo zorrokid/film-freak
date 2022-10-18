@@ -1,4 +1,5 @@
 import 'package:film_freak/models/movie_releases_list_filter.dart';
+import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:film_freak/widgets/release_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,7 @@ class MovieReleasesList extends StatelessWidget {
       }
 
       return Scaffold(
+        drawer: const MainDrawer(),
         appBar: AppBar(title: const Text('Results')),
         body: ListView.builder(
             itemCount: items.length,

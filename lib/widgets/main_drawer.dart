@@ -1,3 +1,4 @@
+import 'package:film_freak/screens/scan_view.dart';
 import 'package:film_freak/widgets/confirm_dialog.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,13 @@ class _MainDrawerState extends State<MainDrawer> {
     }
   }
 
+  void _navigateFromDrawer(BuildContext context, Widget widget) {
+    Navigator.pop(context);
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return widget;
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
@@ -51,15 +59,17 @@ class _MainDrawerState extends State<MainDrawer> {
             ),
             ListTile(
               title: const Text('Releases'),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const MovieReleasesList();
-                }));
-              },
+              onTap: () =>
+                  _navigateFromDrawer(context, const MovieReleasesList()),
+            ),
+            ListTile(
+              title: const Text('Scan'),
+              onTap: () => _navigateFromDrawer(context, const ScanView()),
             ),
             ListTile(
               title: const Text('Delete'),
               onTap: () {
+                Navigator.pop(context);
                 _showDeleteConfirmDialog(context, cart);
               },
             )
