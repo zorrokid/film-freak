@@ -1,3 +1,4 @@
+import 'package:film_freak/screens/add_movie_release_form.dart';
 import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +13,13 @@ class ReleaseView extends StatelessWidget {
 
   final int releaseId;
 
-  void edit() {}
+  void edit(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddMovieReleaseForm(id: releaseId)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
@@ -43,7 +50,7 @@ class ReleaseView extends StatelessWidget {
           ]),
         ]),
         floatingActionButton: FloatingActionButton(
-          onPressed: edit,
+          onPressed: () => edit(context),
           backgroundColor: Colors.green,
           child: const Icon(Icons.edit),
         ),

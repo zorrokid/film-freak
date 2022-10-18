@@ -14,4 +14,7 @@ Map<int, String> migrationScripts = {
   7: 'UPDATE releases SET hasSlipCover = 0 WHERE hasSlipCover IS NULL',
   8: 'UPDATE releases SET createdTime = CURRENT_TIMESTAMP WHERE createdTime IS NULL',
   9: 'UPDATE releases SET createdTime = CURRENT_TIMESTAMP WHERE createdTime IS NULL',
+  10: '''UPDATE releases SET notes = '' WHERE notes IS NULL''',
+  11: 'ALTER TABLE releases ADD COLUMN modifiedTime DATETIME',
+  12: 'UPDATE releases SET modifiedTime = CURRENT_TIMESTAMP WHERE modifiedTime IS NULL',
 };

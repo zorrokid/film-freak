@@ -23,6 +23,7 @@ void main() {
         caseType: CaseType.regularDvd,
         condition: Condition.unknown,
         createdTime: DateTime.now(),
+        notes: '',
         hasSlipCover: false));
   });
 }

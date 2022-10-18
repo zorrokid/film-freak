@@ -12,6 +12,12 @@ class ReleaseRepository {
     return await db.insert(table, release.toMap());
   }
 
+  Future<int> updateRelease(MovieRelease release) async {
+    Database db = await databaseProvider.database;
+    return await db
+        .update(table, release.toMap(), where: 'id=?', whereArgs: [release.id]);
+  }
+
   Future<int> queryRowCount() async {
     Database db = await databaseProvider.database;
     List<Map<String, Object?>> result =

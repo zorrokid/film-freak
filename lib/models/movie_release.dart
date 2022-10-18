@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:film_freak/models/case_type.dart';
 
 import 'condition.dart';
@@ -7,16 +5,17 @@ import 'media_type.dart';
 
 class MovieRelease {
   final int? id;
-  final String name;
-  final MediaType mediaType;
-  final String barcode;
-  final CaseType caseType;
-  final Condition condition;
-  final String? notes;
-  final DateTime createdTime;
-  final bool hasSlipCover;
+  String name;
+  MediaType mediaType;
+  String barcode;
+  CaseType caseType;
+  Condition condition;
+  String notes;
+  DateTime? createdTime;
+  DateTime? modifiedTime;
+  bool hasSlipCover;
 
-  const MovieRelease(
+  MovieRelease(
       {this.id,
       required this.name,
       required this.mediaType,
@@ -24,8 +23,19 @@ class MovieRelease {
       required this.caseType,
       required this.condition,
       required this.hasSlipCover,
-      this.notes,
-      required this.createdTime});
+      required this.notes,
+      this.createdTime,
+      this.modifiedTime});
+
+  MovieRelease.init()
+      : this(
+            name: '',
+            barcode: '',
+            caseType: CaseType.unknown,
+            condition: Condition.unknown,
+            hasSlipCover: false,
+            mediaType: MediaType.unknown,
+            notes: '');
 
   Map<String, dynamic> toMap() {
     return {
@@ -34,9 +44,10 @@ class MovieRelease {
       'barcode': barcode,
       'caseType': caseType.index,
       'condition': condition.index,
-      'notes': notes ?? '',
+      'notes': notes,
       'hasSlipCover': hasSlipCover ? 0 : 1,
-      'createdTime': createdTime.toIso8601String()
+      'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
+      'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
     };
   }
 
@@ -50,6 +61,7 @@ class MovieRelease {
         condition: Condition.values[map['condition'] as int],
         notes: map['notes'] as String,
         createdTime: DateTime.parse(map['createdTime'] as String),
+        modifiedTime: DateTime.parse(map['modifiedTime'] as String),
         hasSlipCover: (map['hasSlipCover'] as int) == 1 ? true : false);
   }
 }

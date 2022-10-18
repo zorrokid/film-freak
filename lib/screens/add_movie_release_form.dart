@@ -17,9 +17,10 @@ import '../models/condition.dart';
 import '../models/media_type.dart';
 
 class AddMovieReleaseForm extends StatefulWidget {
-  const AddMovieReleaseForm({this.barcode, super.key});
+  const AddMovieReleaseForm({this.barcode, this.id, super.key});
 
   final String? barcode;
+  final int? id;
 
   @override
   State<AddMovieReleaseForm> createState() {
@@ -29,7 +30,7 @@ class AddMovieReleaseForm extends StatefulWidget {
 
 class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   final _formKey = GlobalKey<FormState>();
-  final _myController = TextEditingController();
+  final _nameController = TextEditingController();
   final _barcodeController = TextEditingController();
   final _textController = TextEditingController();
   final _notesController = TextEditingController();
@@ -37,10 +38,10 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
   // state
   //String _barcode = '';
-  MediaType _mediaTypeValue = MediaType.unknown;
-  CaseType _caseTypeValue = CaseType.unknown;
-  Condition _conditionValue = Condition.unknown;
-
+  // MediaType _mediaTypeValue = MediaType.unknown;
+  // CaseType _caseTypeValue = CaseType.unknown;
+  // Condition _conditionValue = Condition.unknown;
+  MovieRelease editRelease = MovieRelease.init();
   String _text = '';
   String _scannedText = '';
   List<String> _picPaths = [];
@@ -48,7 +49,6 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   ImagePicker? _imagePicker;
   File? _image;
   String? _path;
-  bool _hasSlipCover = false;
 
   Future<void> barcodeScan() async {
     final barcode = await Navigator.push<String>(context,
@@ -57,9 +57,6 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
     }));
 
     if (!mounted) return;
-    // setState(() {
-    //   _barcode = barcode ?? "";
-    // });
 
     _barcodeController.text = barcode ?? "";
   }
@@ -103,38 +100,39 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
 
   @override
   void initState() {
-    //_barcode = widget.barcode ?? '';
     _imagePicker = ImagePicker();
     super.initState();
   }
 
   @override
   void dispose() {
-    _myController.dispose();
+    _nameController.dispose();
     _barcodeController.dispose();
+    _notesController.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
   void onMediaTypeSelected(MediaType? selected) {
     setState(() {
-      _mediaTypeValue = selected ?? MediaType.unknown;
+      editRelease.mediaType = selected ?? MediaType.unknown;
     });
   }
 
   void onCaseTypeSelected(CaseType? selected) {
     setState(() {
-      _caseTypeValue = selected ?? CaseType.unknown;
+      editRelease.caseType = selected ?? CaseType.unknown;
     });
   }
 
   void onConditionSelected(Condition? selected) {
     setState(() {
-      _conditionValue = selected ?? Condition.unknown;
+      editRelease.condition = selected ?? Condition.unknown;
     });
   }
 
   void hasSlipCoverChanged(bool? value) {
-    _hasSlipCover = value ?? false;
+    editRelease.hasSlipCover = value ?? false;
   }
 
   String? _textInputValidator(String? value) {
@@ -144,37 +142,52 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
     return null;
   }
 
+  bool isEditMode() => widget.id != null;
+
   @override
   Widget build(BuildContext context) {
-    if (widget.barcode != null) {
-      _barcodeController.text = widget.barcode!;
-    }
     return Consumer<CollectionModel>(builder: (context, cart, child) {
-      Future<void> submit() async {
-        if (_formKey.currentState!.validate()) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Adding release')),
-          );
+      if (widget.id != null) {
+        editRelease = cart.movieReleases
+            .where((element) => element.id == widget.id)
+            .first;
+      }
 
-          final release = MovieRelease(
-              name: _myController.text,
-              mediaType: _mediaTypeValue,
-              barcode: _barcodeController.text,
-              caseType: _caseTypeValue,
-              condition: _conditionValue,
-              hasSlipCover: _hasSlipCover,
-              notes: _notesController.text,
-              createdTime: DateTime.now());
-          cart.add(release);
-          await _repository.insertRelease(release);
-          if (mounted) {
-            Navigator.of(context).pop();
-          }
+      _barcodeController.text = widget.barcode ?? editRelease.barcode;
+      _nameController.text = editRelease.name;
+      _notesController.text = editRelease.notes;
+
+      Future<void> submit() async {
+        if (!_formKey.currentState!.validate()) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: isEditMode()
+                  ? Text('Updating ${editRelease.name}')
+                  : Text('Adding ${editRelease.name}')),
+        );
+
+        editRelease.name = _nameController.text;
+        editRelease.barcode = _barcodeController.text;
+        editRelease.notes = _notesController.text;
+
+        if (isEditMode()) {
+          cart.update(editRelease);
+          await _repository.updateRelease(editRelease);
+        } else {
+          cart.add(editRelease);
+          await _repository.insertRelease(editRelease);
+        }
+        if (mounted) {
+          Navigator.of(context).pop();
         }
       }
 
       return Scaffold(
-        appBar: AppBar(title: const Text('Add a new release')),
+        appBar: AppBar(
+            title: isEditMode()
+                ? Text('Edit ${editRelease.name}')
+                : const Text('Add a new release')),
         body: Form(
           key: _formKey,
           child: ListView(
@@ -192,7 +205,7 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
               TextButton(onPressed: takePic, child: const Text('Pictures')),
               TextFormField(
                 //validator: _textInputValidator,
-                controller: _myController,
+                controller: _nameController,
                 decoration: const InputDecoration(
                     label: Text.rich(TextSpan(children: <InlineSpan>[
                   WidgetSpan(child: Text('Release name')),
@@ -204,17 +217,17 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 ]))),
               ),
               DropDownFormField(
-                  initialValue: _mediaTypeValue,
+                  initialValue: editRelease.mediaType,
                   values: mediaTypeFormFieldValues,
                   onValueChange: onMediaTypeSelected,
                   labelText: 'Media type'),
               DropDownFormField(
-                  initialValue: _caseTypeValue,
+                  initialValue: editRelease.caseType,
                   values: caseTypeFormFieldValues,
                   onValueChange: onCaseTypeSelected,
                   labelText: 'Case type'),
               DropDownFormField(
-                  initialValue: _conditionValue,
+                  initialValue: editRelease.condition,
                   values: conditionFormFieldValues,
                   onValueChange: onConditionSelected,
                   labelText: 'Condition'),
@@ -236,7 +249,8 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
                 children: [
                   const Text('Has slip cover?'),
                   Checkbox(
-                      value: _hasSlipCover, onChanged: hasSlipCoverChanged),
+                      value: editRelease.hasSlipCover,
+                      onChanged: hasSlipCoverChanged),
                 ],
               ),
               TextFormField(
