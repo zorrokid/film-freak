@@ -148,9 +148,8 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
       if (widget.id != null) {
-        editRelease = cart.movieReleases
-            .where((element) => element.id == widget.id)
-            .first;
+        editRelease =
+            cart.movieReleases.firstWhere((element) => element.id == widget.id);
       }
 
       _barcodeController.text = widget.barcode ?? editRelease.barcode;

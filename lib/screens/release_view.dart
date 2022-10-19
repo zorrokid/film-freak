@@ -24,7 +24,7 @@ class ReleaseView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
       var release =
-          cart.movieReleases.where((element) => element.id == releaseId).first;
+          cart.movieReleases.firstWhere((element) => element.id == releaseId);
       var title = release.name.isNotEmpty ? release.name : release.barcode;
       return Scaffold(
         drawer: const MainDrawer(),
