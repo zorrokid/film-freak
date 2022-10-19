@@ -4,7 +4,8 @@ import 'condition.dart';
 import 'media_type.dart';
 
 class MovieRelease {
-  final int? id;
+  // when creating a new release id is set after entity is saved to db:
+  int? id;
   String name;
   MediaType mediaType;
   String barcode;
@@ -37,19 +38,17 @@ class MovieRelease {
             mediaType: MediaType.unknown,
             notes: '');
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'mediaType': mediaType.index,
-      'barcode': barcode,
-      'caseType': caseType.index,
-      'condition': condition.index,
-      'notes': notes,
-      'hasSlipCover': hasSlipCover ? 0 : 1,
-      'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
-      'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
-    };
-  }
+  Map<String, dynamic> get map => {
+        'name': name,
+        'mediaType': mediaType.index,
+        'barcode': barcode,
+        'caseType': caseType.index,
+        'condition': condition.index,
+        'notes': notes,
+        'hasSlipCover': hasSlipCover ? 0 : 1,
+        'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
+        'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
+      };
 
   static MovieRelease fromMap(Map<String, Object?> map) {
     return MovieRelease(

@@ -175,8 +175,9 @@ class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
           cart.update(editRelease);
           await _repository.updateRelease(editRelease);
         } else {
+          editRelease.id = await _repository.insertRelease(editRelease);
+
           cart.add(editRelease);
-          await _repository.insertRelease(editRelease);
         }
         if (mounted) {
           Navigator.of(context).pop();

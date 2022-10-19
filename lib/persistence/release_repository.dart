@@ -9,13 +9,13 @@ class ReleaseRepository {
 
   Future<int> insertRelease(MovieRelease release) async {
     Database db = await databaseProvider.database;
-    return await db.insert(table, release.toMap());
+    return await db.insert(table, release.map);
   }
 
   Future<int> updateRelease(MovieRelease release) async {
     Database db = await databaseProvider.database;
     return await db
-        .update(table, release.toMap(), where: 'id=?', whereArgs: [release.id]);
+        .update(table, release.map, where: 'id=?', whereArgs: [release.id]);
   }
 
   Future<int> queryRowCount() async {
