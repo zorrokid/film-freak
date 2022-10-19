@@ -37,10 +37,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
   final _repository =
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
   // state
-  //String _barcode = '';
-  // MediaType _mediaTypeValue = MediaType.unknown;
-  // CaseType _caseTypeValue = CaseType.unknown;
-  // Condition _conditionValue = Condition.unknown;
   MovieRelease editRelease = MovieRelease.init();
   String _text = '';
   String _scannedText = '';
