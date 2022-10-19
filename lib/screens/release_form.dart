@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:film_freak/screens/barcode_scanner_view.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
+import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/screens/text_scanning_view.dart';
 import 'package:film_freak/widgets/drop_down_form_field.dart';
 import 'package:flutter/material.dart';
@@ -38,13 +39,14 @@ class _ReleaseFormState extends State<ReleaseForm> {
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
   // state
   MovieRelease editRelease = MovieRelease.init();
-  String _text = '';
   String _scannedText = '';
   List<String> _picPaths = [];
 
   ImagePicker? _imagePicker;
   File? _image;
-  String? _path;
+  String? _imagePath;
+
+  String? _selectedText;
 
   Future<void> barcodeScan() async {
     final barcode = await Navigator.push<String>(context,
@@ -71,7 +73,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
       return;
     }
     setState(() {
-      _path = path;
+      _imagePath = path;
       _image = File(path);
     });
   }
@@ -88,9 +90,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
       }
       _scannedText = blocks.join(" ");
       setState(() {
-        _text = _scannedText;
+        _textController.text = _scannedText;
       });
-      _textController.text = _scannedText;
     }
   }
 
@@ -139,6 +140,19 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   bool isEditMode() => widget.id != null;
+
+  void openPicTextSelect(BuildContext context) async {
+    if (_imagePath == null) return;
+    var selectedText = await Navigator.push(context,
+        MaterialPageRoute<String>(builder: (context) {
+      return ImageTextSelector(
+        imagePath: _imagePath!,
+      );
+    }));
+    setState(() {
+      _selectedText = selectedText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -199,6 +213,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       size: 200,
                     ),
               TextButton(onPressed: takePic, child: const Text('Pictures')),
+              TextButton(
+                onPressed: () => openPicTextSelect(context),
+                child: const Text('Select text'),
+              ),
               TextFormField(
                 //validator: _textInputValidator,
                 controller: _nameController,
