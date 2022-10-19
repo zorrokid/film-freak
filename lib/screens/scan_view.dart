@@ -3,7 +3,7 @@ import 'package:film_freak/persistence/release_repository.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/recent_list.dart';
-import 'add_movie_release_form.dart';
+import 'release_form.dart';
 import 'barcode_scanner_view.dart';
 import '../widgets/main_drawer.dart';
 import '../models/movie_releases_list_filter.dart';
@@ -40,7 +40,7 @@ class _ScanViewState extends State<ScanView> {
                 filter: MovieReleasesListFilter(barcode: barcode));
           })
         : MaterialPageRoute<String>(builder: (context) {
-            return AddMovieReleaseForm(
+            return ReleaseForm(
               barcode: barcode,
             );
           });

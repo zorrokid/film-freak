@@ -1,4 +1,4 @@
-import 'package:film_freak/screens/add_movie_release_form.dart';
+import 'package:film_freak/screens/release_form.dart';
 import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,10 +14,8 @@ class ReleaseView extends StatelessWidget {
   final int releaseId;
 
   void edit(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => AddMovieReleaseForm(id: releaseId)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ReleaseForm(id: releaseId)));
   }
 
   @override

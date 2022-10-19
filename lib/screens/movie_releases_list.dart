@@ -3,7 +3,7 @@ import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:film_freak/widgets/release_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'add_movie_release_form.dart';
+import 'release_form.dart';
 import '../persistence/collection_model.dart';
 import '../models/movie_release.dart';
 
@@ -38,7 +38,7 @@ class MovieReleasesList extends StatelessWidget {
 
       void addRelease() {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return const AddMovieReleaseForm();
+          return const ReleaseForm();
         }));
       }
 

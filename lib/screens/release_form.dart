@@ -16,19 +16,19 @@ import '../persistence/collection_model.dart';
 import '../models/condition.dart';
 import '../models/media_type.dart';
 
-class AddMovieReleaseForm extends StatefulWidget {
-  const AddMovieReleaseForm({this.barcode, this.id, super.key});
+class ReleaseForm extends StatefulWidget {
+  const ReleaseForm({this.barcode, this.id, super.key});
 
   final String? barcode;
   final int? id;
 
   @override
-  State<AddMovieReleaseForm> createState() {
-    return _AddMovieReleaseFormState();
+  State<ReleaseForm> createState() {
+    return _ReleaseFormState();
   }
 }
 
-class _AddMovieReleaseFormState extends State<AddMovieReleaseForm> {
+class _ReleaseFormState extends State<ReleaseForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _barcodeController = TextEditingController();
