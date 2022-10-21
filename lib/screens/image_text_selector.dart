@@ -46,6 +46,11 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
     Navigator.pop(context, _selectedText);
   }
 
+  void _onTapDown(TapDownDetails details) {
+    var pos = details.globalPosition;
+    print('x: ${pos.dx} y: ${pos.dy}');
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_isReady && !_isProcessing) {
@@ -62,13 +67,15 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
       body: Column(children: [
         !_isProcessing && _image != null
             ? FittedBox(
-                child: SizedBox(
-                    width: _image!.width.toDouble(),
-                    height: _image!.height.toDouble(),
-                    child: CustomPaint(
-                      painter: ImageTextBlockPainter(
-                          image: _image!, textBlocks: _textBlocks),
-                    )))
+                child: GestureDetector(
+                    onTapDown: _onTapDown,
+                    child: SizedBox(
+                        width: _image!.width.toDouble(),
+                        height: _image!.height.toDouble(),
+                        child: CustomPaint(
+                          painter: ImageTextBlockPainter(
+                              image: _image!, textBlocks: _textBlocks),
+                        ))))
             : const CircularProgressIndicator()
       ]),
       floatingActionButton: FloatingActionButton(
