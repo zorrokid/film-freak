@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:film_freak/painters/image_text_block_painter.dart';
 import 'package:flutter/material.dart';
@@ -46,9 +47,35 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
     Navigator.pop(context, _selectedText);
   }
 
-  void _onTapDown(TapDownDetails details) {
+  void _onTapDown(TapDownDetails details, BuildContext context) {
+    if (_image == null) return;
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
+    final imageWidth = _image!.width;
+    final imageHeight = _image!.height;
+
+    final scaleX = imageWidth / width;
+    final scaleY = imageHeight / height;
+
     var pos = details.globalPosition;
+
+    final posX = pos.dx * scaleX;
+    final posY = pos.dy * scaleY;
     print('x: ${pos.dx} y: ${pos.dy}');
+    print('scaled x: $posX y: $posY');
+    if (_textBlocks.isEmpty) return;
+
+    for (var i = 0; i < _textBlocks.length; i++) {
+      final boundingBox = _textBlocks[i].boundingBox;
+      if (posX > boundingBox.left &&
+          posX < boundingBox.right &&
+          posY > boundingBox.top &&
+          posY < boundingBox.bottom) {
+        print('Selected box: $i');
+        print('Selected text: ${_textBlocks[i].text}');
+      }
+    }
   }
 
   @override
@@ -68,7 +95,7 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
         !_isProcessing && _image != null
             ? FittedBox(
                 child: GestureDetector(
-                    onTapDown: _onTapDown,
+                    onTapDown: (details) => {_onTapDown(details, context)},
                     child: SizedBox(
                         width: _image!.width.toDouble(),
                         height: _image!.height.toDouble(),
