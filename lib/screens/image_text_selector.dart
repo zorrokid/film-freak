@@ -52,21 +52,8 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
   void _onTapDown(TapDownDetails details, BuildContext context) {
     if (_image == null || _textBlocks.isEmpty) return;
 
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
-
-    final imageWidth = _image!.width;
-    final imageHeight = _image!.height;
-
-    final scaleX = imageWidth / width;
-    final scaleY = imageHeight / height;
-
-    var pos = details.globalPosition;
-
-    final posX = pos.dx * scaleX;
-    final posY = pos.dy * scaleY;
-    print('x: ${pos.dx} y: ${pos.dy}');
-    print('scaled x: $posX y: $posY');
+    final posX = details.localPosition.dx;
+    final posY = details.localPosition.dy;
 
     for (var i = 0; i < _textBlocks.length; i++) {
       final boundingBox = _textBlocks[i].boundingBox;
