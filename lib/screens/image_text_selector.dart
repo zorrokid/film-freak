@@ -110,9 +110,11 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
                                   painter: ImageTextBlockPainter(
                                       image: _image!,
                                       textBlocks: _textBlocks,
-                                      mode: TextBlockPainterMode.paintByWord),
+                                      mode: _showTextByWords
+                                          ? TextBlockPainterMode.paintByWord
+                                          : TextBlockPainterMode.paintByBlock),
                                 )))))
-                : const CircularProgressIndicator()),
+                : const Center(child: CircularProgressIndicator())),
         Row(children: [
           const Text('Show text by words:'),
           Switch(
