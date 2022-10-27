@@ -94,34 +94,37 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
     }
     return Scaffold(
       appBar: AppBar(title: const Text('Pick text')),
-      body: !_isProcessing && _image != null
-          ? FittedBox(
-              child: Column(children: [
-              InteractiveViewer(
-                  transformationController: _transformationController,
-                  child: GestureDetector(
-                      onTapDown: (details) => {_onTapDown(details, context)},
-                      child: SizedBox(
-                          width: _image!.width.toDouble(),
-                          height: _image!.height.toDouble(),
-                          child: CustomPaint(
-                            painter: ImageTextBlockPainter(
-                                image: _image!,
-                                textBlocks: _textBlocks,
-                                mode: TextBlockPainterMode.paintByWord),
-                          )))),
-              Row(children: [
-                const Text('Show text by words:'),
-                Switch(
-                    value: _showTextByWords,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _showTextByWords = value;
-                      });
-                    })
-              ])
-            ]))
-          : const CircularProgressIndicator(),
+      body: Column(children: [
+        ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 200),
+            child: !_isProcessing && _image != null
+                ? FittedBox(
+                    child: InteractiveViewer(
+                        transformationController: _transformationController,
+                        child: GestureDetector(
+                            onTapDown: (details) =>
+                                {_onTapDown(details, context)},
+                            child: SizedBox(
+                                width: _image!.width.toDouble(),
+                                height: _image!.height.toDouble(),
+                                child: CustomPaint(
+                                  painter: ImageTextBlockPainter(
+                                      image: _image!,
+                                      textBlocks: _textBlocks,
+                                      mode: TextBlockPainterMode.paintByWord),
+                                )))))
+                : const CircularProgressIndicator()),
+        Row(children: [
+          const Text('Show text by words:'),
+          Switch(
+              value: _showTextByWords,
+              onChanged: (bool value) {
+                setState(() {
+                  _showTextByWords = value;
+                });
+              })
+        ])
+      ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () => onReadyPressed(context),
         backgroundColor: Colors.green,
