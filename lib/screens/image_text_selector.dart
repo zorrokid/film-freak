@@ -95,8 +95,7 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
     return Scaffold(
       appBar: AppBar(title: const Text('Pick text')),
       body: Column(children: [
-        ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 200),
+        Expanded(
             child: !_isProcessing && _image != null
                 ? FittedBox(
                     child: InteractiveViewer(
