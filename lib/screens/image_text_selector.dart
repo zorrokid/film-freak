@@ -4,6 +4,8 @@ import 'package:film_freak/painters/image_text_block_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
+import '../models/selectable_text_block.dart';
+
 class ImageTextSelector extends StatefulWidget {
   const ImageTextSelector({required this.imagePath, super.key});
 
@@ -27,7 +29,8 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
     });
     final recognizedText = await _textRecognizer.processImage(inputImage);
     setState(() {
-      _textBlocks = recognizedText.blocks;
+      _textBlocks =
+          recognizedText.blocks.map((e) => e.toSelectableTextBlock()).toList();
       _isProcessing = false;
       _isReady = true;
     });
@@ -35,12 +38,22 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
 
   void showBoundingBoxes() {}
 
-  List<TextBlock> _textBlocks = [];
+  List<SelectableTextBlock> _textBlocks = [];
+
+  // [0] block
+  //    [0] line
+  //      [1] word [2] word [3] word ...
+  //    [0] line
+  //      [1] word [2] word ..
+  // [1] block
+  Map<int, Map<int, int>> _selectedWords = Map<int, Map<int, int>>();
+
   String _selectedText = '';
   bool _isReady = false;
   bool _isProcessing = false;
   bool _showTextByWords = false;
   ui.Image? _image = null;
+
   final TextRecognizer _textRecognizer = TextRecognizer();
   final TransformationController _transformationController =
       TransformationController();
@@ -61,6 +74,11 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
           posX < boundingBox.right &&
           posY > boundingBox.top &&
           posY < boundingBox.bottom) {
+        // toggle selection
+        setState(() {
+          _textBlocks[i].isSelected = !_textBlocks[i].isSelected;
+        });
+
         // TextBlock
         // - BoundingBox
         // - List<TextLine> lines
@@ -77,6 +95,7 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
         // - List<Point<int>> cornerPoints
         print('Selected box: $i');
         print('Selected text: ${_textBlocks[i].text}');
+        break;
       }
     }
   }
@@ -109,7 +128,7 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
                                 child: CustomPaint(
                                   painter: ImageTextBlockPainter(
                                       image: _image!,
-                                      textBlocks: _textBlocks,
+                                      textBlocks: [..._textBlocks],
                                       mode: _showTextByWords
                                           ? TextBlockPainterMode.paintByWord
                                           : TextBlockPainterMode.paintByBlock),

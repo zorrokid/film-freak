@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'dart:ui' as ui;
+
+import '../models/selectable_text_block.dart';
 
 enum TextBlockPainterMode { paintByBlock, paintByWord }
 
@@ -8,19 +9,18 @@ class ImageTextBlockPainter extends CustomPainter {
   ImageTextBlockPainter(
       {required this.image, required this.textBlocks, required this.mode});
   final ui.Image image;
-  final List<TextBlock> textBlocks;
-  TextBlockPainterMode mode;
+  final List<SelectableTextBlock> textBlocks;
+  final TextBlockPainterMode mode;
 
   @override
   void paint(Canvas canvas, Size size) {
-    var paint = Paint();
-    paint.style = PaintingStyle.stroke;
-    paint.strokeWidth = 2;
-    paint.color = Colors.blue;
+    final selectablePaint = _createSelectablePaint();
+    final selectionPaint = _createSelectionPaint();
+
     canvas.drawImage(image, Offset.zero, Paint());
     mode == TextBlockPainterMode.paintByWord
-        ? _paintByWord(canvas, paint)
-        : _paintByBlock(canvas, paint);
+        ? _paintByWord(canvas, selectablePaint, selectionPaint)
+        : _paintByBlock(canvas, selectablePaint, selectionPaint);
   }
 
   @override
@@ -29,19 +29,34 @@ class ImageTextBlockPainter extends CustomPainter {
       textBlocks != oldDelegate.textBlocks ||
       mode != oldDelegate.mode;
 
-  void _paintByBlock(Canvas canvas, Paint paint) {
+  void _paintByBlock(Canvas canvas, Paint paint, Paint paintSelected) {
     for (var block in textBlocks) {
-      canvas.drawRect(block.boundingBox, paint);
+      var p = block.isSelected ? paintSelected : paint;
+      canvas.drawRect(block.boundingBox, p);
     }
   }
 
-  void _paintByWord(Canvas canvas, Paint paint) {
+  void _paintByWord(Canvas canvas, Paint paint, Paint paintSelected) {
     for (var block in textBlocks) {
       for (var line in block.lines) {
         for (var element in line.elements) {
-          canvas.drawRect(element.boundingBox, paint);
+          var p = element.isSelected ? paintSelected : paint;
+          canvas.drawRect(element.boundingBox, p);
         }
       }
     }
+  }
+
+  Paint _createSelectablePaint() {
+    return Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+  }
+
+  Paint _createSelectionPaint() {
+    return Paint()
+      ..color = const Color.fromRGBO(255, 0, 0, 0.5)
+      ..style = PaintingStyle.fill;
   }
 }
