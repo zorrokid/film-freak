@@ -1,32 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/services.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-
-extension TextBlockExtension on TextBlock {
-  SelectableTextBlock toSelectableTextBlock() => SelectableTextBlock(
-      text: text,
-      lines: lines.map((e) => e.toSelectableTextLine()).toList(),
-      boundingBox: boundingBox,
-      recognizedLanguages: recognizedLanguages,
-      cornerPoints: cornerPoints);
-}
-
-extension TextLineExtension on TextLine {
-  SelectableTextLine toSelectableTextLine() => SelectableTextLine(
-      text: text,
-      elements: elements.map((e) => e.toSelectableTextElement()).toList(),
-      boundingBox: boundingBox,
-      recognizedLanguages: recognizedLanguages,
-      cornerPoints: cornerPoints);
-}
-
-extension TextElementExtension on TextElement {
-  SelectableTextElement toSelectableTextElement() => SelectableTextElement(
-      text: text, boundingBox: boundingBox, cornerPoints: cornerPoints);
-}
-
 /// A text block recognized in an image that consists of a list of text lines.
 class SelectableTextBlock {
   /// String representation of the text block that was recognized.

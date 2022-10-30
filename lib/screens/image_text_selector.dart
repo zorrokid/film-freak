@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:film_freak/extensions/offset_extensions.dart';
+import 'package:film_freak/extensions/text_recognition_extensions.dart';
 import 'package:film_freak/painters/image_text_block_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
@@ -36,23 +38,13 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
     });
   }
 
-  void showBoundingBoxes() {}
-
   List<SelectableTextBlock> _textBlocks = [];
-
-  // [0] block
-  //    [0] line
-  //      [1] word [2] word [3] word ...
-  //    [0] line
-  //      [1] word [2] word ..
-  // [1] block
-  Map<int, Map<int, int>> _selectedWords = Map<int, Map<int, int>>();
 
   String _selectedText = '';
   bool _isReady = false;
   bool _isProcessing = false;
   bool _showTextByWords = false;
-  ui.Image? _image = null;
+  ui.Image? _image;
 
   final TextRecognizer _textRecognizer = TextRecognizer();
   final TransformationController _transformationController =
@@ -65,37 +57,29 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
   void _onTapDown(TapDownDetails details, BuildContext context) {
     if (_image == null || _textBlocks.isEmpty) return;
 
-    final posX = details.localPosition.dx;
-    final posY = details.localPosition.dy;
-
     for (var i = 0; i < _textBlocks.length; i++) {
-      final boundingBox = _textBlocks[i].boundingBox;
-      if (posX > boundingBox.left &&
-          posX < boundingBox.right &&
-          posY > boundingBox.top &&
-          posY < boundingBox.bottom) {
-        // toggle selection
-        setState(() {
-          _textBlocks[i].isSelected = !_textBlocks[i].isSelected;
-        });
-
-        // TextBlock
-        // - BoundingBox
-        // - List<TextLine> lines
-        // - String text
-        // - List<Point<int>> cornerPoints
-        // TextLine
-        // - Rect boundingBox
-        // - List<TextElement> elements
-        // - String text
-        // - List<Point<int>> cornerPoints
-        // TextElement
-        // - Rect boundingBox
-        // - String text
-        // - List<Point<int>> cornerPoints
-        print('Selected box: $i');
-        print('Selected text: ${_textBlocks[i].text}');
-        break;
+      if (details.localPosition.isInside(_textBlocks[i].boundingBox)) {
+        if (_showTextByWords) {
+          for (var j = 0; j < _textBlocks[i].lines.length; j++) {
+            for (var k = 0; k < _textBlocks[i].lines[j].elements.length; k++) {
+              if (details.localPosition
+                  .isInside(_textBlocks[i].lines[j].elements[k].boundingBox)) {
+                final word = _textBlocks[i].lines[j].elements[k];
+                setState(() {
+                  // toddle selection
+                  word.isSelected = !word.isSelected;
+                });
+                break;
+              }
+            }
+          }
+        } else {
+          // toggle selection
+          setState(() {
+            _textBlocks[i].isSelected = !_textBlocks[i].isSelected;
+          });
+          break;
+        }
       }
     }
   }
