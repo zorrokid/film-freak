@@ -40,7 +40,6 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
 
   List<SelectableTextBlock> _textBlocks = [];
 
-  String _selectedText = '';
   bool _isReady = false;
   bool _isProcessing = false;
   bool _showTextByWords = false;
@@ -51,7 +50,7 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
       TransformationController();
 
   void onReadyPressed(BuildContext context) {
-    Navigator.pop(context, _selectedText);
+    Navigator.pop(context, _getSelectedText());
   }
 
   void _onTapDown(TapDownDetails details, BuildContext context) {
@@ -82,6 +81,29 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
         }
       }
     }
+  }
+
+  String _getSelectedText() {
+    if (_image == null || _textBlocks.isEmpty) return '';
+
+    var selectedText = <String>[];
+
+    for (var i = 0; i < _textBlocks.length; i++) {
+      if (_showTextByWords) {
+        for (var j = 0; j < _textBlocks[i].lines.length; j++) {
+          for (var k = 0; k < _textBlocks[i].lines[j].elements.length; k++) {
+            if (_textBlocks[i].lines[j].elements[k].isSelected) {
+              selectedText.add(_textBlocks[i].lines[j].elements[k].text);
+            }
+          }
+        }
+      } else {
+        if (_textBlocks[i].isSelected) {
+          selectedText.add(_textBlocks[i].text);
+        }
+      }
+    }
+    return selectedText.join(" ");
   }
 
   @override
@@ -132,7 +154,7 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => onReadyPressed(context),
         backgroundColor: Colors.green,
-        child: const Icon(Icons.save),
+        child: const Icon(Icons.check),
       ),
     );
   }

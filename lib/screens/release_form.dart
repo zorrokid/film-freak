@@ -154,6 +154,17 @@ class _ReleaseFormState extends State<ReleaseForm> {
     });
   }
 
+  Future<String?> _getImageTextSelection(BuildContext context) async {
+    if (_imagePath == null) return '';
+    var selectedText = await Navigator.push(context,
+        MaterialPageRoute<String>(builder: (context) {
+      return ImageTextSelector(
+        imagePath: _imagePath!,
+      );
+    }));
+    return selectedText;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
@@ -165,6 +176,13 @@ class _ReleaseFormState extends State<ReleaseForm> {
       _barcodeController.text = widget.barcode ?? editRelease.barcode;
       _nameController.text = editRelease.name;
       _notesController.text = editRelease.notes;
+
+      Future<void> getNameTextFromImage() async {
+        final text = await _getImageTextSelection(context);
+        if (text != null) {
+          _nameController.value = TextEditingValue(text: text);
+        }
+      }
 
       Future<void> submit() async {
         if (!_formKey.currentState!.validate()) return;
@@ -217,19 +235,25 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 onPressed: () => openPicTextSelect(context),
                 child: const Text('Select text'),
               ),
-              TextFormField(
-                //validator: _textInputValidator,
-                controller: _nameController,
-                decoration: const InputDecoration(
-                    label: Text.rich(TextSpan(children: <InlineSpan>[
-                  WidgetSpan(child: Text('Release name')),
-                  WidgetSpan(
-                      child: Text(
-                    '*',
-                    style: TextStyle(color: Colors.red),
-                  )),
-                ]))),
-              ),
+              Row(children: [
+                Expanded(
+                    child: TextFormField(
+                  //validator: _textInputValidator,
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                      label: Text.rich(TextSpan(children: <InlineSpan>[
+                    WidgetSpan(child: Text('Release name')),
+                    WidgetSpan(
+                        child: Text(
+                      '*',
+                      style: TextStyle(color: Colors.red),
+                    )),
+                  ]))),
+                )),
+                IconButton(
+                    onPressed: getNameTextFromImage,
+                    icon: const Icon(Icons.image))
+              ]),
               DropDownFormField(
                   initialValue: editRelease.mediaType,
                   values: mediaTypeFormFieldValues,
