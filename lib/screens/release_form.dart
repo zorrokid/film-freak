@@ -9,6 +9,7 @@ import 'package:film_freak/widgets/drop_down_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/models/case_type.dart';
 import 'package:film_freak/models/movie_release.dart';
@@ -16,6 +17,7 @@ import 'package:film_freak/models/movie_release.dart';
 import '../persistence/collection_model.dart';
 import '../models/condition.dart';
 import '../models/media_type.dart';
+import 'package:path/path.dart' as p;
 
 class ReleaseForm extends StatefulWidget {
   const ReleaseForm({this.barcode, this.id, super.key});
@@ -67,14 +69,19 @@ class _ReleaseFormState extends State<ReleaseForm> {
     }
   }
 
-  Future _processPickedFile(XFile? pickedFile) async {
+  Future<void> _processPickedFile(XFile? pickedFile) async {
     final path = pickedFile?.path;
     if (path == null) {
       return;
     }
+    final Directory saveDir = await getApplicationDocumentsDirectory();
+
+    final String newPath = p.join(saveDir.path, pickedFile!.name);
+
+    await pickedFile.saveTo(newPath);
     setState(() {
-      _imagePath = path;
-      _image = File(path);
+      _imagePath = newPath;
+      _image = File(newPath);
     });
   }
 
