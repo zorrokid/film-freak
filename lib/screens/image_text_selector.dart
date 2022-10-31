@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 import '../models/selectable_text_block.dart';
+import '../utils/image_utils.dart';
 
 class ImageTextSelector extends StatefulWidget {
   const ImageTextSelector({required this.imagePath, super.key});
@@ -20,11 +21,6 @@ class ImageTextSelector extends StatefulWidget {
 }
 
 class _ImageTextSelectorState extends State<ImageTextSelector> {
-  Future<ui.Image> _loadImage(File file) async {
-    final data = await file.readAsBytes();
-    return await decodeImageFromList(data);
-  }
-
   Future<void> processImage(InputImage inputImage) async {
     setState(() {
       _isProcessing = true;
@@ -56,33 +52,57 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
   void _onTapDown(TapDownDetails details, BuildContext context) {
     if (_image == null || _textBlocks.isEmpty) return;
 
+    if (_showTextByWords) {
+      _findByWords(details.localPosition);
+    } else {
+      _findByBlocks(details.localPosition);
+    }
+  }
+
+  // TODO: move to separate class / unit testing
+  // TODO: better algorithm?
+  void _findByWords(Offset localPosition) {
     for (var i = 0; i < _textBlocks.length; i++) {
-      if (details.localPosition.isInside(_textBlocks[i].boundingBox)) {
-        if (_showTextByWords) {
-          for (var j = 0; j < _textBlocks[i].lines.length; j++) {
+      if (localPosition.isInside(_textBlocks[i].boundingBox)) {
+        for (var j = 0; j < _textBlocks[i].lines.length; j++) {
+          final line = _textBlocks[i].lines[j];
+          if (localPosition.isInside(line.boundingBox)) {
             for (var k = 0; k < _textBlocks[i].lines[j].elements.length; k++) {
-              if (details.localPosition
+              if (localPosition
                   .isInside(_textBlocks[i].lines[j].elements[k].boundingBox)) {
                 final word = _textBlocks[i].lines[j].elements[k];
+                // return word and toggle where it's called?
                 setState(() {
                   // toddle selection
                   word.isSelected = !word.isSelected;
                 });
-                break;
+                // exit once found
+                return;
               }
             }
           }
-        } else {
-          // toggle selection
-          setState(() {
-            _textBlocks[i].isSelected = !_textBlocks[i].isSelected;
-          });
-          break;
         }
       }
     }
   }
 
+  // TODO: move to separate class / unit testing
+  // TODO: better algorithm?
+  void _findByBlocks(Offset localPosition) {
+    for (var i = 0; i < _textBlocks.length; i++) {
+      if (localPosition.isInside(_textBlocks[i].boundingBox)) {
+        // return block and toggle where it's called?
+        // toggle selection
+        setState(() {
+          _textBlocks[i].isSelected = !_textBlocks[i].isSelected;
+        });
+        // exit once found
+        return;
+      }
+    }
+  }
+
+  // TODO: move to separate class / unit testing
   String _getSelectedText() {
     if (_image == null || _textBlocks.isEmpty) return '';
 
@@ -111,7 +131,7 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
     if (!_isReady && !_isProcessing) {
       processImage(InputImage.fromFilePath(widget.imagePath))
           .whenComplete(() async {
-        var image = await _loadImage(File(widget.imagePath));
+        var image = await loadImage(File(widget.imagePath));
         setState(() {
           _image = image;
         });

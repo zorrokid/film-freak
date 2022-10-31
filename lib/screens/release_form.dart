@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:film_freak/screens/barcode_scanner_view.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
+import 'package:film_freak/screens/image_process_view.dart';
 import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/screens/text_scanning_view.dart';
 import 'package:film_freak/widgets/drop_down_form_field.dart';
@@ -172,6 +173,13 @@ class _ReleaseFormState extends State<ReleaseForm> {
     return selectedText;
   }
 
+  Future<void> _cropImage(BuildContext context) async {
+    if (_imagePath == null) return;
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ImageProcessView(imagePath: _imagePath!);
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
@@ -218,6 +226,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
         }
       }
 
+      Future<void> onCropPressed() async {
+        await _cropImage(context);
+      }
+
       return Scaffold(
         appBar: AppBar(
             title: isEditMode()
@@ -228,11 +240,16 @@ class _ReleaseFormState extends State<ReleaseForm> {
           child: ListView(
             children: <Widget>[
               _image != null
-                  ? SizedBox(
-                      height: 200,
-                      width: 200,
-                      child: Image.file(_image!),
-                    )
+                  ? Column(children: [
+                      SizedBox(
+                        height: 200,
+                        width: 200,
+                        child: Image.file(_image!),
+                      ),
+                      IconButton(
+                          onPressed: onCropPressed,
+                          icon: const Icon(Icons.crop))
+                    ])
                   : const Icon(
                       Icons.image,
                       size: 200,
