@@ -100,7 +100,13 @@ class _ImageProcessViewState extends State<ImageProcessView> {
     }
   }
 
-  void _crop() {}
+  void _crop() {
+    // TODO:
+    // - set transformation coordinates to image painter
+    // - translate from selected four points to rect with given aspect ratio
+    // - repaint to canvas
+    // - record and export to image (https://api.flutter.dev/flutter/dart-ui/PictureRecorder-class.html)
+  }
 
   @override
   Widget build(BuildContext context) {
