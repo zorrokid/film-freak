@@ -1,21 +1,11 @@
 # film_freak
 
-# Debugging over wi-fi
+film_freak is WIP name for my collection management app which is mostly focusing on managing a movie collection but might support other types of media in future (games, music, books, comics etc).
 
--   Set "use wireless debuggin" on from your device
+It's implemented with Flutter SDK using Dart programming language. This is my first serious attempt with Flutter and I must say I'm quite impressed with it. I really enjoy developing with Flutter and Dart.
 
--   connect device with USB
+Currently data is saved to a local SQLite database but I'm planning implementing a data synchronization with a cloud database (at that phase user accounts will be supported as well).
 
-    $ adb devices
-    List of devices attached
-    R3CT30KJA0L device
+One of the features I've been focusing from the start is using Goole ML Kit to recognize text from images and implementing a widget to fill textual form fields by selecting text from a image.
 
-    $ adb tcpip 5555
-    restarting in TCP mode port: 5555
-
--   get the device IP from device settings
-
-        e.g. 192.168.32.4
-
-        adb connect 192.168.32.4
-        connected to 192.168.32.4:5555
+Collection items can be searched and added by scanning a barcode.
