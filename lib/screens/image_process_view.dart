@@ -59,6 +59,14 @@ class _ImageProcessViewState extends State<ImageProcessView> {
     });
   }
 
+  @override
+  void dispose() {
+    if (_image != null) {
+      _image!.dispose();
+    }
+    super.dispose();
+  }
+
   void onReadyPressed(BuildContext context) {
     // TODO
   }
@@ -92,6 +100,8 @@ class _ImageProcessViewState extends State<ImageProcessView> {
     }
   }
 
+  void _crop() {}
+
   @override
   Widget build(BuildContext context) {
     if (_image == null) {
@@ -113,6 +123,7 @@ class _ImageProcessViewState extends State<ImageProcessView> {
                     onPanUpdate: (details) {
                       _move(details);
                     },
+                    onDoubleTap: _crop,
                     child: SizedBox(
                       width: _image!.width.toDouble(),
                       height: _image!.height.toDouble(),

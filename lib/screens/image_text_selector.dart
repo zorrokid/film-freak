@@ -45,6 +45,14 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
   final TransformationController _transformationController =
       TransformationController();
 
+  @override
+  void dispose() {
+    if (_image != null) {
+      _image!.dispose();
+    }
+    super.dispose();
+  }
+
   void onReadyPressed(BuildContext context) {
     Navigator.pop(context, _getSelectedText());
   }
@@ -143,6 +151,7 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
         Expanded(
             child: !_isProcessing && _image != null
                 ? FittedBox(
+                    // TODO: create a separate widget:
                     child: InteractiveViewer(
                         transformationController: _transformationController,
                         child: GestureDetector(
