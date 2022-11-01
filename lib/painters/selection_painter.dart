@@ -1,31 +1,35 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
+const double selectionHandleSize = 80;
+
 class SelectionPainter extends CustomPainter {
-  final colors = [Colors.red, Colors.yellow, Colors.lightBlue];
-  Path path = Path();
-  Paint _paint = Paint()
+  final Paint _paint = Paint()
     ..color = Colors.red
-    ..strokeWidth = 5
-    ..strokeCap = StrokeCap.round;
+    ..strokeWidth = 10
+    ..strokeCap = StrokeCap.round
+    ..style = PaintingStyle.stroke;
 
   final bool down;
   final double x;
   final double y;
-  Map<int, Map<String, double>> pathList;
+  List<Point<double>> selectionPoints;
 
   SelectionPainter({
     required this.down,
     required this.x,
     required this.y,
-    required this.pathList,
+    required this.selectionPoints,
   });
   @override
   void paint(Canvas canvas, Size size) {
-    for (var pathData in pathList.values) {
-      path = Path()
+    for (var point in selectionPoints) {
+      final path = Path()
         ..addOval(Rect.fromCircle(
-            center: Offset(pathData['x']!, pathData['y']!),
-            radius: pathData['r']!));
+            center: Offset(point.x, point.y), radius: selectionHandleSize))
+        ..addPolygon(
+            selectionPoints.map((e) => Offset(e.x, e.y)).toList(), true);
       canvas.drawPath(path, _paint);
     }
   }
