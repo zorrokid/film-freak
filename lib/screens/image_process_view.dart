@@ -29,6 +29,7 @@ class _ImageProcessViewState extends State<ImageProcessView> {
   bool isDown = false;
   double x = 0.0;
   double y = 0.0;
+  bool translateImage = false;
 
   List<Point<double>> selectionPoints = <Point<double>>[];
 
@@ -100,12 +101,11 @@ class _ImageProcessViewState extends State<ImageProcessView> {
     }
   }
 
-  void _crop() {
-    // TODO:
-    // - set transformation coordinates to image painter
-    // - translate from selected four points to rect with given aspect ratio
-    // - repaint to canvas
-    // - record and export to image (https://api.flutter.dev/flutter/dart-ui/PictureRecorder-class.html)
+  Future<void> _crop(BuildContext context) async {
+    await cropToFile(File(widget.imagePath), selectionPoints);
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -129,7 +129,7 @@ class _ImageProcessViewState extends State<ImageProcessView> {
                     onPanUpdate: (details) {
                       _move(details);
                     },
-                    onDoubleTap: _crop,
+                    onDoubleTap: () => _crop(context),
                     child: SizedBox(
                       width: _image!.width.toDouble(),
                       height: _image!.height.toDouble(),
@@ -139,13 +139,16 @@ class _ImageProcessViewState extends State<ImageProcessView> {
                               x: x,
                               y: y,
                               selectionPoints: selectionPoints),
-                          painter: ImagePainter(image: _image!)),
+                          painter: ImagePainter(
+                              image: _image!,
+                              selectionPoints: selectionPoints,
+                              transform: translateImage)),
                     ),
                   ))
                 : const Center(child: CircularProgressIndicator())),
       ]),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => onReadyPressed(context),
+        onPressed: () => _crop(context),
         backgroundColor: Colors.green,
         child: const Icon(Icons.save),
       ),
