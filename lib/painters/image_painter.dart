@@ -1,8 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
 class ImagePainter extends CustomPainter {
-  const ImagePainter({required this.image});
+  ImagePainter({required this.image});
   final ui.Image image;
 
   @override
@@ -11,5 +13,5 @@ class ImagePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(ImagePainter oldDelegate) => false;
+  bool shouldRepaint(ImagePainter oldDelegate) => image != oldDelegate.image;
 }

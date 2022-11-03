@@ -140,9 +140,8 @@ class _ImageProcessViewState extends State<ImageProcessView> {
                               y: y,
                               selectionPoints: selectionPoints),
                           painter: ImagePainter(
-                              image: _image!,
-                              selectionPoints: selectionPoints,
-                              transform: translateImage)),
+                            image: _image!,
+                          )),
                     ),
                   ))
                 : const Center(child: CircularProgressIndicator())),
