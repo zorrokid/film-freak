@@ -8,6 +8,7 @@ import 'dart:ui' as ui;
 import '../painters/image_painter.dart';
 import '../painters/selection_painter.dart';
 import '../utils/geometry_utils.dart';
+import '../widgets/case_type_selection.dart';
 
 class ImageProcessView extends StatefulWidget {
   const ImageProcessView({required this.imagePath, super.key});
@@ -145,6 +146,7 @@ class _ImageProcessViewState extends State<ImageProcessView> {
                     ),
                   ))
                 : const Center(child: CircularProgressIndicator())),
+        const CaseTypeSelection()
       ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _crop(context),
