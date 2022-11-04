@@ -178,6 +178,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return ImageProcessView(imagePath: _imagePath!);
     }));
+    imageCache.clear();
+    imageCache.clearLiveImages;
+    setState(() {
+      _image = File(_imagePath!);
+    });
   }
 
   @override
