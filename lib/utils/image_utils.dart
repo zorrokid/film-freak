@@ -12,16 +12,22 @@ Future<ui.Image> loadImage(File file) async {
 }
 
 Future<void> cropToFile(
-    File file, List<math.Point<double>> selectionPoints) async {
+    File file, List<math.Point<double>> selectionPoints, double ratio) async {
   img.Image? image = decodeJpg(await file.readAsBytes());
   var imgPoints = selectionPoints.map((e) => Point(e.x, e.y)).toList();
 
   // TODO: find points for each corner, for now assuming correct points
 
-  final imageCopy = copyRectify(image!,
+  var width = image!.width;
+  var height = width * ratio;
+
+  var targetImage = img.Image(width, height.round());
+
+  copyRectify(image,
       topLeft: imgPoints[0],
       topRight: imgPoints[1],
       bottomLeft: imgPoints[3],
-      bottomRight: imgPoints[2]);
-  await file.writeAsBytes(encodeJpg(imageCopy));
+      bottomRight: imgPoints[2],
+      toImage: targetImage);
+  await file.writeAsBytes(encodeJpg(targetImage));
 }

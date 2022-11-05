@@ -27,3 +27,14 @@ final Map<CaseType, String> caseTypeFormFieldValues = {
   CaseType.boxSetCardboard: "Cardboard case",
   CaseType.specialCase: "Special case",
 };
+
+double getRatio(CaseType caseType) {
+  switch (caseType) {
+    case CaseType.regularDvd:
+      return 190 / 135;
+    case CaseType.regularBluRay:
+      return 171.5 / 131;
+    default:
+      return 1.0;
+  }
+}

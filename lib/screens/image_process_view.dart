@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:film_freak/models/case_type.dart';
 import 'package:film_freak/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
@@ -31,6 +32,9 @@ class _ImageProcessViewState extends State<ImageProcessView> {
   double x = 0.0;
   double y = 0.0;
   bool translateImage = false;
+  double ratio = 1.0;
+
+  CaseType caseType = CaseType.regularDvd;
 
   List<Point<double>> selectionPoints = <Point<double>>[];
 
@@ -103,10 +107,15 @@ class _ImageProcessViewState extends State<ImageProcessView> {
   }
 
   Future<void> _crop(BuildContext context) async {
-    await cropToFile(File(widget.imagePath), selectionPoints);
+    await cropToFile(
+        File(widget.imagePath), selectionPoints, getRatio(caseType));
     if (mounted) {
       Navigator.of(context).pop();
     }
+  }
+
+  void _onCaseTypeChanged(CaseType selectedCaseType) {
+    caseType = selectedCaseType;
   }
 
   @override
@@ -146,7 +155,8 @@ class _ImageProcessViewState extends State<ImageProcessView> {
                     ),
                   ))
                 : const Center(child: CircularProgressIndicator())),
-        const CaseTypeSelection()
+        CaseTypeSelection(
+            onValueChanged: _onCaseTypeChanged, caseType: caseType)
       ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _crop(context),
