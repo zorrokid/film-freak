@@ -1,0 +1,1 @@
+enum PictureType { coverFront, coverBack }

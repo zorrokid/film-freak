@@ -1,16 +1,12 @@
-import 'dart:io';
-
 import 'package:film_freak/screens/barcode_scanner_view.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
-import 'package:film_freak/screens/image_process_view.dart';
 import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/screens/text_scanning_view.dart';
 import 'package:film_freak/widgets/drop_down_form_field.dart';
+import 'package:film_freak/widgets/image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/models/case_type.dart';
 import 'package:film_freak/models/movie_release.dart';
@@ -18,7 +14,8 @@ import 'package:film_freak/models/movie_release.dart';
 import '../persistence/collection_model.dart';
 import '../models/condition.dart';
 import '../models/media_type.dart';
-import 'package:path/path.dart' as p;
+
+import '../persistence/release_pictures_repository.dart';
 
 class ReleaseForm extends StatefulWidget {
   const ReleaseForm({this.barcode, this.id, super.key});
@@ -38,18 +35,22 @@ class _ReleaseFormState extends State<ReleaseForm> {
   final _barcodeController = TextEditingController();
   final _textController = TextEditingController();
   final _notesController = TextEditingController();
-  final _repository =
+  final _releaseRepository =
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
+  final _releasePicturesRepository =
+      ReleasePicturesRepository(databaseProvider: DatabaseProvider.instance);
   // state
   MovieRelease editRelease = MovieRelease.init();
   String _scannedText = '';
-  List<String> _picPaths = [];
-
-  ImagePicker? _imagePicker;
-  File? _image;
-  String? _imagePath;
 
   String? _selectedText;
+  String? _imagePath;
+
+  void _selectedImageChanged(String imagePath) {
+    setState(() {
+      _imagePath = imagePath;
+    });
+  }
 
   Future<void> barcodeScan() async {
     final barcode = await Navigator.push<String>(context,
@@ -60,30 +61,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
     if (!mounted) return;
 
     _barcodeController.text = barcode ?? "";
-  }
-
-  Future<void> takePic() async {
-    final pickedFile =
-        await _imagePicker?.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      _processPickedFile(pickedFile);
-    }
-  }
-
-  Future<void> _processPickedFile(XFile? pickedFile) async {
-    final path = pickedFile?.path;
-    if (path == null) {
-      return;
-    }
-    final Directory saveDir = await getApplicationDocumentsDirectory();
-
-    final String newPath = p.join(saveDir.path, pickedFile!.name);
-
-    await pickedFile.saveTo(newPath);
-    setState(() {
-      _imagePath = newPath;
-      _image = File(newPath);
-    });
   }
 
   Future<void> textScan() async {
@@ -101,12 +78,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
         _textController.text = _scannedText;
       });
     }
-  }
-
-  @override
-  void initState() {
-    _imagePicker = ImagePicker();
-    super.initState();
   }
 
   @override
@@ -149,19 +120,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   bool isEditMode() => widget.id != null;
 
-  void openPicTextSelect(BuildContext context) async {
-    if (_imagePath == null) return;
-    var selectedText = await Navigator.push(context,
-        MaterialPageRoute<String>(builder: (context) {
-      return ImageTextSelector(
-        imagePath: _imagePath!,
-      );
-    }));
-    setState(() {
-      _selectedText = selectedText;
-    });
-  }
-
   Future<String?> _getImageTextSelection(BuildContext context) async {
     if (_imagePath == null) return '';
     var selectedText = await Navigator.push(context,
@@ -171,18 +129,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
       );
     }));
     return selectedText;
-  }
-
-  Future<void> _cropImage(BuildContext context) async {
-    if (_imagePath == null) return;
-    await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ImageProcessView(imagePath: _imagePath!);
-    }));
-    imageCache.clear();
-    imageCache.clearLiveImages;
-    setState(() {
-      _image = File(_imagePath!);
-    });
   }
 
   @override
@@ -220,19 +166,15 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
         if (isEditMode()) {
           cart.update(editRelease);
-          await _repository.updateRelease(editRelease);
+          await _releaseRepository.updateRelease(editRelease);
         } else {
-          editRelease.id = await _repository.insertRelease(editRelease);
+          editRelease.id = await _releaseRepository.insertRelease(editRelease);
 
           cart.add(editRelease);
         }
         if (mounted) {
           Navigator.of(context).pop();
         }
-      }
-
-      Future<void> onCropPressed() async {
-        await _cropImage(context);
       }
 
       return Scaffold(
@@ -244,25 +186,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              _image != null
-                  ? Column(children: [
-                      SizedBox(
-                        height: 200,
-                        width: 200,
-                        child: Image.file(_image!),
-                      ),
-                      IconButton(
-                          onPressed: onCropPressed,
-                          icon: const Icon(Icons.crop))
-                    ])
-                  : const Icon(
-                      Icons.image,
-                      size: 200,
-                    ),
-              TextButton(onPressed: takePic, child: const Text('Pictures')),
-              TextButton(
-                onPressed: () => openPicTextSelect(context),
-                child: const Text('Select text'),
+              ImageWidget(
+                onValueChanged: _selectedImageChanged,
               ),
               Row(children: [
                 Expanded(
