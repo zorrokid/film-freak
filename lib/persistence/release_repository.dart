@@ -33,10 +33,18 @@ class ReleaseRepository {
     return result;
   }
 
+  Future<MovieRelease> getRelease(int id) async {
+    Database db = await databaseProvider.database;
+    List<Map<String, Object?>> queryResult =
+        await db.rawQuery("SELECT * FROM $table WHERE id='$id'");
+    var result = queryResult.map<MovieRelease>((e) => MovieRelease.fromMap(e));
+    return result.first;
+  }
+
   Future<bool> barcodeExists(String barcode) async {
     Database db = await databaseProvider.database;
     List<Map<String, Object?>> result = await db
-        .rawQuery("SELECT COUNT(*) FROM $table where barcode='$barcode'");
+        .rawQuery("SELECT COUNT(*) FROM $table WHERE barcode='$barcode'");
     return Sqflite.firstIntValue(result)! > 0;
   }
 }

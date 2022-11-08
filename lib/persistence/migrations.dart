@@ -22,4 +22,5 @@ Map<int, String> migrationScripts = {
           filename TEXT,
           pictureType INTEGER
       )''',
+  14: 'ALTER TABLE releasePictures ADD COLUMN releaseId INTEGER',
 };
