@@ -4,13 +4,11 @@ import 'package:film_freak/screens/barcode_scanner_view.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/release_repository.dart';
 import 'package:film_freak/screens/image_text_selector.dart';
-import 'package:film_freak/screens/text_scanning_view.dart';
 import 'package:film_freak/widgets/drop_down_form_field.dart';
 import 'package:film_freak/widgets/error_display_widget.dart';
 import 'package:film_freak/widgets/image_widget.dart';
 import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/models/case_type.dart';
 import 'package:film_freak/models/movie_release.dart';
@@ -39,7 +37,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _barcodeController = TextEditingController();
-  final _textController = TextEditingController();
   final _notesController = TextEditingController();
   final _releaseRepository =
       ReleaseRepository(databaseProvider: DatabaseProvider.instance);
@@ -88,29 +85,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
     _barcodeController.text = barcode ?? "";
   }
 
-  Future<void> textScan() async {
-    final textBlocks = await Navigator.push<List<TextBlock>>(context,
-        MaterialPageRoute<List<TextBlock>>(builder: (context) {
-      return const TextScanningView();
-    }));
-    if (mounted && textBlocks != null && textBlocks.isNotEmpty) {
-      List<String> blocks = [];
-      for (final block in textBlocks) {
-        blocks.add(block.text);
-      }
-      final scannedText = blocks.join(" ");
-      setState(() {
-        _textController.text = scannedText;
-      });
-    }
-  }
-
   @override
   void dispose() {
     _nameController.dispose();
     _barcodeController.dispose();
     _notesController.dispose();
-    _textController.dispose();
     super.dispose();
   }
 
@@ -338,11 +317,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       controller: _notesController,
                       maxLines: 3,
                     ),
-                    TextFormField(
-                      controller: _textController,
-                      maxLines: 5,
-                    ),
-                    TextButton(onPressed: textScan, child: const Text('Scan')),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: ElevatedButton(
