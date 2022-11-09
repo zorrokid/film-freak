@@ -26,6 +26,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Film Freak', home: ScanView());
+    return const MaterialApp(title: 'film_freak', home: ScanView());
   }
 }
