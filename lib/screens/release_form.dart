@@ -236,8 +236,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
               key: _formKey,
               child: ListView(
                 children: [
-                  Center(
-                      child: Row(
+                  Row(
                     children: [
                       selectedPicIndex > 0
                           ? IconButton(
@@ -259,7 +258,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                               icon: const Icon(Icons.arrow_forward))
                           : const Icon(Icons.arrow_forward),
                     ],
-                  )),
+                  ),
                   Row(children: [
                     Expanded(
                         child: TextFormField(
