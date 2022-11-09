@@ -245,12 +245,13 @@ class _ReleaseFormState extends State<ReleaseForm> {
                               icon: const Icon(Icons.arrow_back),
                             )
                           : const Icon(Icons.arrow_back),
-                      ImageWidget(
-                          onValueChanged: _selectedImageChanged,
-                          releaseId: _id,
-                          fileName: releasePictures.isNotEmpty
-                              ? releasePictures[selectedPicIndex].filename
-                              : null),
+                      Expanded(
+                          child: ImageWidget(
+                              onValueChanged: _selectedImageChanged,
+                              releaseId: _id,
+                              fileName: releasePictures.isNotEmpty
+                                  ? releasePictures[selectedPicIndex].filename
+                                  : null)),
                       releasePictures.length > 1 &&
                               selectedPicIndex < releasePictures.length - 1
                           ? IconButton(
