@@ -224,113 +224,114 @@ class _ReleaseFormState extends State<ReleaseForm> {
           future: _loadData(),
           builder: (BuildContext context,
               AsyncSnapshot<MovieReleaseViewModel> snapshot) {
-            if (snapshot.hasData) {
-              final release = snapshot.data!.release;
-              _barcodeController.text = release.barcode;
-              _nameController.text = release.name;
-              _notesController.text = release.notes;
+            if (snapshot.hasError) {
+              return ErrorDisplayWidget(snapshot.error.toString());
+            }
+            if (!snapshot.hasData) {
+              return const Spinner();
+            }
 
-              return Form(
-                key: _formKey,
-                child: ListView(
-                  children: [
-                    Center(
-                        child: Row(
-                      children: [
-                        selectedPicIndex > 0
-                            ? IconButton(
-                                onPressed: prevPic,
-                                icon: const Icon(Icons.arrow_back),
-                              )
-                            : const Icon(Icons.arrow_back),
-                        ImageWidget(
-                            onValueChanged: _selectedImageChanged,
-                            fileName: releasePictures.isNotEmpty
-                                ? releasePictures[selectedPicIndex].filename
-                                : null),
-                        releasePictures.length > 1 &&
-                                selectedPicIndex < releasePictures.length - 1
-                            ? IconButton(
-                                onPressed: nextPic,
-                                icon: const Icon(Icons.arrow_forward))
-                            : const Icon(Icons.arrow_forward),
-                      ],
-                    )),
-                    Row(children: [
-                      Expanded(
-                          child: TextFormField(
-                        //validator: _textInputValidator,
-                        controller: _nameController,
-                        decoration: const InputDecoration(
-                            label: Text.rich(TextSpan(children: <InlineSpan>[
-                          WidgetSpan(child: Text('Release name')),
-                          WidgetSpan(
-                              child: Text(
-                            '*',
-                            style: TextStyle(color: Colors.red),
-                          )),
-                        ]))),
-                      )),
-                      IconButton(
-                          onPressed: getNameTextFromImage,
-                          icon: const Icon(Icons.image))
-                    ]),
-                    DropDownFormField(
-                        initialValue: release.mediaType,
-                        values: mediaTypeFormFieldValues,
-                        onValueChange: onMediaTypeSelected,
-                        labelText: 'Media type'),
-                    DropDownFormField(
-                        initialValue: release.caseType,
-                        values: caseTypeFormFieldValues,
-                        onValueChange: onCaseTypeSelected,
-                        labelText: 'Case type'),
-                    DropDownFormField(
-                        initialValue: release.condition,
-                        values: conditionFormFieldValues,
-                        onValueChange: onConditionSelected,
-                        labelText: 'Condition'),
-                    TextFormField(
-                      validator: _textInputValidator,
-                      controller: _barcodeController,
+            final release = snapshot.data!.release;
+            _barcodeController.text = release.barcode;
+            _nameController.text = release.name;
+            _notesController.text = release.notes;
+
+            return Form(
+              key: _formKey,
+              child: ListView(
+                children: [
+                  Center(
+                      child: Row(
+                    children: [
+                      selectedPicIndex > 0
+                          ? IconButton(
+                              onPressed: prevPic,
+                              icon: const Icon(Icons.arrow_back),
+                            )
+                          : const Icon(Icons.arrow_back),
+                      ImageWidget(
+                          onValueChanged: _selectedImageChanged,
+                          fileName: releasePictures.isNotEmpty
+                              ? releasePictures[selectedPicIndex].filename
+                              : null),
+                      releasePictures.length > 1 &&
+                              selectedPicIndex < releasePictures.length - 1
+                          ? IconButton(
+                              onPressed: nextPic,
+                              icon: const Icon(Icons.arrow_forward))
+                          : const Icon(Icons.arrow_forward),
+                    ],
+                  )),
+                  Row(children: [
+                    Expanded(
+                        child: TextFormField(
+                      //validator: _textInputValidator,
+                      controller: _nameController,
                       decoration: const InputDecoration(
                           label: Text.rich(TextSpan(children: <InlineSpan>[
-                        WidgetSpan(child: Text('Barcode')),
+                        WidgetSpan(child: Text('Release name')),
                         WidgetSpan(
                             child: Text(
                           '*',
                           style: TextStyle(color: Colors.red),
                         )),
                       ]))),
+                    )),
+                    IconButton(
+                        onPressed: getNameTextFromImage,
+                        icon: const Icon(Icons.image))
+                  ]),
+                  DropDownFormField(
+                      initialValue: release.mediaType,
+                      values: mediaTypeFormFieldValues,
+                      onValueChange: onMediaTypeSelected,
+                      labelText: 'Media type'),
+                  DropDownFormField(
+                      initialValue: release.caseType,
+                      values: caseTypeFormFieldValues,
+                      onValueChange: onCaseTypeSelected,
+                      labelText: 'Case type'),
+                  DropDownFormField(
+                      initialValue: release.condition,
+                      values: conditionFormFieldValues,
+                      onValueChange: onConditionSelected,
+                      labelText: 'Condition'),
+                  TextFormField(
+                    validator: _textInputValidator,
+                    controller: _barcodeController,
+                    decoration: const InputDecoration(
+                        label: Text.rich(TextSpan(children: <InlineSpan>[
+                      WidgetSpan(child: Text('Barcode')),
+                      WidgetSpan(
+                          child: Text(
+                        '*',
+                        style: TextStyle(color: Colors.red),
+                      )),
+                    ]))),
+                  ),
+                  TextButton(onPressed: barcodeScan, child: const Text('Scan')),
+                  Row(
+                    children: [
+                      const Text('Has slip cover?'),
+                      Checkbox(
+                          value: release.hasSlipCover,
+                          onChanged: hasSlipCoverChanged),
+                    ],
+                  ),
+                  TextFormField(
+                    controller: _notesController,
+                    maxLines: 3,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: ElevatedButton(
+                      onPressed: submit,
+                      child: const Text('Submit'),
                     ),
-                    TextButton(
-                        onPressed: barcodeScan, child: const Text('Scan')),
-                    Row(
-                      children: [
-                        const Text('Has slip cover?'),
-                        Checkbox(
-                            value: release.hasSlipCover,
-                            onChanged: hasSlipCoverChanged),
-                      ],
-                    ),
-                    TextFormField(
-                      controller: _notesController,
-                      maxLines: 3,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: ElevatedButton(
-                        onPressed: submit,
-                        child: const Text('Submit'),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return ErrorDisplayWidget(snapshot.error.toString());
-            }
-            return const Spinner();
+                  ),
+                ],
+              ),
+            );
           },
         ),
         floatingActionButton: FloatingActionButton(
