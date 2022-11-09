@@ -117,25 +117,25 @@ class _ImageWidgetState extends State<ImageWidget> {
           : FutureBuilder(
               future: _loadImage(),
               builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
-                if (snapshot.hasData) {
-                  return Column(children: [
-                    SizedBox(
-                      height: 200,
-                      width: 200,
-                      child: Image.file(snapshot.data!),
-                    ),
-                    Row(children: [
-                      DropdownButton(
-                          items: _listItems, onChanged: onPictureTypeChanged),
-                      IconButton(
-                          onPressed: onCropPressed,
-                          icon: const Icon(Icons.crop))
-                    ])
-                  ]);
-                } else if (snapshot.hasError) {
+                if (snapshot.hasError) {
                   return ErrorDisplayWidget(snapshot.error.toString());
                 }
-                return const Spinner();
+                if (!snapshot.hasData) {
+                  return const Spinner();
+                }
+                return Column(children: [
+                  SizedBox(
+                    height: 200,
+                    width: 200,
+                    child: Image.file(snapshot.data!),
+                  ),
+                  Row(children: [
+                    DropdownButton(
+                        items: _listItems, onChanged: onPictureTypeChanged),
+                    IconButton(
+                        onPressed: onCropPressed, icon: const Icon(Icons.crop))
+                  ])
+                ]);
               }),
       IconButton(onPressed: takePic, icon: const Icon(Icons.camera))
     ]);
