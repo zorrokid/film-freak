@@ -15,7 +15,6 @@ import 'package:provider/provider.dart';
 import 'package:film_freak/models/case_type.dart';
 import 'package:film_freak/models/movie_release.dart';
 
-import '../models/picture_type.dart';
 import '../persistence/collection_model.dart';
 import '../models/condition.dart';
 import '../models/media_type.dart';
@@ -167,14 +166,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
     return selectedText;
   }
 
-  void _loadReleasePictures(int releaseId) {
-    _releasePicturesRepository.getByRelease(releaseId).then((pictures) => {
-          setState(() {
-            releasePictures.addAll(pictures);
-          })
-        });
-  }
-
   void prevPic() {
     if (selectedPicIndex == 0) return;
     setState(() {
@@ -220,7 +211,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
             id: _id,
             name: _nameController.text,
             mediaType: _mediaType,
-            barcode: _barcode ?? '',
+            barcode: _barcodeController.text,
             caseType: _caseType,
             condition: _condition,
             hasSlipCover: _hasSlipCover,
