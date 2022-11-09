@@ -19,9 +19,11 @@ class ImageSelection {
 }
 
 class ImageWidget extends StatefulWidget {
-  const ImageWidget({required this.onValueChanged, this.fileName, super.key});
+  const ImageWidget(
+      {required this.onValueChanged, this.fileName, this.releaseId, super.key});
   final ValueChanged<ReleasePicture> onValueChanged;
   final String? fileName;
+  final int? releaseId;
   @override
   State<StatefulWidget> createState() {
     return _ImageWidgetState();
@@ -31,6 +33,7 @@ class ImageWidget extends StatefulWidget {
 class _ImageWidgetState extends State<ImageWidget> {
   String? _imagePath;
   late String? _fileName;
+  late int? _releaseId;
 
   late ImagePicker _imagePicker;
 
@@ -44,6 +47,7 @@ class _ImageWidgetState extends State<ImageWidget> {
   @override
   void initState() {
     _fileName = widget.fileName;
+    _releaseId = widget.releaseId;
     _imagePicker = ImagePicker();
     pictureType = releasePicture != null
         ? releasePicture!.pictureType
@@ -60,8 +64,10 @@ class _ImageWidgetState extends State<ImageWidget> {
     final String newPath = p.join(saveDir.path, pickedFile!.name);
 
     await pickedFile.saveTo(newPath);
-    releasePicture =
-        ReleasePicture(filename: pickedFile.name, pictureType: pictureType);
+    releasePicture = ReleasePicture(
+        filename: pickedFile.name,
+        pictureType: pictureType,
+        releaseId: _releaseId);
     widget.onValueChanged(releasePicture!);
     setState(() {
       _fileName = pickedFile.name;
@@ -131,7 +137,10 @@ class _ImageWidgetState extends State<ImageWidget> {
                   ),
                   Row(children: [
                     DropdownButton(
-                        items: _listItems, onChanged: onPictureTypeChanged),
+                      items: _listItems,
+                      onChanged: onPictureTypeChanged,
+                      value: pictureType,
+                    ),
                     IconButton(
                         onPressed: onCropPressed, icon: const Icon(Icons.crop))
                   ])

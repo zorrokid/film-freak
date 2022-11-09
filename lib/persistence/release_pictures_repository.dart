@@ -8,9 +8,17 @@ class ReleasePicturesRepository {
   final String table = 'releasePictures';
   const ReleasePicturesRepository({required this.databaseProvider});
 
-  Future<int> insert(ReleasePicture releasePicture) async {
+  Future<List<int>> upsert(List<ReleasePicture> releasePictures) async {
+    final ids = <int>[];
     Database db = await databaseProvider.database;
-    return await db.insert(table, releasePicture.map);
+    for (var pic in releasePictures) {
+      if (pic.id != null) {
+        ids.add(await db.update(table, pic.map));
+      } else {
+        ids.add(await db.insert(table, pic.map));
+      }
+    }
+    return ids;
   }
 
   Future<Iterable<ReleasePicture>> getByRelease(int releaseId) async {

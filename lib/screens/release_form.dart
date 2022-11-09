@@ -18,6 +18,7 @@ import '../models/condition.dart';
 import '../models/media_type.dart';
 
 import '../persistence/release_pictures_repository.dart';
+import '../services/movie_release_service.dart';
 import '../utils/directory_utils.dart';
 import 'package:path/path.dart' as p;
 
@@ -38,10 +39,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
   final _nameController = TextEditingController();
   final _barcodeController = TextEditingController();
   final _notesController = TextEditingController();
-  final _releaseRepository =
-      ReleaseRepository(databaseProvider: DatabaseProvider.instance);
-  final _releasePicturesRepository =
-      ReleasePicturesRepository(databaseProvider: DatabaseProvider.instance);
+  final _movieReleaseService = MovieReleaseService();
+  // final _releaseRepository =
+  //     ReleaseRepository(databaseProvider: DatabaseProvider.instance);
+  // final _releasePicturesRepository =
+  //     ReleasePicturesRepository(databaseProvider: DatabaseProvider.instance);
 
   int selectedPicIndex = 0;
 
@@ -69,7 +71,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
       });
     } else {
       setState(() {
-        releasePictures[selectedPicIndex!] = picture;
+        releasePictures[selectedPicIndex] = picture;
       });
     }
   }
@@ -162,15 +164,25 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   Future<MovieReleaseViewModel> _loadData() async {
-    if (_id == null) {
-      final release = MovieRelease.init();
-      release.barcode = _barcode ?? '';
-      return MovieReleaseViewModel(release: release, releasePictures: []);
-    }
-    final release = await _releaseRepository.getRelease(_id!);
-    final releasePictures = await _releasePicturesRepository.getByRelease(_id!);
+    final model = _id == null
+        ? _movieReleaseService.initializeModel(_barcode)
+        : await _movieReleaseService.getReleaseData(_id!);
+    return model;
+  }
+
+  MovieReleaseViewModel _buildModel() {
+    final release = MovieRelease(
+        id: _id,
+        name: _nameController.text,
+        mediaType: _mediaType,
+        barcode: _barcodeController.text,
+        caseType: _caseType,
+        condition: _condition,
+        hasSlipCover: _hasSlipCover,
+        notes: _notesController.text);
+
     return MovieReleaseViewModel(
-        release: release, releasePictures: releasePictures.toList());
+        release: release, releasePictures: releasePictures);
   }
 
   @override
@@ -185,30 +197,21 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
       Future<void> submit() async {
         if (!_formKey.currentState!.validate()) return;
-
-        final release = MovieRelease(
-            id: _id,
-            name: _nameController.text,
-            mediaType: _mediaType,
-            barcode: _barcodeController.text,
-            caseType: _caseType,
-            condition: _condition,
-            hasSlipCover: _hasSlipCover,
-            notes: _notesController.text);
+        final viewModel = _buildModel();
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: isEditMode()
-                  ? Text('Updating ${release.name}')
-                  : Text('Adding ${release.name}')),
+                  ? Text('Updating ${viewModel.release.name}')
+                  : Text('Adding ${viewModel.release.name}')),
         );
 
+        await _movieReleaseService.upsert(viewModel);
+
         if (isEditMode()) {
-          cart.update(release);
-          await _releaseRepository.updateRelease(release);
+          cart.update(viewModel.release);
         } else {
-          release.id = await _releaseRepository.insertRelease(release);
-          cart.add(release);
+          cart.add(viewModel.release);
         }
         if (mounted) {
           Navigator.of(context).pop();
@@ -251,6 +254,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                           : const Icon(Icons.arrow_back),
                       ImageWidget(
                           onValueChanged: _selectedImageChanged,
+                          releaseId: _id,
                           fileName: releasePictures.isNotEmpty
                               ? releasePictures[selectedPicIndex].filename
                               : null),
