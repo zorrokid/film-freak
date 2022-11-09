@@ -1,8 +1,6 @@
 import 'package:film_freak/models/movie_release_view_model.dart';
 import 'package:film_freak/models/release_picture.dart';
 import 'package:film_freak/screens/barcode_scanner_view.dart';
-import 'package:film_freak/persistence/db_provider.dart';
-import 'package:film_freak/persistence/release_repository.dart';
 import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/widgets/drop_down_form_field.dart';
 import 'package:film_freak/widgets/error_display_widget.dart';
@@ -17,7 +15,6 @@ import '../persistence/collection_model.dart';
 import '../models/condition.dart';
 import '../models/media_type.dart';
 
-import '../persistence/release_pictures_repository.dart';
 import '../services/movie_release_service.dart';
 import '../utils/directory_utils.dart';
 import 'package:path/path.dart' as p;
@@ -40,10 +37,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
   final _barcodeController = TextEditingController();
   final _notesController = TextEditingController();
   final _movieReleaseService = MovieReleaseService();
-  // final _releaseRepository =
-  //     ReleaseRepository(databaseProvider: DatabaseProvider.instance);
-  // final _releasePicturesRepository =
-  //     ReleasePicturesRepository(databaseProvider: DatabaseProvider.instance);
 
   int selectedPicIndex = 0;
 
