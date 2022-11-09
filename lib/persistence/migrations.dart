@@ -23,4 +23,6 @@ Map<int, String> migrationScripts = {
           pictureType INTEGER
       )''',
   14: 'ALTER TABLE releasePictures ADD COLUMN releaseId INTEGER',
+  15: 'ALTER TABLE releasePictures ADD COLUMN createdTime DATETIME',
+  16: 'ALTER TABLE releasePictures ADD COLUMN modifiedTime DATETIME',
 };
