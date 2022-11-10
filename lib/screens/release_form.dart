@@ -231,6 +231,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
             _barcodeController.text = release.barcode;
             _nameController.text = release.name;
             _notesController.text = release.notes;
+            final releasePictures = snapshot.data!.releasePictures;
 
             return Form(
               key: _formKey,
@@ -248,8 +249,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                           child: ImageWidget(
                               onValueChanged: _selectedImageChanged,
                               releaseId: _id,
-                              fileName: releasePictures.isNotEmpty
-                                  ? releasePictures[selectedPicIndex].filename
+                              releasePicture: releasePictures.isNotEmpty
+                                  ? releasePictures[selectedPicIndex]
                                   : null)),
                       releasePictures.length > 1 &&
                               selectedPicIndex < releasePictures.length - 1

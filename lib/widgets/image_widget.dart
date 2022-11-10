@@ -20,9 +20,12 @@ class ImageSelection {
 
 class ImageWidget extends StatefulWidget {
   const ImageWidget(
-      {required this.onValueChanged, this.fileName, this.releaseId, super.key});
+      {required this.onValueChanged,
+      this.releasePicture,
+      this.releaseId,
+      super.key});
   final ValueChanged<ReleasePicture> onValueChanged;
-  final String? fileName;
+  final ReleasePicture? releasePicture;
   final int? releaseId;
   @override
   State<StatefulWidget> createState() {
@@ -32,13 +35,10 @@ class ImageWidget extends StatefulWidget {
 
 class _ImageWidgetState extends State<ImageWidget> {
   String? _imagePath;
-  late String? _fileName;
+  late ReleasePicture? _releasePicture;
   late int? _releaseId;
-
   late ImagePicker _imagePicker;
-
-  ReleasePicture? releasePicture;
-  late PictureType pictureType;
+  late PictureType _pictureType;
 
   final _listItems = pictureTypeFormFieldValues.entries.map((e) {
     return DropdownMenuItem(value: e.key, child: Text(e.value));
@@ -46,11 +46,11 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   @override
   void initState() {
-    _fileName = widget.fileName;
+    _releasePicture = widget.releasePicture;
     _releaseId = widget.releaseId;
     _imagePicker = ImagePicker();
-    pictureType = releasePicture != null
-        ? releasePicture!.pictureType
+    _pictureType = _releasePicture != null
+        ? _releasePicture!.pictureType
         : PictureType.coverFront;
     super.initState();
   }
@@ -64,15 +64,14 @@ class _ImageWidgetState extends State<ImageWidget> {
     final String newPath = p.join(saveDir.path, pickedFile!.name);
 
     await pickedFile.saveTo(newPath);
-    releasePicture = ReleasePicture(
-        filename: pickedFile.name,
-        pictureType: pictureType,
-        releaseId: _releaseId);
-    widget.onValueChanged(releasePicture!);
     setState(() {
-      _fileName = pickedFile.name;
+      _releasePicture = ReleasePicture(
+          filename: pickedFile.name,
+          pictureType: _pictureType,
+          releaseId: _releaseId);
       _imagePath = newPath;
     });
+    widget.onValueChanged(_releasePicture!);
   }
 
   Future<void> takePic() async {
@@ -101,9 +100,9 @@ class _ImageWidgetState extends State<ImageWidget> {
   }
 
   Future<File?> _loadImage() async {
-    if (_fileName == null) return null;
+    if (_releasePicture == null) return null;
     final picDir = await getReleasePicsSaveDir();
-    final imagePath = p.join(picDir.path, _fileName);
+    final imagePath = p.join(picDir.path, _releasePicture!.filename);
     final imageFile = File(imagePath);
     return imageFile;
   }
@@ -115,7 +114,7 @@ class _ImageWidgetState extends State<ImageWidget> {
     }
 
     return Column(children: [
-      _fileName == null
+      _releasePicture == null
           ? const Icon(
               Icons.image,
               size: 200,
@@ -139,7 +138,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                     DropdownButton(
                       items: _listItems,
                       onChanged: onPictureTypeChanged,
-                      value: pictureType,
+                      value: _pictureType,
                     ),
                     IconButton(
                         onPressed: onCropPressed, icon: const Icon(Icons.crop))
