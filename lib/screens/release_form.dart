@@ -56,7 +56,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   MediaType _mediaType = MediaType.unknown;
   CaseType _caseType = CaseType.unknown;
   Condition _condition = Condition.unknown;
-  bool _hasSlipCover = false;
+  bool? _hasSlipCover;
   List<ReleasePicture> _releasePictures = <ReleasePicture>[];
   final List<ReleasePicture> _releasePicturesToDelete = <ReleasePicture>[];
 
@@ -114,7 +114,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   void hasSlipCoverChanged(bool? value) {
-    _hasSlipCover = value ?? false;
+    setState(() {
+      _hasSlipCover = value;
+    });
   }
 
   String? _textInputValidator(String? value) {
@@ -184,7 +186,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
         barcode: _barcodeController.text,
         caseType: _caseType,
         condition: _condition,
-        hasSlipCover: _hasSlipCover,
+        hasSlipCover: _hasSlipCover ?? false,
         notes: _notesController.text);
 
     return MovieReleaseViewModel(
@@ -395,9 +397,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
                   ]),
                   Row(
                     children: [
-                      const Text('Has slip cover?'),
+                      const Expanded(child: Text('Has slip cover?')),
                       Checkbox(
-                          value: viewModel.release.hasSlipCover,
+                          value:
+                              _hasSlipCover ?? viewModel.release.hasSlipCover,
                           onChanged: hasSlipCoverChanged),
                     ],
                   ),

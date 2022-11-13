@@ -45,7 +45,7 @@ class MovieRelease {
         'caseType': caseType.index,
         'condition': condition.index,
         'notes': notes,
-        'hasSlipCover': hasSlipCover ? 0 : 1,
+        'hasSlipCover': hasSlipCover ? 1 : 0,
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
