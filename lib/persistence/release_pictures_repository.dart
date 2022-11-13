@@ -13,7 +13,7 @@ class ReleasePicturesRepository {
     Database db = await databaseProvider.database;
     for (var pic in releasePictures) {
       if (pic.id != null) {
-        ids.add(await db.update(table, pic.map));
+        ids.add(await db.update(table, pic.map, where: 'id = ${pic.id}'));
       } else {
         ids.add(await db.insert(table, pic.map));
       }
@@ -28,5 +28,10 @@ class ReleasePicturesRepository {
     var result =
         queryResult.map<ReleasePicture>((e) => ReleasePicture.fromMap(e));
     return result;
+  }
+
+  Future<int> delete(int picId) async {
+    Database db = await databaseProvider.database;
+    return await db.delete(table, where: 'id = $picId');
   }
 }

@@ -29,6 +29,7 @@ class MovieReleaseService {
     int id;
     if (viewModel.release.id != null) {
       id = viewModel.release.id!;
+      await _deleteObsoletedPics(viewModel);
       await _releaseRepository.updateRelease(viewModel.release);
     } else {
       id = await _releaseRepository.insertRelease(viewModel.release);
@@ -36,5 +37,25 @@ class MovieReleaseService {
     await _releasePicturesRepository.upsert(viewModel.releasePictures);
 
     return id;
+  }
+
+  Future<void> _deleteObsoletedPics(MovieReleaseViewModel model) async {
+    final id = model.release.id!;
+    final originalPicsInDb = await _releasePicturesRepository.getByRelease(id);
+    final originalPicIdsInDb = originalPicsInDb.map((e) => e.id).toList();
+    final modifiedPicsIds = model.releasePictures.map((e) => e.id);
+    final picIdsToBeDeleted =
+        originalPicIdsInDb.where((e) => !modifiedPicsIds.contains(e));
+    for (final picId in picIdsToBeDeleted) {
+      await _releasePicturesRepository.delete(picId!);
+    }
+  }
+
+  // Future<void> upsertPicture(ReleasePicture picture) async {
+  //   await _releasePicturesRepository.upsert(picture);
+  // }
+
+  Future<void> deletePicture(int pictureId) async {
+    await _releasePicturesRepository.delete(pictureId);
   }
 }

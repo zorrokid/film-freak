@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:film_freak/models/movie_release_view_model.dart';
+import 'package:film_freak/models/picture_type.dart';
 import 'package:film_freak/models/release_picture.dart';
 import 'package:film_freak/screens/barcode_scanner_view.dart';
 import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/widgets/drop_down_form_field.dart';
 import 'package:film_freak/widgets/error_display_widget.dart';
 import 'package:film_freak/widgets/image_widget.dart';
+import 'package:film_freak/widgets/image_widget.dart';
+import 'package:film_freak/widgets/release_pic_delete.dart';
 import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +23,10 @@ import '../models/media_type.dart';
 import '../services/movie_release_service.dart';
 import '../utils/directory_utils.dart';
 import 'package:path/path.dart' as p;
+
+import '../widgets/release_pic_crop.dart';
+import '../widgets/release_pic_selection.dart';
+import 'image_process_view.dart';
 
 class ReleaseForm extends StatefulWidget {
   const ReleaseForm({this.barcode, this.id, super.key});
@@ -38,35 +47,33 @@ class _ReleaseFormState extends State<ReleaseForm> {
   final _notesController = TextEditingController();
   final _movieReleaseService = MovieReleaseService();
 
-  int selectedPicIndex = 0;
+  int _selectedPicIndex = 0;
 
   // form state
+  late Future<MovieReleaseViewModel> _futureModel;
+  late Future<Directory> _futureSaveDirectory;
   late int? _id;
   late String? _barcode;
   MediaType _mediaType = MediaType.unknown;
   CaseType _caseType = CaseType.unknown;
   Condition _condition = Condition.unknown;
   bool _hasSlipCover = false;
-  final releasePictures = <ReleasePicture>[];
+  List<ReleasePicture> _releasePictures = <ReleasePicture>[];
 
   @override
   void initState() {
+    super.initState();
     _id = widget.id;
     _barcode = widget.barcode;
-    super.initState();
+    _futureModel = _loadData();
+    _futureSaveDirectory = _getSaveDirectory();
   }
 
-  void _selectedImageChanged(ReleasePicture picture) {
-    if (releasePictures.isEmpty) {
-      setState(() {
-        releasePictures.add(picture);
-        selectedPicIndex = 0;
-      });
-    } else {
-      setState(() {
-        releasePictures[selectedPicIndex] = picture;
-      });
-    }
+  void _selectedImageChanged(PictureType pictureType) {
+    if (_releasePictures.isEmpty) return;
+    setState(() {
+      _releasePictures[_selectedPicIndex].pictureType = pictureType;
+    });
   }
 
   Future<void> barcodeScan() async {
@@ -119,10 +126,14 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   bool isEditMode() => _id != null;
 
+  Future<Directory> _getSaveDirectory() async {
+    return await getReleasePicsSaveDir();
+  }
+
   Future<String?> _getSelectedImagePath() async {
-    if (releasePictures.isEmpty) return null;
-    if (selectedPicIndex > releasePictures.length - 1) return null;
-    final selectedPic = releasePictures[selectedPicIndex];
+    if (_releasePictures.isEmpty) return null;
+    if (_selectedPicIndex > _releasePictures.length - 1) return null;
+    final selectedPic = _releasePictures[_selectedPicIndex];
     final saveDir = await getReleasePicsSaveDir();
     final path = p.join(saveDir.path, selectedPic.filename);
     return path;
@@ -141,18 +152,18 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   void prevPic() {
-    if (selectedPicIndex == 0) return;
+    if (_selectedPicIndex == 0) return;
     setState(() {
-      selectedPicIndex--;
+      _selectedPicIndex--;
     });
   }
 
   void nextPic() {
-    if (selectedPicIndex == releasePictures.length - 1) {
+    if (_selectedPicIndex == _releasePictures.length - 1) {
       return;
     }
     setState(() {
-      selectedPicIndex++;
+      _selectedPicIndex++;
     });
   }
 
@@ -160,6 +171,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
     final model = _id == null
         ? _movieReleaseService.initializeModel(_barcode)
         : await _movieReleaseService.getReleaseData(_id!);
+
+    _releasePictures = model.releasePictures;
     return model;
   }
 
@@ -175,7 +188,49 @@ class _ReleaseFormState extends State<ReleaseForm> {
         notes: _notesController.text);
 
     return MovieReleaseViewModel(
-        release: release, releasePictures: releasePictures);
+        release: release, releasePictures: _releasePictures);
+  }
+
+  void _onPictureSelected(String filename) {
+    final newPic =
+        ReleasePicture(filename: filename, pictureType: PictureType.coverFront);
+    setState(() {
+      _releasePictures.add(newPic);
+      _selectedPicIndex = _releasePictures.length - 1;
+    });
+  }
+
+  Future<void> _onDelete() async {
+    if (_releasePictures.isEmpty) return;
+    final picToDelete = _releasePictures[_selectedPicIndex];
+    final picDir = await getReleasePicsSaveDir();
+    final imagePath = p.join(picDir.path, picToDelete.filename);
+    final imageFile = File(imagePath);
+    await imageFile.delete();
+
+    if (picToDelete.id != null) {
+      _releasePictures.removeWhere((element) => element.id == picToDelete.id);
+    } else {
+      _releasePictures
+          .removeWhere((element) => element.filename == picToDelete.filename);
+    }
+    final newIndex = _selectedPicIndex > 0 ? _selectedPicIndex-- : 0;
+    setState(() {
+      _selectedPicIndex = newIndex;
+    });
+  }
+
+  Future<void> _onCropPressed() async {
+    if (_releasePictures.isEmpty) return;
+    final picToCrop = _releasePictures[_selectedPicIndex];
+    final picDir = await getReleasePicsSaveDir();
+    final imagePath = p.join(picDir.path, picToCrop.filename);
+    if (!mounted) return;
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ImageProcessView(imagePath: imagePath);
+    }));
+    imageCache.clear();
+    imageCache.clearLiveImages;
   }
 
   @override
@@ -217,9 +272,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 ? const Text('Edit release')
                 : const Text('Add a new release')),
         body: FutureBuilder(
-          future: _loadData(),
-          builder: (BuildContext context,
-              AsyncSnapshot<MovieReleaseViewModel> snapshot) {
+          future: Future.wait([_futureModel, _futureSaveDirectory]),
+          builder:
+              (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
             if (snapshot.hasError) {
               return ErrorDisplayWidget(snapshot.error.toString());
             }
@@ -227,11 +282,12 @@ class _ReleaseFormState extends State<ReleaseForm> {
               return const Spinner();
             }
 
-            final release = snapshot.data!.release;
-            _barcodeController.text = release.barcode;
-            _nameController.text = release.name;
-            _notesController.text = release.notes;
-            final releasePictures = snapshot.data!.releasePictures;
+            final MovieReleaseViewModel viewModel = snapshot.data![0];
+            final Directory saveDir = snapshot.data![1];
+            _barcodeController.text = viewModel.release.barcode;
+            _nameController.text = viewModel.release.name;
+            _notesController.text = viewModel.release.notes;
+            _releasePictures = viewModel.releasePictures;
 
             return Form(
               key: _formKey,
@@ -239,27 +295,41 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 children: [
                   Row(
                     children: [
-                      selectedPicIndex > 0
+                      _selectedPicIndex > 0
                           ? IconButton(
                               onPressed: prevPic,
                               icon: const Icon(Icons.arrow_back),
                             )
                           : const Icon(Icons.arrow_back),
                       Expanded(
-                          child: ImageWidget(
-                              onValueChanged: _selectedImageChanged,
-                              releaseId: _id,
-                              releasePicture: releasePictures.isNotEmpty
-                                  ? releasePictures[selectedPicIndex]
-                                  : null)),
-                      releasePictures.length > 1 &&
-                              selectedPicIndex < releasePictures.length - 1
+                          child: _releasePictures.isNotEmpty
+                              ? ImageWidget(
+                                  onValueChanged: _selectedImageChanged,
+                                  releasePicture:
+                                      _releasePictures[_selectedPicIndex],
+                                  saveDirPath: saveDir.path,
+                                )
+                              : const Icon(
+                                  Icons.image,
+                                  size: 200,
+                                )),
+                      _releasePictures.length > 1 &&
+                              _selectedPicIndex <= _releasePictures.length
                           ? IconButton(
                               onPressed: nextPic,
                               icon: const Icon(Icons.arrow_forward))
                           : const Icon(Icons.arrow_forward),
                     ],
                   ),
+                  _releasePictures.isEmpty
+                      ? const Text('No pictures')
+                      : Text(
+                          '${_selectedPicIndex + 1}/${_releasePictures.length}'),
+                  Row(children: [
+                    ReleasePictureDelete(onDelete: _onDelete),
+                    ReleasePictureCrop(onCropPressed: _onCropPressed),
+                    ReleasePictureSelection(onValueChanged: _onPictureSelected)
+                  ]),
                   Row(children: [
                     Expanded(
                         child: TextFormField(
@@ -280,17 +350,17 @@ class _ReleaseFormState extends State<ReleaseForm> {
                         icon: const Icon(Icons.image))
                   ]),
                   DropDownFormField(
-                      initialValue: release.mediaType,
+                      initialValue: viewModel.release.mediaType,
                       values: mediaTypeFormFieldValues,
                       onValueChange: onMediaTypeSelected,
                       labelText: 'Media type'),
                   DropDownFormField(
-                      initialValue: release.caseType,
+                      initialValue: viewModel.release.caseType,
                       values: caseTypeFormFieldValues,
                       onValueChange: onCaseTypeSelected,
                       labelText: 'Case type'),
                   DropDownFormField(
-                      initialValue: release.condition,
+                      initialValue: viewModel.release.condition,
                       values: conditionFormFieldValues,
                       onValueChange: onConditionSelected,
                       labelText: 'Condition'),
@@ -312,7 +382,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                     children: [
                       const Text('Has slip cover?'),
                       Checkbox(
-                          value: release.hasSlipCover,
+                          value: viewModel.release.hasSlipCover,
                           onChanged: hasSlipCoverChanged),
                     ],
                   ),
