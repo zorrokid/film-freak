@@ -330,11 +330,13 @@ class _ReleaseFormState extends State<ReleaseForm> {
                           : const Icon(Icons.arrow_forward),
                     ],
                   ),
-                  _releasePictures.isEmpty
-                      ? const Text('No pictures')
-                      : Text(
-                          '${_selectedPicIndex + 1}/${_releasePictures.length}'),
                   Row(children: [
+                    Expanded(
+                      child: _releasePictures.isEmpty
+                          ? const Text('No pictures')
+                          : Text(
+                              '${_selectedPicIndex + 1}/${_releasePictures.length}'),
+                    ),
                     ReleasePictureDelete(onDelete: _onDelete),
                     ReleasePictureCrop(onCropPressed: _onCropPressed),
                     ReleasePictureSelection(onValueChanged: _onPictureSelected)
@@ -373,20 +375,24 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       values: conditionFormFieldValues,
                       onValueChange: onConditionSelected,
                       labelText: 'Condition'),
-                  TextFormField(
-                    validator: _textInputValidator,
-                    controller: _barcodeController,
-                    decoration: const InputDecoration(
-                        label: Text.rich(TextSpan(children: <InlineSpan>[
-                      WidgetSpan(child: Text('Barcode')),
-                      WidgetSpan(
-                          child: Text(
-                        '*',
-                        style: TextStyle(color: Colors.red),
-                      )),
-                    ]))),
-                  ),
-                  TextButton(onPressed: barcodeScan, child: const Text('Scan')),
+                  Row(children: [
+                    Expanded(
+                        child: TextFormField(
+                      validator: _textInputValidator,
+                      controller: _barcodeController,
+                      decoration: const InputDecoration(
+                          label: Text.rich(TextSpan(children: <InlineSpan>[
+                        WidgetSpan(child: Text('Barcode')),
+                        WidgetSpan(
+                            child: Text(
+                          '*',
+                          style: TextStyle(color: Colors.red),
+                        )),
+                      ]))),
+                    )),
+                    IconButton(
+                        onPressed: barcodeScan, icon: const Icon(Icons.camera)),
+                  ]),
                   Row(
                     children: [
                       const Text('Has slip cover?'),
