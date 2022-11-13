@@ -8,7 +8,6 @@ import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/widgets/drop_down_form_field.dart';
 import 'package:film_freak/widgets/error_display_widget.dart';
 import 'package:film_freak/widgets/image_widget.dart';
-import 'package:film_freak/widgets/image_widget.dart';
 import 'package:film_freak/widgets/release_pic_delete.dart';
 import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +58,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   Condition _condition = Condition.unknown;
   bool _hasSlipCover = false;
   List<ReleasePicture> _releasePictures = <ReleasePicture>[];
+  final List<ReleasePicture> _releasePicturesToDelete = <ReleasePicture>[];
 
   @override
   void initState() {
@@ -192,8 +192,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   void _onPictureSelected(String filename) {
-    final newPic =
-        ReleasePicture(filename: filename, pictureType: PictureType.coverFront);
+    final newPic = ReleasePicture(
+        filename: filename,
+        pictureType: PictureType.coverFront,
+        releaseId: _id);
     setState(() {
       _releasePictures.add(newPic);
       _selectedPicIndex = _releasePictures.length - 1;
@@ -203,10 +205,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
   Future<void> _onDelete() async {
     if (_releasePictures.isEmpty) return;
     final picToDelete = _releasePictures[_selectedPicIndex];
-    final picDir = await getReleasePicsSaveDir();
-    final imagePath = p.join(picDir.path, picToDelete.filename);
-    final imageFile = File(imagePath);
-    await imageFile.delete();
 
     if (picToDelete.id != null) {
       _releasePictures.removeWhere((element) => element.id == picToDelete.id);
@@ -217,6 +215,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
     final newIndex = _selectedPicIndex > 0 ? _selectedPicIndex-- : 0;
     setState(() {
       _selectedPicIndex = newIndex;
+      _releasePicturesToDelete.add(picToDelete);
     });
   }
 
@@ -254,13 +253,23 @@ class _ReleaseFormState extends State<ReleaseForm> {
                   : Text('Adding ${viewModel.release.name}')),
         );
 
-        await _movieReleaseService.upsert(viewModel);
+        final id = await _movieReleaseService.upsert(viewModel);
+        viewModel.release.id = id;
 
         if (isEditMode()) {
           cart.update(viewModel.release);
         } else {
           cart.add(viewModel.release);
         }
+
+        final picDir = await getReleasePicsSaveDir();
+
+        for (final picToDelete in _releasePicturesToDelete) {
+          final imagePath = p.join(picDir.path, picToDelete.filename);
+          final imageFile = File(imagePath);
+          await imageFile.delete();
+        }
+
         if (mounted) {
           Navigator.of(context).pop();
         }
