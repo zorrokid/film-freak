@@ -399,13 +399,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
                     controller: _notesController,
                     maxLines: 3,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: ElevatedButton(
-                      onPressed: submit,
-                      child: const Text('Submit'),
-                    ),
-                  ),
                 ],
               ),
             );
