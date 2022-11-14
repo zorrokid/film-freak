@@ -73,11 +73,6 @@ class _ImageProcessViewState extends State<ImageProcessView> {
     super.dispose();
   }
 
-  void onReadyPressed(BuildContext context) {
-    // TODO
-  }
-
-// event handler
   void _down(DragStartDetails details) {
     setState(() {
       isDown = true;
@@ -120,6 +115,7 @@ class _ImageProcessViewState extends State<ImageProcessView> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: use FutureBuilder
     if (_image == null) {
       _loadImage();
     }
