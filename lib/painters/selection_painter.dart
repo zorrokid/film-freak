@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-const double selectionHandleSize = 80;
+const double selectionHandleSize = 150;
 
 class SelectionPainter extends CustomPainter {
   final Paint _paint = Paint()
