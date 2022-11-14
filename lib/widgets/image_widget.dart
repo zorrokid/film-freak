@@ -39,13 +39,11 @@ class ImageWidget extends StatelessWidget {
         width: 200,
         child: Image.file(_loadImage()),
       ),
-      Row(children: [
-        DropdownButton(
-          items: _listItems,
-          onChanged: onPictureTypeChanged,
-          value: releasePicture.pictureType,
-        ),
-      ])
+      DropdownButton(
+        items: _listItems,
+        onChanged: onPictureTypeChanged,
+        value: releasePicture.pictureType,
+      ),
     ]);
   }
 }
