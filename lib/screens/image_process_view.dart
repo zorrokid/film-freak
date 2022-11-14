@@ -88,9 +88,18 @@ class _ImageProcessViewState extends State<ImageProcessView> {
   }
 
   void _move(DragUpdateDetails details) {
+    if (_image == null) return;
     if (isDown) {
-      x += details.delta.dx;
-      y += details.delta.dy;
+      final newX = x + details.delta.dx;
+      final newY = y + details.delta.dy;
+      if (newX < 0 ||
+          newX > _image!.width ||
+          newY < 0 ||
+          newY > _image!.height) {
+        return;
+      }
+      x = newX;
+      y = newY;
       for (var i = 0; i < selectionPoints.length; i++) {
         if (isInObject(selectionPoints[i], selectionHandleSize, x, y)) {
           setState(() {
@@ -122,35 +131,37 @@ class _ImageProcessViewState extends State<ImageProcessView> {
     return Scaffold(
       appBar: AppBar(title: const Text('Crop image')),
       body: Column(children: [
-        Expanded(
-            child: _image != null
-                ? FittedBox(
-                    child: GestureDetector(
-                    onPanStart: (details) {
-                      _down(details);
-                    },
-                    onPanEnd: (details) {
-                      _up();
-                    },
-                    onPanUpdate: (details) {
-                      _move(details);
-                    },
-                    onDoubleTap: () => _crop(context),
-                    child: SizedBox(
-                      width: _image!.width.toDouble(),
-                      height: _image!.height.toDouble(),
-                      child: CustomPaint(
-                          foregroundPainter: SelectionPainter(
-                              down: isDown,
-                              x: x,
-                              y: y,
-                              selectionPoints: selectionPoints),
-                          painter: ImagePainter(
-                            image: _image!,
-                          )),
-                    ),
-                  ))
-                : const Center(child: CircularProgressIndicator())),
+        Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Expanded(
+                child: _image != null
+                    ? FittedBox(
+                        child: GestureDetector(
+                        onPanStart: (details) {
+                          _down(details);
+                        },
+                        onPanEnd: (details) {
+                          _up();
+                        },
+                        onPanUpdate: (details) {
+                          _move(details);
+                        },
+                        onDoubleTap: () => _crop(context),
+                        child: SizedBox(
+                          width: _image!.width.toDouble(),
+                          height: _image!.height.toDouble(),
+                          child: CustomPaint(
+                              foregroundPainter: SelectionPainter(
+                                  down: isDown,
+                                  x: x,
+                                  y: y,
+                                  selectionPoints: selectionPoints),
+                              painter: ImagePainter(
+                                image: _image!,
+                              )),
+                        ),
+                      ))
+                    : const Center(child: CircularProgressIndicator()))),
         CaseTypeSelection(
             onValueChanged: _onCaseTypeChanged, caseType: caseType)
       ]),
