@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:film_freak/enums/release_property_type.dart';
 import 'package:film_freak/models/movie_release_view_model.dart';
 import 'package:film_freak/enums/picture_type.dart';
 import 'package:film_freak/entities/release_picture.dart';
 import 'package:film_freak/screens/barcode_scanner_view.dart';
 import 'package:film_freak/screens/image_text_selector.dart';
+import 'package:film_freak/screens/property_selection_view.dart';
 import 'package:film_freak/widgets/drop_down_form_field.dart';
 import 'package:film_freak/widgets/error_display_widget.dart';
 import 'package:film_freak/widgets/image_widget.dart';
@@ -58,7 +60,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
   Condition _condition = Condition.unknown;
   bool? _hasSlipCover;
   List<ReleasePicture> _releasePictures = <ReleasePicture>[];
-  final List<ReleasePicture> _releasePicturesToDelete = <ReleasePicture>[];
+  final _releasePicturesToDelete = <ReleasePicture>[];
+  List<ReleasePropertyType> _properties = <ReleasePropertyType>[];
 
   @override
   void initState() {
@@ -234,6 +237,21 @@ class _ReleaseFormState extends State<ReleaseForm> {
     imageCache.clearLiveImages;
   }
 
+  Future<void> selectProperties() async {
+    final List<ReleasePropertyType>? selectedProperties =
+        await Navigator.push(context,
+            MaterialPageRoute<List<ReleasePropertyType>>(builder: (context) {
+      return PropertySelectionView(
+        initialSelection: _properties,
+      );
+    }));
+    if (selectedProperties != null) {
+      setState(() {
+        _properties = selectedProperties;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
@@ -395,6 +413,28 @@ class _ReleaseFormState extends State<ReleaseForm> {
                     IconButton(
                         onPressed: barcodeScan, icon: const Icon(Icons.camera)),
                   ]),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    children: _properties
+                        .map(
+                          (e) => Padding(
+                            padding: const EdgeInsets.all(3),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: Text(releasePropertyFieldValues[e]!),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                  ElevatedButton(
+                      onPressed: selectProperties,
+                      child: const Text('Select properties')),
                   TextFormField(
                     controller: _notesController,
                     maxLines: 3,
