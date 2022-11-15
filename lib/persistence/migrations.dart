@@ -25,4 +25,11 @@ Map<int, String> migrationScripts = {
   14: 'ALTER TABLE releasePictures ADD COLUMN releaseId INTEGER',
   15: 'ALTER TABLE releasePictures ADD COLUMN createdTime DATETIME',
   16: 'ALTER TABLE releasePictures ADD COLUMN modifiedTime DATETIME',
+  17: '''CREATE TABLE releaseProperties(
+          id INTEGER PRIMARY KEY,
+          releaseId INTEGER,
+          propertyType INTEGER,
+          createdTime DATETIME,
+          modifiedTime DATETIME
+     )''',
 };
