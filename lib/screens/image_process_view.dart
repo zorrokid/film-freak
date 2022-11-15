@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:film_freak/models/case_type.dart';
+import 'package:film_freak/enums/case_type.dart';
 import 'package:film_freak/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;

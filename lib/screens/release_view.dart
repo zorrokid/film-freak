@@ -3,9 +3,9 @@ import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/case_type.dart';
-import '../models/condition.dart';
-import '../models/media_type.dart';
+import '../enums/case_type.dart';
+import '../enums/condition.dart';
+import '../enums/media_type.dart';
 import '../persistence/collection_model.dart';
 
 class ReleaseView extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/case_type.dart';
+import '../enums/case_type.dart';
 
 const List<Widget> ratioTypes = [Text('DVD'), Text('Blu-ray')];
 

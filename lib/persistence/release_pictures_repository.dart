@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 
-import '../models/release_picture.dart';
+import '../entities/release_picture.dart';
 import 'db_provider.dart';
 
 class ReleasePicturesRepository {

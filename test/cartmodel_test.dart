@@ -1,8 +1,8 @@
 import 'package:film_freak/persistence/collection_model.dart';
-import 'package:film_freak/models/case_type.dart';
-import 'package:film_freak/models/condition.dart';
-import 'package:film_freak/models/media_type.dart';
-import 'package:film_freak/models/movie_release.dart';
+import 'package:film_freak/enums/case_type.dart';
+import 'package:film_freak/enums/condition.dart';
+import 'package:film_freak/enums/media_type.dart';
+import 'package:film_freak/entities/movie_release.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/condition.dart';
+import '../enums/condition.dart';
 
 class ConditionIcon extends StatelessWidget {
   const ConditionIcon({required this.condition, super.key});

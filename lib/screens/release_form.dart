@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:film_freak/models/movie_release_view_model.dart';
-import 'package:film_freak/models/picture_type.dart';
-import 'package:film_freak/models/release_picture.dart';
+import 'package:film_freak/enums/picture_type.dart';
+import 'package:film_freak/entities/release_picture.dart';
 import 'package:film_freak/screens/barcode_scanner_view.dart';
 import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/widgets/drop_down_form_field.dart';
@@ -12,12 +12,12 @@ import 'package:film_freak/widgets/release_pic_delete.dart';
 import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:film_freak/models/case_type.dart';
-import 'package:film_freak/models/movie_release.dart';
+import 'package:film_freak/enums/case_type.dart';
+import 'package:film_freak/entities/movie_release.dart';
 
 import '../persistence/collection_model.dart';
-import '../models/condition.dart';
-import '../models/media_type.dart';
+import '../enums/condition.dart';
+import '../enums/media_type.dart';
 
 import '../services/movie_release_service.dart';
 import '../utils/directory_utils.dart';
@@ -395,15 +395,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
                     IconButton(
                         onPressed: barcodeScan, icon: const Icon(Icons.camera)),
                   ]),
-                  Row(
-                    children: [
-                      const Expanded(child: Text('Has slip cover?')),
-                      Checkbox(
-                          value:
-                              _hasSlipCover ?? viewModel.release.hasSlipCover,
-                          onChanged: hasSlipCoverChanged),
-                    ],
-                  ),
                   TextFormField(
                     controller: _notesController,
                     maxLines: 3,

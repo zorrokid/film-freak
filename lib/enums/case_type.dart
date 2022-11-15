@@ -13,7 +13,7 @@ enum CaseType {
   tincase
 }
 
-final Map<CaseType, String> caseTypeFormFieldValues = {
+final caseTypeFormFieldValues = <CaseType, String>{
   CaseType.unknown: "Unknown",
   CaseType.regularDvd: "DVD (regular)",
   CaseType.regularBluRay: "Blu-ray (regular)",

@@ -1,6 +1,6 @@
 enum MediaType { unknown, vhs, dvd, bluRay }
 
-final Map<MediaType, String> mediaTypeFormFieldValues = {
+final mediaTypeFormFieldValues = <MediaType, String>{
   MediaType.unknown: "Not set",
   MediaType.bluRay: "Blu-ray",
   MediaType.dvd: "DVD",

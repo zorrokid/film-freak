@@ -1,6 +1,6 @@
 import 'package:film_freak/models/movie_release_view_model.dart';
 
-import '../models/movie_release.dart';
+import '../entities/movie_release.dart';
 import '../persistence/db_provider.dart';
 import '../persistence/release_pictures_repository.dart';
 import '../persistence/release_repository.dart';

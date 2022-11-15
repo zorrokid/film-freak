@@ -1,4 +1,4 @@
-import 'package:film_freak/models/movie_release.dart';
+import 'package:film_freak/entities/movie_release.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:sqflite/sqflite.dart';
 

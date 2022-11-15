@@ -1,7 +1,7 @@
-import 'package:film_freak/models/case_type.dart';
+import 'package:film_freak/enums/case_type.dart';
 
-import 'condition.dart';
-import 'media_type.dart';
+import '../enums/condition.dart';
+import '../enums/media_type.dart';
 
 class MovieRelease {
   // when creating a new release id is set after entity is saved to db:

@@ -1,5 +1,4 @@
 enum Condition {
-  // Still Wrapped,Poor - Slightly Damaged,Bad - Damaged,Good,Fair,Excellent
   unknown,
   bad,
   poor,
@@ -9,7 +8,7 @@ enum Condition {
   mint,
 }
 
-final Map<Condition, String> conditionFormFieldValues = {
+final conditionFormFieldValues = <Condition, String>{
   Condition.unknown: "Not set",
   Condition.good: "Good",
   Condition.excellent: "Excellent",

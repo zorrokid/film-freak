@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:film_freak/models/release_picture.dart';
+import 'package:film_freak/entities/release_picture.dart';
 import 'package:flutter/material.dart';
 
-import '../models/picture_type.dart';
+import '../enums/picture_type.dart';
 import 'package:path/path.dart' as p;
 
 final _listItems = pictureTypeFormFieldValues.entries.map((e) {

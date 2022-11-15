@@ -1,4 +1,4 @@
-import 'package:film_freak/models/picture_type.dart';
+import 'package:film_freak/enums/picture_type.dart';
 
 class ReleasePicture {
   // when creating a new entity id is set after entity is saved to db:

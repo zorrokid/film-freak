@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
-import 'package:film_freak/models/movie_release.dart';
+import 'package:film_freak/entities/movie_release.dart';
 
 class CollectionModel extends ChangeNotifier {
   final List<MovieRelease> _movieReleases = [];

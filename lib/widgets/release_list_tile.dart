@@ -1,8 +1,8 @@
-import 'package:film_freak/models/movie_release.dart';
+import 'package:film_freak/entities/movie_release.dart';
 import 'package:film_freak/screens/release_view.dart';
 import 'package:flutter/material.dart';
 
-import '../models/media_type.dart';
+import '../enums/media_type.dart';
 import 'condition_icon.dart';
 
 class ReleaseListTile extends StatelessWidget {
