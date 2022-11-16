@@ -25,9 +25,12 @@ class CollectionModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addAll(Iterable<MovieRelease> movieReleases) {
+  void reset(Iterable<MovieRelease> movieReleases, bool notify) {
+    _movieReleases.clear();
     _movieReleases.addAll(movieReleases);
-    notifyListeners();
+    if (notify) {
+      notifyListeners();
+    }
   }
 
   void update(MovieRelease movieRelease) {

@@ -79,7 +79,7 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
               if (!snapshot.hasData) {
                 return const Spinner();
               }
-              //cart.movieReleases.addAll(snapshot.data! as List<MovieRelease>);
+              cart.reset(snapshot.data! as List<MovieRelease>, false);
               return ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
