@@ -9,7 +9,11 @@ class ReleasePicturesRepository extends RepositoryBase<ReleasePicture> {
   ReleasePicturesRepository(DatabaseProvider databaseProvider)
       : super(databaseProvider, 'releasePictures');
 
-  Future<List<int>> upsert(List<ReleasePicture> releasePictures) async {
+  Future<List<int>> upsert(
+      int releaseId, List<ReleasePicture> releasePictures) async {
+    for (final releasePic in releasePictures) {
+      releasePic.releaseId = releaseId;
+    }
     final ids = <int>[];
     Database db = await databaseProvider.database;
     for (var pic in releasePictures) {
@@ -26,15 +30,9 @@ class ReleasePicturesRepository extends RepositoryBase<ReleasePicture> {
     return super.getBy(releaseId, "releaseId", fromMap);
   }
 
-  Future<int> delete(int picId) async {
-    Database db = await databaseProvider.database;
-    return await db.delete(tableName, where: 'id = $picId');
-  }
-
   ReleasePicture fromMap(Map<String, dynamic> map) {
-    return ReleasePicture(
+    return ReleasePicture(map['releaseId'] as int,
         id: map['id'] as int,
-        releaseId: map['releaseId'] as int,
         filename: map['filename'],
         pictureType: PictureType.values[map['pictureType'] as int]);
   }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:film_freak/entities/release_property.dart';
 import 'package:film_freak/enums/release_property_type.dart';
 import 'package:film_freak/models/movie_release_view_model.dart';
 import 'package:film_freak/enums/picture_type.dart';
@@ -59,9 +60,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
   CaseType _caseType = CaseType.unknown;
   Condition _condition = Condition.unknown;
   bool? _hasSlipCover;
-  List<ReleasePicture> _releasePictures = <ReleasePicture>[];
-  final _releasePicturesToDelete = <ReleasePicture>[];
-  List<ReleasePropertyType> _properties = <ReleasePropertyType>[];
+  List<ReleasePicture> _pictures = <ReleasePicture>[];
+  final _picturesToDelete = <ReleasePicture>[];
+  List<ReleaseProperty> _properties = <ReleaseProperty>[];
 
   @override
   void initState() {
@@ -73,9 +74,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   void _selectedImageChanged(PictureType pictureType) {
-    if (_releasePictures.isEmpty) return;
+    if (_pictures.isEmpty) return;
     setState(() {
-      _releasePictures[_selectedPicIndex].pictureType = pictureType;
+      _pictures[_selectedPicIndex].pictureType = pictureType;
     });
   }
 
@@ -136,9 +137,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   Future<String?> _getSelectedImagePath() async {
-    if (_releasePictures.isEmpty) return null;
-    if (_selectedPicIndex > _releasePictures.length - 1) return null;
-    final selectedPic = _releasePictures[_selectedPicIndex];
+    if (_pictures.isEmpty) return null;
+    if (_selectedPicIndex > _pictures.length - 1) return null;
+    final selectedPic = _pictures[_selectedPicIndex];
     final saveDir = await getReleasePicsSaveDir();
     final path = p.join(saveDir.path, selectedPic.filename);
     return path;
@@ -164,7 +165,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   void nextPic() {
-    if (_selectedPicIndex == _releasePictures.length - 1) {
+    if (_selectedPicIndex == _pictures.length - 1) {
       return;
     }
     setState(() {
@@ -177,7 +178,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
         ? _movieReleaseService.initializeModel(_barcode)
         : await _movieReleaseService.getReleaseData(_id!);
 
-    _releasePictures = model.releasePictures;
+    _pictures = model.releasePictures;
+    _properties = model.releaseProperties;
     return model;
   }
 
@@ -193,42 +195,41 @@ class _ReleaseFormState extends State<ReleaseForm> {
         notes: _notesController.text);
 
     return MovieReleaseViewModel(
-        release: release,
-        releasePictures: _releasePictures,
-        releaseProperties: _properties);
+      release: release,
+      releasePictures: _pictures,
+      releaseProperties: _properties,
+    );
   }
 
   void _onPictureSelected(String filename) {
-    final newPic = ReleasePicture(
-        filename: filename,
-        pictureType: PictureType.coverFront,
-        releaseId: _id);
+    final newPic = ReleasePicture(_id,
+        filename: filename, pictureType: PictureType.coverFront);
     setState(() {
-      _releasePictures.add(newPic);
-      _selectedPicIndex = _releasePictures.length - 1;
+      _pictures.add(newPic);
+      _selectedPicIndex = _pictures.length - 1;
     });
   }
 
   Future<void> _onDelete() async {
-    if (_releasePictures.isEmpty) return;
-    final picToDelete = _releasePictures[_selectedPicIndex];
+    if (_pictures.isEmpty) return;
+    final picToDelete = _pictures[_selectedPicIndex];
 
     if (picToDelete.id != null) {
-      _releasePictures.removeWhere((element) => element.id == picToDelete.id);
+      _pictures.removeWhere((element) => element.id == picToDelete.id);
     } else {
-      _releasePictures
+      _pictures
           .removeWhere((element) => element.filename == picToDelete.filename);
     }
     final newIndex = _selectedPicIndex > 0 ? _selectedPicIndex-- : 0;
     setState(() {
       _selectedPicIndex = newIndex;
-      _releasePicturesToDelete.add(picToDelete);
+      _picturesToDelete.add(picToDelete);
     });
   }
 
   Future<void> _onCropPressed() async {
-    if (_releasePictures.isEmpty) return;
-    final picToCrop = _releasePictures[_selectedPicIndex];
+    if (_pictures.isEmpty) return;
+    final picToCrop = _pictures[_selectedPicIndex];
     final picDir = await getReleasePicsSaveDir();
     final imagePath = p.join(picDir.path, picToCrop.filename);
     if (!mounted) return;
@@ -240,11 +241,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   Future<void> selectProperties() async {
-    final List<ReleasePropertyType>? selectedProperties =
-        await Navigator.push(context,
-            MaterialPageRoute<List<ReleasePropertyType>>(builder: (context) {
+    final List<ReleaseProperty>? selectedProperties = await Navigator.push(
+        context, MaterialPageRoute<List<ReleaseProperty>>(builder: (context) {
       return PropertySelectionView(
         initialSelection: _properties,
+        releaseId: _id,
       );
     }));
     if (selectedProperties != null) {
@@ -286,7 +287,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
         final picDir = await getReleasePicsSaveDir();
 
-        for (final picToDelete in _releasePicturesToDelete) {
+        for (final picToDelete in _picturesToDelete) {
           final imagePath = p.join(picDir.path, picToDelete.filename);
           final imageFile = File(imagePath);
           await imageFile.delete();
@@ -318,7 +319,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
             _barcodeController.text = viewModel.release.barcode;
             _nameController.text = viewModel.release.name;
             _notesController.text = viewModel.release.notes;
-            _releasePictures = viewModel.releasePictures;
+            _pictures = viewModel.releasePictures;
 
             return Form(
               key: _formKey,
@@ -333,19 +334,18 @@ class _ReleaseFormState extends State<ReleaseForm> {
                             )
                           : const Icon(Icons.arrow_back),
                       Expanded(
-                          child: _releasePictures.isNotEmpty
+                          child: _pictures.isNotEmpty
                               ? ImageWidget(
                                   onValueChanged: _selectedImageChanged,
-                                  releasePicture:
-                                      _releasePictures[_selectedPicIndex],
+                                  releasePicture: _pictures[_selectedPicIndex],
                                   saveDirPath: saveDir.path,
                                 )
                               : const Icon(
                                   Icons.image,
                                   size: 200,
                                 )),
-                      _releasePictures.length > 1 &&
-                              _selectedPicIndex <= _releasePictures.length
+                      _pictures.length > 1 &&
+                              _selectedPicIndex <= _pictures.length
                           ? IconButton(
                               onPressed: nextPic,
                               icon: const Icon(Icons.arrow_forward))
@@ -354,10 +354,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
                   ),
                   Row(children: [
                     Expanded(
-                      child: _releasePictures.isEmpty
+                      child: _pictures.isEmpty
                           ? const Text('No pictures')
                           : Text(
-                              '${_selectedPicIndex + 1}/${_releasePictures.length}'),
+                              '${_selectedPicIndex + 1}/${_pictures.length}'),
                     ),
                     ReleasePictureDelete(onDelete: _onDelete),
                     ReleasePictureCrop(onCropPressed: _onCropPressed),
@@ -427,7 +427,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                                   borderRadius: BorderRadius.circular(5)),
                               child: Padding(
                                 padding: const EdgeInsets.all(3),
-                                child: Text(releasePropertyFieldValues[e]!),
+                                child: Text(releasePropertyFieldValues[
+                                    e.propertyType]!),
                               ),
                             ),
                           ),

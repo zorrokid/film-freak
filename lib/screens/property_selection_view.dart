@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../entities/release_property.dart';
 import '../enums/release_property_type.dart';
 
 class PropertySelectionView extends StatefulWidget {
-  final List<ReleasePropertyType>? initialSelection;
-  const PropertySelectionView({super.key, this.initialSelection});
+  final int? releaseId;
+  final List<ReleaseProperty>? initialSelection;
+  const PropertySelectionView(
+      {super.key, required this.initialSelection, required this.releaseId});
   @override
   State<StatefulWidget> createState() {
     return _PropertySelectionViewState();
@@ -12,7 +15,7 @@ class PropertySelectionView extends StatefulWidget {
 }
 
 class _PropertySelectionViewState extends State<PropertySelectionView> {
-  final selection = <ReleasePropertyType>[];
+  final selection = <ReleaseProperty>[];
   @override
   void initState() {
     super.initState();
@@ -22,13 +25,13 @@ class _PropertySelectionViewState extends State<PropertySelectionView> {
   }
 
   void toggleSelection(ReleasePropertyType value) {
-    if (selection.contains(value)) {
+    if (selection.any((element) => element.propertyType == value)) {
       setState(() {
-        selection.remove(value);
+        selection.removeWhere((e) => e.propertyType == value);
       });
     } else {
       setState(() {
-        selection.add(value);
+        selection.add(ReleaseProperty(widget.releaseId, propertyType: value));
       });
     }
   }
@@ -47,7 +50,8 @@ class _PropertySelectionViewState extends State<PropertySelectionView> {
             children: releasePropertyFieldValues.entries
                 .map((entry) => ListTile(
                       title: Text(entry.value),
-                      trailing: selection.contains(entry.key)
+                      trailing: selection.any(
+                              (element) => element.propertyType == entry.key)
                           ? const Icon(Icons.check)
                           : null,
                       onTap: () => toggleSelection(entry.key),

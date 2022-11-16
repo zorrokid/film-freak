@@ -22,8 +22,7 @@ class MovieReleaseService {
     return MovieReleaseViewModel(
         release: release,
         releasePictures: releasePictures.toList(),
-        releaseProperties:
-            releaseProperties.map((e) => e.propertyType).toList());
+        releaseProperties: releaseProperties.toList());
   }
 
   MovieReleaseViewModel initializeModel(String? barcode) {
@@ -38,11 +37,13 @@ class MovieReleaseService {
     if (viewModel.release.id != null) {
       id = viewModel.release.id!;
       await _deleteObsoletedPics(viewModel);
+      await _deleteObsoletedProperties(viewModel);
       await _releaseRepository.updateRelease(viewModel.release);
     } else {
       id = await _releaseRepository.insertRelease(viewModel.release);
     }
-    await _releasePicturesRepository.upsert(viewModel.releasePictures);
+    await _releasePicturesRepository.upsert(id, viewModel.releasePictures);
+    await _releasePropertiesRepository.upsert(id, viewModel.releaseProperties);
 
     return id;
   }
@@ -51,12 +52,23 @@ class MovieReleaseService {
     final id = model.release.id!;
     final originalPicsInDb =
         await _releasePicturesRepository.getByReleaseId(id);
-    final originalPicIdsInDb = originalPicsInDb.map((e) => e.id).toList();
     final modifiedPicsIds = model.releasePictures.map((e) => e.id);
     final picIdsToBeDeleted =
-        originalPicIdsInDb.where((e) => !modifiedPicsIds.contains(e));
-    for (final picId in picIdsToBeDeleted) {
-      await _releasePicturesRepository.delete(picId!);
+        originalPicsInDb.where((e) => !modifiedPicsIds.contains(e.id));
+    for (final pic in picIdsToBeDeleted) {
+      await _releasePicturesRepository.delete(pic.id!);
+    }
+  }
+
+  Future<void> _deleteObsoletedProperties(MovieReleaseViewModel model) async {
+    final id = model.release.id!;
+    final originalPropsInDb =
+        await _releasePropertiesRepository.getByReleaseId(id);
+    final modifiedPropTypes = model.releaseProperties;
+    final propsToBeDeleted = originalPropsInDb
+        .where((e) => !modifiedPropTypes.contains(e.propertyType));
+    for (final picId in propsToBeDeleted) {
+      await _releasePropertiesRepository.delete(picId.id!);
     }
   }
 
