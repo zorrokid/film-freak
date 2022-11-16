@@ -1,6 +1,8 @@
+import 'package:film_freak/entities/entity.dart';
+
 import '../enums/release_property_type.dart';
 
-class ReleaseProperty {
+class ReleaseProperty extends Entity<ReleaseProperty> {
   int? id;
   int releaseId;
   ReleasePropertyType propertyType;
@@ -21,14 +23,4 @@ class ReleaseProperty {
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
-
-  static ReleaseProperty fromMap(Map<String, Object?> map) {
-    return ReleaseProperty(
-      id: map['id'] as int,
-      releaseId: map['releaseId'] as int,
-      propertyType: ReleasePropertyType.values[map['propertyType'] as int],
-      createdTime: DateTime.parse(map['createdTime'] as String),
-      modifiedTime: DateTime.parse(map['modifiedTime'] as String),
-    );
-  }
 }

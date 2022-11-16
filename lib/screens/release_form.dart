@@ -193,7 +193,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
         notes: _notesController.text);
 
     return MovieReleaseViewModel(
-        release: release, releasePictures: _releasePictures);
+        release: release,
+        releasePictures: _releasePictures,
+        releaseProperties: _properties);
   }
 
   void _onPictureSelected(String filename) {

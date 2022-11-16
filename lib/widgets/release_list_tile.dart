@@ -11,13 +11,13 @@ class ReleaseListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(release.barcode),
+      title: Text(release.name.isNotEmpty ? release.name : release.barcode),
       subtitle: Text(mediaTypeFormFieldValues[release.mediaType] ?? ""),
       trailing: ConditionIcon(condition: release.condition),
       onTap: () => {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {
-            return ReleaseView(releaseId: release.id!);
+            return ReleaseView(release: release);
           },
         ))
       },

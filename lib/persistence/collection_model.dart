@@ -25,6 +25,11 @@ class CollectionModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addAll(Iterable<MovieRelease> movieReleases) {
+    _movieReleases.addAll(movieReleases);
+    notifyListeners();
+  }
+
   void update(MovieRelease movieRelease) {
     _movieReleases.removeWhere((element) => element.id == movieRelease.id);
     _recent.removeWhere((element) => element.id == movieRelease.id);

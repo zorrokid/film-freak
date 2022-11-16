@@ -2,8 +2,9 @@ import 'package:film_freak/enums/case_type.dart';
 
 import '../enums/condition.dart';
 import '../enums/media_type.dart';
+import 'entity.dart';
 
-class MovieRelease {
+class MovieRelease extends Entity<MovieRelease> {
   // when creating a new release id is set after entity is saved to db:
   int? id;
   String name;
@@ -49,18 +50,4 @@ class MovieRelease {
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
-
-  static MovieRelease fromMap(Map<String, Object?> map) {
-    return MovieRelease(
-        id: map['id'] as int,
-        name: map['name'] as String,
-        mediaType: MediaType.values[map['mediaType'] as int],
-        barcode: map['barcode'] as String,
-        caseType: CaseType.values[map['caseType'] as int],
-        condition: Condition.values[map['condition'] as int],
-        notes: map['notes'] as String,
-        createdTime: DateTime.parse(map['createdTime'] as String),
-        modifiedTime: DateTime.parse(map['modifiedTime'] as String),
-        hasSlipCover: (map['hasSlipCover'] as int) == 1 ? true : false);
-  }
 }

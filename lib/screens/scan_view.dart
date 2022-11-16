@@ -1,5 +1,5 @@
 import 'package:film_freak/persistence/db_provider.dart';
-import 'package:film_freak/persistence/release_repository.dart';
+import 'package:film_freak/persistence/repositories/release_repository.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/recent_list.dart';
@@ -7,7 +7,7 @@ import 'release_form.dart';
 import 'barcode_scanner_view.dart';
 import '../widgets/main_drawer.dart';
 import '../models/movie_releases_list_filter.dart';
-import 'movie_releases_list.dart';
+import 'release_list.dart';
 
 class ScanView extends StatefulWidget {
   const ScanView({super.key});
@@ -19,8 +19,7 @@ class ScanView extends StatefulWidget {
 }
 
 class _ScanViewState extends State<ScanView> {
-  final _repository =
-      ReleaseRepository(databaseProvider: DatabaseProvider.instance);
+  final _repository = ReleaseRepository(DatabaseProvider.instance);
 
   Future<void> barcodeScan() async {
     final barcode = await Navigator.push<String>(context,

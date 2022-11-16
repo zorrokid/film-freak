@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../persistence/collection_model.dart';
-import '../screens/movie_releases_list.dart';
+import '../screens/release_list.dart';
 
 class MainDrawer extends StatefulWidget {
   const MainDrawer({super.key});
