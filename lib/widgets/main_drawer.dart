@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../persistence/collection_model.dart';
+import '../screens/about_view.dart';
 import '../screens/release_list.dart';
 
 class MainDrawer extends StatefulWidget {
@@ -72,7 +73,11 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.pop(context);
                 _showDeleteConfirmDialog(context, cart);
               },
-            )
+            ),
+            ListTile(
+              title: const Text('About'),
+              onTap: () => _navigateFromDrawer(context, const AboutView()),
+            ),
           ],
         ),
       );
