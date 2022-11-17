@@ -1,3 +1,4 @@
+import 'package:film_freak/entities/movie_release.dart';
 import 'package:film_freak/screens/release_form.dart';
 import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,10 @@ class ReleaseView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
-      var release =
-          cart.movieReleases.firstWhere((element) => element.id == releaseId);
+      var release = cart.movieReleases.firstWhere(
+        (element) => element.id == releaseId,
+        orElse: () => MovieRelease.init(),
+      );
       var title = release.name.isNotEmpty ? release.name : release.barcode;
       return Scaffold(
         drawer: const MainDrawer(),
