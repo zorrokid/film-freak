@@ -328,12 +328,15 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 children: [
                   Row(
                     children: [
-                      _selectedPicIndex > 0
-                          ? IconButton(
-                              onPressed: prevPic,
-                              icon: const Icon(Icons.arrow_back),
-                            )
-                          : const Icon(Icons.arrow_back),
+                      SizedBox(
+                          width: 100,
+                          child: _selectedPicIndex > 0
+                              ? IconButton(
+                                  onPressed: prevPic,
+                                  icon: const Icon(Icons.arrow_back),
+                                  iconSize: 32,
+                                )
+                              : null),
                       Expanded(
                           child: _pictures.isNotEmpty
                               ? ImageWidget(
@@ -345,12 +348,16 @@ class _ReleaseFormState extends State<ReleaseForm> {
                                   Icons.image,
                                   size: 200,
                                 )),
-                      _pictures.length > 1 &&
-                              _selectedPicIndex <= _pictures.length
-                          ? IconButton(
-                              onPressed: nextPic,
-                              icon: const Icon(Icons.arrow_forward))
-                          : const Icon(Icons.arrow_forward),
+                      SizedBox(
+                        width: 100,
+                        child: _pictures.length > 1 &&
+                                _selectedPicIndex < _pictures.length - 1
+                            ? IconButton(
+                                onPressed: nextPic,
+                                iconSize: 32,
+                                icon: const Icon(Icons.arrow_forward))
+                            : null,
+                      ),
                     ],
                   ),
                   Row(children: [
