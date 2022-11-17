@@ -86,9 +86,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
       return const BarcodeScannerView();
     }));
 
-    if (!mounted) return;
+    // update barcode only when new content available:
+    if (!mounted || barcode == null || barcode.isEmpty) return;
 
-    _barcodeController.text = barcode ?? "";
+    _barcodeController.text = barcode;
   }
 
   @override
