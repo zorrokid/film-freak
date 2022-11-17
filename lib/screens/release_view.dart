@@ -32,24 +32,45 @@ class ReleaseView extends StatelessWidget {
         appBar: AppBar(
           title: Text(title),
         ),
-        body: ListView(children: [
-          Text(release.barcode),
-          Text(mediaTypeFormFieldValues[release.mediaType] ?? ''),
-          Row(children: [
-            const Text("Case: "),
-            Text(caseTypeFormFieldValues[release.caseType] ?? '')
-          ]),
-          Row(children: [
-            const Text("Condition: "),
-            Text(conditionFormFieldValues[release.condition] ?? '')
-          ]),
-          Row(children: [
-            const Text('Has slipcover: '),
-            release.hasSlipCover
-                ? const Icon(Icons.check_box)
-                : const Icon(Icons.check_box_outline_blank)
-          ]),
-        ]),
+        body: Padding(
+          padding: const EdgeInsets.all(10),
+          child: ListView(
+            children: [
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text('Barcode:'),
+                  ),
+                  Text(release.barcode)
+                ],
+              ),
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text('Media type:'),
+                  ),
+                  Text(mediaTypeFormFieldValues[release.mediaType] ?? ''),
+                ],
+              ),
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text("Case:"),
+                  ),
+                  Text(caseTypeFormFieldValues[release.caseType] ?? ''),
+                ],
+              ),
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text("Condition:"),
+                  ),
+                  Text(conditionFormFieldValues[release.condition] ?? ''),
+                ],
+              ),
+            ],
+          ),
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => edit(context),
           backgroundColor: Colors.green,

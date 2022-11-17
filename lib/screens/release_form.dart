@@ -10,7 +10,7 @@ import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/screens/property_selection_view.dart';
 import 'package:film_freak/widgets/drop_down_form_field.dart';
 import 'package:film_freak/widgets/error_display_widget.dart';
-import 'package:film_freak/widgets/image_widget.dart';
+import 'package:film_freak/widgets/picture_type_selection.dart';
 import 'package:film_freak/widgets/release_pic_delete.dart';
 import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
@@ -181,6 +181,16 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
     _pictures = model.releasePictures;
     _properties = model.releaseProperties;
+    _barcodeController.text = model.release.barcode;
+    _nameController.text = model.release.name;
+    _notesController.text = model.release.notes;
+    _pictures = model.releasePictures;
+    _mediaType = model.release.mediaType;
+    _caseType = model.release.caseType;
+    _condition = model.release.condition;
+
+    // do not setState!
+
     return model;
   }
 
@@ -317,10 +327,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
             final MovieReleaseViewModel viewModel = snapshot.data![0];
             final Directory saveDir = snapshot.data![1];
-            _barcodeController.text = viewModel.release.barcode;
-            _nameController.text = viewModel.release.name;
-            _notesController.text = viewModel.release.notes;
-            _pictures = viewModel.releasePictures;
 
             return Form(
               key: _formKey,
@@ -339,7 +345,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                               : null),
                       Expanded(
                           child: _pictures.isNotEmpty
-                              ? ImageWidget(
+                              ? PictureTypeSelection(
                                   onValueChanged: _selectedImageChanged,
                                   releasePicture: _pictures[_selectedPicIndex],
                                   saveDirPath: saveDir.path,
@@ -355,7 +361,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                             ? IconButton(
                                 onPressed: nextPic,
                                 iconSize: 32,
-                                icon: const Icon(Icons.arrow_forward))
+                                icon: const Icon(Icons.arrow_forward),
+                              )
                             : null,
                       ),
                     ],
@@ -378,7 +385,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       controller: _nameController,
                       decoration: const InputDecoration(
                           label: Text.rich(TextSpan(children: <InlineSpan>[
-                        WidgetSpan(child: Text('Release name')),
+                        WidgetSpan(
+                          child: Text('Release name'),
+                        ),
                         WidgetSpan(
                             child: Text(
                           '*',
@@ -387,8 +396,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       ]))),
                     )),
                     IconButton(
-                        onPressed: getNameTextFromImage,
-                        icon: const Icon(Icons.image))
+                      onPressed: getNameTextFromImage,
+                      icon: const Icon(Icons.image),
+                    )
                   ]),
                   DropDownFormField(
                       initialValue: viewModel.release.mediaType,
@@ -412,7 +422,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       controller: _barcodeController,
                       decoration: const InputDecoration(
                           label: Text.rich(TextSpan(children: <InlineSpan>[
-                        WidgetSpan(child: Text('Barcode')),
+                        WidgetSpan(
+                          child: Text('Barcode'),
+                        ),
                         WidgetSpan(
                             child: Text(
                           '*',
@@ -431,8 +443,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
                             padding: const EdgeInsets.all(3),
                             child: Container(
                               decoration: BoxDecoration(
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(5)),
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.all(3),
                                 child: Text(releasePropertyFieldValues[
@@ -444,8 +457,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
                         .toList(),
                   ),
                   ElevatedButton(
-                      onPressed: selectProperties,
-                      child: const Text('Select properties')),
+                    onPressed: selectProperties,
+                    child: const Text('Select properties'),
+                  ),
                   TextFormField(
                     controller: _notesController,
                     maxLines: 3,

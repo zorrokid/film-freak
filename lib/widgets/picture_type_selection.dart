@@ -10,8 +10,8 @@ final _listItems = pictureTypeFormFieldValues.entries.map((e) {
   return DropdownMenuItem(value: e.key, child: Text(e.value));
 }).toList();
 
-class ImageWidget extends StatelessWidget {
-  const ImageWidget(
+class PictureTypeSelection extends StatelessWidget {
+  const PictureTypeSelection(
       {required this.onValueChanged,
       required this.releasePicture,
       required this.saveDirPath,
