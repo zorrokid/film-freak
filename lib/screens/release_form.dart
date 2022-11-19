@@ -27,6 +27,7 @@ import '../services/movie_release_service.dart';
 import '../utils/directory_utils.dart';
 import 'package:path/path.dart' as p;
 
+import '../widgets/preview_pic.dart';
 import '../widgets/release_pic_crop.dart';
 import '../widgets/release_pic_selection.dart';
 import 'image_process_view.dart';
@@ -340,10 +341,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       SizedBox(
                           width: 100,
                           child: _selectedPicIndex > 0
-                              ? IconButton(
-                                  onPressed: prevPic,
-                                  icon: const Icon(Icons.arrow_back),
-                                  iconSize: 32,
+                              ? PreviewPic(
+                                  releasePicture:
+                                      _pictures[_selectedPicIndex - 1],
+                                  saveDirPath: saveDir.path,
+                                  picTapped: prevPic,
                                 )
                               : null),
                       Expanded(
@@ -362,10 +364,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
                         width: 100,
                         child: _pictures.length > 1 &&
                                 _selectedPicIndex < _pictures.length - 1
-                            ? IconButton(
-                                onPressed: nextPic,
-                                iconSize: 32,
-                                icon: const Icon(Icons.arrow_forward),
+                            ? PreviewPic(
+                                releasePicture:
+                                    _pictures[_selectedPicIndex + 1],
+                                saveDirPath: saveDir.path,
+                                picTapped: nextPic,
                               )
                             : null,
                       ),

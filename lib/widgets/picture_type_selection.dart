@@ -4,7 +4,7 @@ import 'package:film_freak/entities/release_picture.dart';
 import 'package:flutter/material.dart';
 
 import '../enums/picture_type.dart';
-import 'package:path/path.dart' as p;
+import 'package:path/path.dart';
 
 final _listItems = pictureTypeFormFieldValues.entries.map((e) {
   return DropdownMenuItem(value: e.key, child: Text(e.value));
@@ -26,7 +26,7 @@ class PictureTypeSelection extends StatelessWidget {
   }
 
   File _loadImage() {
-    final imagePath = p.join(saveDirPath, releasePicture.filename);
+    final imagePath = join(saveDirPath, releasePicture.filename);
     final imageFile = File(imagePath);
     return imageFile;
   }
