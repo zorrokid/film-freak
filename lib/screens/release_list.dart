@@ -32,7 +32,14 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
   }
 
   Future<List<MovieRelease>> _getReleases() async {
-    return (await releaseService.getMovieReleases()).toList();
+    Iterable<MovieRelease> releases = await releaseService.getMovieReleases();
+    if (widget.filter != null) {
+      if (widget.filter!.barcode != null) {
+        releases = releases
+            .where((element) => element.barcode == widget.filter!.barcode);
+      }
+    }
+    return releases.toList();
   }
 
   List<MovieRelease> filterReleases(
@@ -50,16 +57,7 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
 
   @override
   Widget build(BuildContext context) {
-    //MovieReleasesListFilter? filter;
     return Consumer<CollectionModel>(builder: (context, cart, child) {
-      // List<MovieRelease> items = filterReleases(cart.movieReleases, filter);
-
-      // if (filter != null) {
-      //   if (filter.barcode != null) {
-      //     items = items.where((i) => i.barcode == filter.barcode).toList();
-      //   }
-      // }
-
       void addRelease() {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return const ReleaseForm();
@@ -68,24 +66,32 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
 
       return Scaffold(
         drawer: const MainDrawer(),
-        appBar: AppBar(title: const Text('Results')),
+        appBar: AppBar(
+          title: const Text('Results'),
+        ),
         body: FutureBuilder(
-            future: _futureGetReleases,
-            builder:
-                (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-              if (snapshot.hasError) {
-                return ErrorDisplayWidget(snapshot.error.toString());
-              }
-              if (!snapshot.hasData) {
-                return const Spinner();
-              }
-              cart.reset(snapshot.data! as List<MovieRelease>, false);
-              return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    return ReleaseListTile(release: snapshot.data![index]);
-                  });
-            }),
+          future: _futureGetReleases,
+          builder:
+              (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+            if (snapshot.hasError) {
+              return ErrorDisplayWidget(
+                snapshot.error.toString(),
+              );
+            }
+            if (!snapshot.hasData) {
+              return const Spinner();
+            }
+            cart.reset(snapshot.data! as List<MovieRelease>, false);
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return ReleaseListTile(
+                  release: snapshot.data![index],
+                );
+              },
+            );
+          },
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: addRelease,
           backgroundColor: Colors.green,
