@@ -39,11 +39,16 @@ class _CaseTypeSelectionState extends State<CaseTypeSelection> {
         break;
       }
     }
-    return ToggleButtons(
-      direction: Axis.horizontal,
-      isSelected: _ratioTypes,
-      onPressed: _setSelected,
-      children: ratioTypes,
+    return Row(
+      children: [
+        const Expanded(child: Text("Select aspect ratio: ")),
+        ToggleButtons(
+          direction: Axis.horizontal,
+          isSelected: _ratioTypes,
+          onPressed: _setSelected,
+          children: ratioTypes,
+        )
+      ],
     );
   }
 }
