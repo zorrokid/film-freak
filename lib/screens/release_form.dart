@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:film_freak/entities/release_property.dart';
 import 'package:film_freak/enums/release_property_type.dart';
+import 'package:film_freak/extensions/string_extensions.dart';
 import 'package:film_freak/models/movie_release_view_model.dart';
 import 'package:film_freak/enums/picture_type.dart';
 import 'package:film_freak/entities/release_picture.dart';
@@ -271,8 +272,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
       Future<void> getNameTextFromImage() async {
         final text = await _getImageTextSelection(context);
+
         if (text != null) {
-          _nameController.value = TextEditingValue(text: text);
+          _nameController.value =
+              TextEditingValue(text: text.capitalizeEachWord());
         }
       }
 
