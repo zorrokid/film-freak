@@ -27,6 +27,7 @@ import '../services/movie_release_service.dart';
 import '../utils/directory_utils.dart';
 import 'package:path/path.dart' as p;
 
+import '../widgets/decorated_text_form_field.dart';
 import '../widgets/preview_pic.dart';
 import '../widgets/release_pic_crop.dart';
 import '../widgets/release_pic_selection.dart';
@@ -268,18 +269,23 @@ class _ReleaseFormState extends State<ReleaseForm> {
     }
   }
 
+  Future<void> getTextFromImage(
+      BuildContext context, TextEditingController controller,
+      {bool capitalizeWords = false}) async {
+    String? text = await _getImageTextSelection(context);
+
+    if (text == null) {
+      return;
+    }
+    if (capitalizeWords) {
+      text = text.capitalizeEachWord();
+    }
+    controller.value = TextEditingValue(text: text);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
-      Future<void> getNameTextFromImage() async {
-        final text = await _getImageTextSelection(context);
-
-        if (text != null) {
-          _nameController.value =
-              TextEditingValue(text: text.capitalizeEachWord());
-        }
-      }
-
       Future<void> submit() async {
         if (!_formKey.currentState!.validate()) return;
         final viewModel = _buildModel();
@@ -385,63 +391,56 @@ class _ReleaseFormState extends State<ReleaseForm> {
                     ReleasePictureCrop(onCropPressed: _onCropPressed),
                     ReleasePictureSelection(onValueChanged: _onPictureSelected)
                   ]),
-                  Row(children: [
-                    Expanded(
-                        child: TextFormField(
-                      //validator: _textInputValidator,
-                      controller: _nameController,
-                      decoration: const InputDecoration(
-                          label: Text.rich(TextSpan(children: <InlineSpan>[
-                        WidgetSpan(
-                          child: Text('Release name'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DecoratedTextFormField(
+                          controller: _nameController,
+                          label: 'Release name',
+                          required: true,
                         ),
-                        WidgetSpan(
-                            child: Text(
-                          '*',
-                          style: TextStyle(color: Colors.red),
-                        )),
-                      ]))),
-                    )),
-                    IconButton(
-                      onPressed: getNameTextFromImage,
-                      icon: const Icon(Icons.image),
-                    )
-                  ]),
+                      ),
+                      IconButton(
+                        onPressed: () => getTextFromImage(
+                            context, _nameController,
+                            capitalizeWords: true),
+                        icon: const Icon(Icons.image),
+                      )
+                    ],
+                  ),
                   DropDownFormField(
-                      initialValue: viewModel.release.mediaType,
-                      values: mediaTypeFormFieldValues,
-                      onValueChange: onMediaTypeSelected,
-                      labelText: 'Media type'),
+                    initialValue: viewModel.release.mediaType,
+                    values: mediaTypeFormFieldValues,
+                    onValueChange: onMediaTypeSelected,
+                    labelText: 'Media type',
+                  ),
                   DropDownFormField(
-                      initialValue: viewModel.release.caseType,
-                      values: caseTypeFormFieldValues,
-                      onValueChange: onCaseTypeSelected,
-                      labelText: 'Case type'),
+                    initialValue: viewModel.release.caseType,
+                    values: caseTypeFormFieldValues,
+                    onValueChange: onCaseTypeSelected,
+                    labelText: 'Case type',
+                  ),
                   DropDownFormField(
-                      initialValue: viewModel.release.condition,
-                      values: conditionFormFieldValues,
-                      onValueChange: onConditionSelected,
-                      labelText: 'Condition'),
-                  Row(children: [
-                    Expanded(
-                        child: TextFormField(
-                      validator: _textInputValidator,
-                      controller: _barcodeController,
-                      decoration: const InputDecoration(
-                          label: Text.rich(TextSpan(children: <InlineSpan>[
-                        WidgetSpan(
-                          child: Text('Barcode'),
+                    initialValue: viewModel.release.condition,
+                    values: conditionFormFieldValues,
+                    onValueChange: onConditionSelected,
+                    labelText: 'Condition',
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DecoratedTextFormField(
+                          validator: _textInputValidator,
+                          controller: _barcodeController,
+                          label: 'Barcode',
+                          required: true,
                         ),
-                        WidgetSpan(
-                            child: Text(
-                          '*',
-                          style: TextStyle(color: Colors.red),
-                        )),
-                      ]))),
-                    )),
-                    IconButton(
-                        onPressed: barcodeScan, icon: const Icon(Icons.camera)),
-                  ]),
+                      ),
+                      IconButton(
+                          onPressed: barcodeScan,
+                          icon: const Icon(Icons.camera)),
+                    ],
+                  ),
                   Wrap(
                     alignment: WrapAlignment.center,
                     children: _properties
@@ -467,10 +466,26 @@ class _ReleaseFormState extends State<ReleaseForm> {
                     onPressed: selectProperties,
                     child: const Text('Select properties'),
                   ),
-                  TextFormField(
-                    controller: _notesController,
-                    maxLines: 3,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DecoratedTextFormField(
+                          controller: _notesController,
+                          label: 'Notes',
+                          required: false,
+                          maxLines: 3,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () =>
+                            getTextFromImage(context, _notesController),
+                        icon: const Icon(Icons.image),
+                      ),
+                    ],
                   ),
+                  const SizedBox(
+                    height: 100,
+                  )
                 ],
               ),
             );
