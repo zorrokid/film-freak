@@ -3,10 +3,6 @@ import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/repositories/repository_base.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../enums/case_type.dart';
-import '../../enums/condition.dart';
-import '../../enums/media_type.dart';
-
 class ReleaseRepository extends RepositoryBase {
   ReleaseRepository(DatabaseProvider databaseProvider)
       : super(databaseProvider, 'releases');
@@ -33,7 +29,7 @@ class ReleaseRepository extends RepositoryBase {
     Database db = await databaseProvider.database;
     List<Map<String, Object?>> queryResult =
         await db.rawQuery('SELECT * FROM $tableName');
-    var result = queryResult.map<MovieRelease>((e) => fromMap(e));
+    var result = queryResult.map<MovieRelease>((e) => MovieRelease.fromMap(e));
     return result;
   }
 
@@ -41,7 +37,7 @@ class ReleaseRepository extends RepositoryBase {
     Database db = await databaseProvider.database;
     List<Map<String, Object?>> queryResult =
         await db.rawQuery("SELECT * FROM $tableName WHERE id='$id'");
-    var result = queryResult.map<MovieRelease>((e) => fromMap(e));
+    var result = queryResult.map<MovieRelease>((e) => MovieRelease.fromMap(e));
     return result.first;
   }
 
@@ -50,19 +46,5 @@ class ReleaseRepository extends RepositoryBase {
     List<Map<String, Object?>> result = await db
         .rawQuery("SELECT COUNT(*) FROM $tableName WHERE barcode='$barcode'");
     return Sqflite.firstIntValue(result)! > 0;
-  }
-
-  MovieRelease fromMap(Map<String, Object?> map) {
-    return MovieRelease(
-        id: map['id'] as int,
-        name: map['name'] as String,
-        mediaType: MediaType.values[map['mediaType'] as int],
-        barcode: map['barcode'] as String,
-        caseType: CaseType.values[map['caseType'] as int],
-        condition: Condition.values[map['condition'] as int],
-        notes: map['notes'] as String,
-        createdTime: DateTime.parse(map['createdTime'] as String),
-        modifiedTime: DateTime.parse(map['modifiedTime'] as String),
-        hasSlipCover: (map['hasSlipCover'] as int) == 1 ? true : false);
   }
 }

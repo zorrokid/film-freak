@@ -1,0 +1,11 @@
+[
+    {
+        "name": "Test",
+        "mediaType": 1,
+        "barcode": "1234123423",
+        "caseType": "1",
+        "condition": "1",
+        "notes": "note",
+        "hasSlipCover": false
+      }
+]

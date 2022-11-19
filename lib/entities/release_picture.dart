@@ -26,4 +26,11 @@ class ReleasePicture extends ChildEntity<ReleasePicture> {
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
+
+  static ReleasePicture fromMap(Map<String, dynamic> map) {
+    return ReleasePicture(map['releaseId'] as int,
+        id: map['id'] as int,
+        filename: map['filename'],
+        pictureType: PictureType.values[map['pictureType'] as int]);
+  }
 }

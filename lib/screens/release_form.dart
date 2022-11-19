@@ -344,16 +344,17 @@ class _ReleaseFormState extends State<ReleaseForm> {
                                 )
                               : null),
                       Expanded(
-                          child: _pictures.isNotEmpty
-                              ? PictureTypeSelection(
-                                  onValueChanged: _selectedImageChanged,
-                                  releasePicture: _pictures[_selectedPicIndex],
-                                  saveDirPath: saveDir.path,
-                                )
-                              : const Icon(
-                                  Icons.image,
-                                  size: 200,
-                                )),
+                        child: _pictures.isNotEmpty
+                            ? PictureTypeSelection(
+                                onValueChanged: _selectedImageChanged,
+                                releasePicture: _pictures[_selectedPicIndex],
+                                saveDirPath: saveDir.path,
+                              )
+                            : const Icon(
+                                Icons.image,
+                                size: 200,
+                              ),
+                      ),
                       SizedBox(
                         width: 100,
                         child: _pictures.length > 1 &&
