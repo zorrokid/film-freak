@@ -23,9 +23,6 @@ class ImageProcessView extends StatefulWidget {
 }
 
 class _ImageProcessViewState extends State<ImageProcessView> {
-  final TransformationController _transformationController =
-      TransformationController();
-
   ui.Image? _image;
 
   bool isDown = false;
@@ -34,9 +31,8 @@ class _ImageProcessViewState extends State<ImageProcessView> {
   bool translateImage = false;
   double ratio = 1.0;
 
-  CaseType caseType = CaseType.regularDvd;
-
-  List<Point<double>> selectionPoints = <Point<double>>[];
+  late CaseType caseType;
+  late List<Point<double>> selectionPoints;
 
   List<Point<double>> _initSelectionPoints(ui.Image image) {
     final width = image.width;
@@ -53,6 +49,13 @@ class _ImageProcessViewState extends State<ImageProcessView> {
       Point(xMax, yMax),
       Point(xMin, yMax)
     ];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    caseType = CaseType.regularDvd;
+    selectionPoints = <Point<double>>[];
   }
 
   void _loadImage() {
@@ -119,7 +122,9 @@ class _ImageProcessViewState extends State<ImageProcessView> {
   }
 
   void _onCaseTypeChanged(CaseType selectedCaseType) {
-    caseType = selectedCaseType;
+    setState(() {
+      caseType = selectedCaseType;
+    });
   }
 
   @override
@@ -162,8 +167,13 @@ class _ImageProcessViewState extends State<ImageProcessView> {
                         ),
                       ))
                     : const Center(child: CircularProgressIndicator()))),
-        CaseTypeSelection(
-            onValueChanged: _onCaseTypeChanged, caseType: caseType)
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: CaseTypeSelection(
+            onValueChanged: _onCaseTypeChanged,
+            caseType: caseType,
+          ),
+        )
       ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _crop(context),
