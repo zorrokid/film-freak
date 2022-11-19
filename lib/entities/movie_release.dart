@@ -50,4 +50,42 @@ class MovieRelease extends Entity<MovieRelease> {
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
+
+  static MovieRelease fromMap(Map<String, Object?> map) {
+    return MovieRelease(
+        id: map['id'] as int,
+        name: map['name'] as String,
+        mediaType: MediaType.values[map['mediaType'] as int],
+        barcode: map['barcode'] as String,
+        caseType: CaseType.values[map['caseType'] as int],
+        condition: Condition.values[map['condition'] as int],
+        notes: map['notes'] as String,
+        createdTime: DateTime.parse(map['createdTime'] as String),
+        modifiedTime: DateTime.parse(map['modifiedTime'] as String),
+        hasSlipCover: (map['hasSlipCover'] as int) == 1 ? true : false);
+  }
+
+  /* JSON example:
+    {
+      "name": "",
+      "mediaType": "",
+      "barcode": "",
+      "caseType": "",
+      "condition": "",
+      "notes": "",
+      "createdTime": "",
+      "modifiedTime": "",
+      "hasSlipCover": ""
+    }
+  */
+  static MovieRelease fromJson(Map<String, Object?> json) {
+    return MovieRelease(
+        name: json['name'] as String,
+        mediaType: MediaType.values[json['mediaType'] as int],
+        barcode: json['barcode'] as String,
+        caseType: CaseType.values[json['caseType'] as int],
+        condition: Condition.values[json['condition'] as int],
+        notes: json['notes'] as String,
+        hasSlipCover: (json['hasSlipCover'] as int) == 1 ? true : false);
+  }
 }

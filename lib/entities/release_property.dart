@@ -23,4 +23,14 @@ class ReleaseProperty extends ChildEntity<ReleaseProperty> {
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
+
+  static ReleaseProperty fromMap(Map<String, Object?> map) {
+    return ReleaseProperty(
+      map['releaseId'] as int,
+      id: map['id'] as int,
+      propertyType: ReleasePropertyType.values[map['propertyType'] as int],
+      createdTime: DateTime.parse(map['createdTime'] as String),
+      modifiedTime: DateTime.parse(map['modifiedTime'] as String),
+    );
+  }
 }

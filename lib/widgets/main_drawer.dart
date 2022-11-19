@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 
 import '../persistence/collection_model.dart';
 import '../screens/about_view.dart';
+import '../screens/import_view.dart';
 import '../screens/release_list.dart';
+import '../services/file_importer.dart';
 
 class MainDrawer extends StatefulWidget {
   const MainDrawer({super.key});
@@ -66,6 +68,15 @@ class _MainDrawerState extends State<MainDrawer> {
             ListTile(
               title: const Text('Scan'),
               onTap: () => _navigateFromDrawer(context, const ScanView()),
+            ),
+            ListTile(
+              title: const Text('Import'),
+              onTap: () => _navigateFromDrawer(
+                  context,
+                  ImportView(
+                    fileImporter:
+                        FileImporter(dbProvider: DatabaseProvider.instance),
+                  )),
             ),
             ListTile(
               title: const Text('Delete'),

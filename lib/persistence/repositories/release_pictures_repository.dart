@@ -2,7 +2,6 @@ import 'package:film_freak/persistence/repositories/repository_base.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../entities/release_picture.dart';
-import '../../enums/picture_type.dart';
 import '../db_provider.dart';
 
 class ReleasePicturesRepository extends RepositoryBase<ReleasePicture> {
@@ -27,13 +26,6 @@ class ReleasePicturesRepository extends RepositoryBase<ReleasePicture> {
   }
 
   Future<Iterable<ReleasePicture>> getByReleaseId(int releaseId) async {
-    return super.getBy(releaseId, "releaseId", fromMap);
-  }
-
-  ReleasePicture fromMap(Map<String, dynamic> map) {
-    return ReleasePicture(map['releaseId'] as int,
-        id: map['id'] as int,
-        filename: map['filename'],
-        pictureType: PictureType.values[map['pictureType'] as int]);
+    return super.getBy(releaseId, "releaseId", ReleasePicture.fromMap);
   }
 }
