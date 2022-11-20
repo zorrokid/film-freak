@@ -12,12 +12,16 @@ class RecentList extends StatelessWidget {
       void onReleaseDelete(int id) {
         // TODO
       }
+      void onReleaseEdit(int id) {
+        // TODO
+      }
       return ListView.builder(
           itemCount: cart.recentReleases.length,
           itemBuilder: (context, index) {
             return ReleaseListTile(
               release: cart.recentReleases[index],
               onDelete: onReleaseDelete,
+              onEdit: onReleaseEdit,
             );
           });
     });

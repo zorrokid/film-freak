@@ -6,17 +6,25 @@ import '../enums/media_type.dart';
 import 'condition_icon.dart';
 
 typedef OnDeleteCallback = void Function(int id);
+typedef OnEditCallback = void Function(int id);
 
 class ReleaseListTile extends StatelessWidget {
   const ReleaseListTile(
-      {required this.release, required this.onDelete, super.key});
+      {required this.release,
+      required this.onDelete,
+      required this.onEdit,
+      super.key});
   final MovieRelease release;
   final OnDeleteCallback onDelete;
+  final OnEditCallback onEdit;
 
   void menuItemSelected(String? value) {
     switch (value) {
       case 'delete':
         onDelete(release.id!);
+        break;
+      case 'edit':
+        onEdit(release.id!);
         break;
     }
   }
@@ -39,7 +47,11 @@ class ReleaseListTile extends StatelessWidget {
             const PopupMenuItem(
               value: 'delete',
               child: Text('Delete'),
-            )
+            ),
+            const PopupMenuItem(
+              value: 'edit',
+              child: Text('Edit'),
+            ),
           ];
         },
         onSelected: menuItemSelected,

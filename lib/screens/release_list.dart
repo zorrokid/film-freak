@@ -72,6 +72,18 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
         setState(() {});
       }
 
+      Future<void> onReleaseEdit(int id) async {
+        await Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return ReleaseForm(
+              id: id,
+            );
+          },
+        ));
+        _futureGetReleases = _getReleases();
+        setState(() {});
+      }
+
       return Scaffold(
         drawer: const MainDrawer(),
         appBar: AppBar(
@@ -96,6 +108,7 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
                 return ReleaseListTile(
                   release: snapshot.data![index],
                   onDelete: onReleaseDelete,
+                  onEdit: onReleaseEdit,
                 );
               },
             );
