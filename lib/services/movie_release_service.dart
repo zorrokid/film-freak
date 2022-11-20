@@ -1,10 +1,12 @@
 import 'package:film_freak/models/movie_release_view_model.dart';
+import 'package:film_freak/utils/file_utils.dart';
 
 import '../entities/movie_release.dart';
 import '../persistence/db_provider.dart';
 import '../persistence/repositories/release_pictures_repository.dart';
 import '../persistence/repositories/release_properties_repository.dart';
 import '../persistence/repositories/release_repository.dart';
+import '../utils/directory_utils.dart';
 
 class MovieReleaseService {
   final _releaseRepository = ReleaseRepository(DatabaseProvider.instance);
@@ -83,5 +85,21 @@ class MovieReleaseService {
   Future<Iterable<MovieRelease>> getMovieReleases() async {
     final releases = await _releaseRepository.queryReleases();
     return releases;
+  }
+
+  Future<bool> deleteRelease(int releaseId) async {
+    final pics = await _releasePicturesRepository.getByReleaseId(releaseId);
+
+    final fileNames = pics.map((p) => p.filename);
+    final filePath = await getReleasePicsSaveDir();
+    final deletedFileCount = deleteFiles(fileNames, filePath.path);
+    if (deletedFileCount < fileNames.length) {
+      return false;
+    }
+    await _releasePicturesRepository.delete(releaseId);
+    await _releasePropertiesRepository.delete(releaseId);
+    await _releaseRepository.delete(releaseId);
+
+    return true;
   }
 }
