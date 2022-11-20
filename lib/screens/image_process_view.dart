@@ -127,6 +127,13 @@ class _ImageProcessViewState extends State<ImageProcessView> {
     });
   }
 
+  double _getSafeHeight(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    var safeHeight = height - padding.top - padding.bottom;
+    return safeHeight;
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: use FutureBuilder
@@ -135,27 +142,32 @@ class _ImageProcessViewState extends State<ImageProcessView> {
     }
     return Scaffold(
       appBar: AppBar(title: const Text('Crop image')),
-      body: Column(children: [
-        Padding(
+      body: Column(
+        children: [
+          Padding(
             padding: const EdgeInsets.all(15.0),
             child: Expanded(
-                child: _image != null
-                    ? FittedBox(
+              child: _image != null
+                  ? ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: 0.75 * _getSafeHeight(context),
+                      ),
+                      child: FittedBox(
                         child: GestureDetector(
-                        onPanStart: (details) {
-                          _down(details);
-                        },
-                        onPanEnd: (details) {
-                          _up();
-                        },
-                        onPanUpdate: (details) {
-                          _move(details);
-                        },
-                        onDoubleTap: () => _crop(context),
-                        child: SizedBox(
-                          width: _image!.width.toDouble(),
-                          height: _image!.height.toDouble(),
-                          child: CustomPaint(
+                          onPanStart: (details) {
+                            _down(details);
+                          },
+                          onPanEnd: (details) {
+                            _up();
+                          },
+                          onPanUpdate: (details) {
+                            _move(details);
+                          },
+                          onDoubleTap: () => _crop(context),
+                          child: SizedBox(
+                            width: _image!.width.toDouble(),
+                            height: _image!.height.toDouble(),
+                            child: CustomPaint(
                               foregroundPainter: SelectionPainter(
                                   down: isDown,
                                   x: x,
@@ -163,18 +175,26 @@ class _ImageProcessViewState extends State<ImageProcessView> {
                                   selectionPoints: selectionPoints),
                               painter: ImagePainter(
                                 image: _image!,
-                              )),
+                              ),
+                            ),
+                          ),
                         ),
-                      ))
-                    : const Center(child: CircularProgressIndicator()))),
-        Padding(
-          padding: const EdgeInsets.all(15),
-          child: CaseTypeSelection(
-            onValueChanged: _onCaseTypeChanged,
-            caseType: caseType,
+                      ),
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+            ),
           ),
-        )
-      ]),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: CaseTypeSelection(
+              onValueChanged: _onCaseTypeChanged,
+              caseType: caseType,
+            ),
+          )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _crop(context),
         backgroundColor: Colors.green,
