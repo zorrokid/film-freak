@@ -41,7 +41,7 @@ class _CaseTypeSelectionState extends State<CaseTypeSelection> {
     }
     return Row(
       children: [
-        const Expanded(child: Text("Select aspect ratio: ")),
+        const Text("Select aspect ratio: "),
         ToggleButtons(
           direction: Axis.horizontal,
           isSelected: _ratioTypes,
