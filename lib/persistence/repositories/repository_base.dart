@@ -21,4 +21,9 @@ class RepositoryBase<T extends ChildEntity> {
     Database db = await databaseProvider.database;
     return await db.delete(tableName, where: 'id = $id');
   }
+
+  Future<int> deleteByIdColumn(int id, String columnName) async {
+    Database db = await databaseProvider.database;
+    return await db.delete(tableName, where: '$columnName = $id');
+  }
 }

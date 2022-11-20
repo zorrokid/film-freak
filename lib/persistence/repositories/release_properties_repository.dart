@@ -28,4 +28,8 @@ class ReleasePropertiesRepository extends RepositoryBase<ReleaseProperty> {
     }
     return ids;
   }
+
+  Future<int> deleteByReleaseId(int releaseId) async {
+    return super.deleteByIdColumn(releaseId, 'releaseId');
+  }
 }
