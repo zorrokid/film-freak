@@ -52,7 +52,7 @@ class _ScanViewState extends State<ScanView> {
     return Scaffold(
       drawer: const MainDrawer(),
       appBar: AppBar(
-        title: const Text('Search'),
+        title: const Text('Scan & view recent'),
       ),
       body: const RecentList(),
       floatingActionButton: FloatingActionButton(
