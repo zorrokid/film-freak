@@ -28,4 +28,8 @@ class ReleasePicturesRepository extends RepositoryBase<ReleasePicture> {
   Future<Iterable<ReleasePicture>> getByReleaseId(int releaseId) async {
     return super.getBy(releaseId, "releaseId", ReleasePicture.fromMap);
   }
+
+  Future<int> deleteByReleaseId(int releaseId) async {
+    return super.deleteByIdColumn(releaseId, 'releaseId');
+  }
 }

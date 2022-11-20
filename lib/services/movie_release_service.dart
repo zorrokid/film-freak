@@ -68,11 +68,12 @@ class MovieReleaseService {
     final id = model.release.id!;
     final originalPropsInDb =
         await _releasePropertiesRepository.getByReleaseId(id);
-    final modifiedPropTypes = model.releaseProperties;
+    final modifiedPropTypes =
+        model.releaseProperties.map((e) => e.propertyType);
     final propsToBeDeleted = originalPropsInDb
         .where((e) => !modifiedPropTypes.contains(e.propertyType));
-    for (final picId in propsToBeDeleted) {
-      await _releasePropertiesRepository.delete(picId.id!);
+    for (final propId in propsToBeDeleted) {
+      await _releasePropertiesRepository.delete(propId.id!);
     }
   }
 
@@ -101,7 +102,8 @@ class MovieReleaseService {
         Skipping deleting from DB.''');
       return false;
     }
-    final picRows = await _releasePicturesRepository.delete(releaseId);
+    final picRows =
+        await _releasePicturesRepository.deleteByReleaseId(releaseId);
 
     if (picRows < pics.length) {
       log.warning('''Count of deleted pic rows $picRows less than 
@@ -109,7 +111,7 @@ class MovieReleaseService {
         Skipping deleting release from DB.''');
       return false;
     }
-    await _releasePropertiesRepository.delete(releaseId);
+    await _releasePropertiesRepository.deleteByReleaseId(releaseId);
     log.info('Deleting relase with id $releaseId.');
     await _releaseRepository.delete(releaseId);
 

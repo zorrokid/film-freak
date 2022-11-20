@@ -234,7 +234,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
       _pictures
           .removeWhere((element) => element.filename == picToDelete.filename);
     }
-    final newIndex = _selectedPicIndex > 0 ? _selectedPicIndex-- : 0;
+    final newIndex = _selectedPicIndex > 0 ? _selectedPicIndex - 1 : 0;
     setState(() {
       _selectedPicIndex = newIndex;
       _picturesToDelete.add(picToDelete);
