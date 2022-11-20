@@ -4,6 +4,7 @@ import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:film_freak/widgets/release_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/confirm_dialog.dart';
 import '../widgets/error_display_widget.dart';
 import '../widgets/spinner.dart';
 import 'release_form.dart';
@@ -55,6 +56,23 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
     return releases;
   }
 
+  Future<bool> _okToDelete(BuildContext context) async {
+    return await showDialog<bool>(
+            context: context,
+            builder: (BuildContext context) {
+              return ConfirmDialog(
+                  title: 'Are you sure?',
+                  message: 'Are you really sure you want to delete the item?',
+                  onContinue: () {
+                    Navigator.pop(context, true);
+                  },
+                  onCancel: () {
+                    Navigator.pop(context, false);
+                  });
+            }) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
@@ -65,11 +83,14 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
       }
 
       Future<void> onReleaseDelete(int id) async {
+        final isOkToDelete = await _okToDelete(context);
+        if (!isOkToDelete) return;
         await releaseService.deleteRelease(id);
         // TODO: data from CollectionModel is not used here
         cart.remove(id);
-        _futureGetReleases = _getReleases();
-        setState(() {});
+        setState(() {
+          _futureGetReleases = _getReleases();
+        });
       }
 
       Future<void> onReleaseEdit(int id) async {
@@ -80,8 +101,9 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
             );
           },
         ));
-        _futureGetReleases = _getReleases();
-        setState(() {});
+        setState(() {
+          _futureGetReleases = _getReleases();
+        });
       }
 
       return Scaffold(
