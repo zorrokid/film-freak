@@ -49,6 +49,7 @@ dependencies:
     path_provider:
     image:
     file_picker:
+    logging:
 
 dev_dependencies:
     flutter_test:

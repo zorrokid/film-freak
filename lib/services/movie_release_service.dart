@@ -1,5 +1,6 @@
 import 'package:film_freak/models/movie_release_view_model.dart';
 import 'package:film_freak/utils/file_utils.dart';
+import 'package:logging/logging.dart';
 
 import '../entities/movie_release.dart';
 import '../persistence/db_provider.dart';
@@ -9,6 +10,7 @@ import '../persistence/repositories/release_repository.dart';
 import '../utils/directory_utils.dart';
 
 class MovieReleaseService {
+  final log = Logger('MovieReleaseService');
   final _releaseRepository = ReleaseRepository(DatabaseProvider.instance);
   final _releasePicturesRepository =
       ReleasePicturesRepository(DatabaseProvider.instance);
@@ -94,10 +96,21 @@ class MovieReleaseService {
     final filePath = await getReleasePicsSaveDir();
     final deletedFileCount = deleteFiles(fileNames, filePath.path);
     if (deletedFileCount < fileNames.length) {
+      log.warning('''Count of deleted files $deletedFileCount less than 
+        count of files to be deleted ${fileNames.length}. 
+        Skipping deleting from DB.''');
       return false;
     }
-    await _releasePicturesRepository.delete(releaseId);
+    final picRows = await _releasePicturesRepository.delete(releaseId);
+
+    if (picRows < pics.length) {
+      log.warning('''Count of deleted pic rows $picRows less than 
+        count of pic rows to be deleted ${pics.length}. 
+        Skipping deleting release from DB.''');
+      return false;
+    }
     await _releasePropertiesRepository.delete(releaseId);
+    log.info('Deleting relase with id $releaseId.');
     await _releaseRepository.delete(releaseId);
 
     return true;
