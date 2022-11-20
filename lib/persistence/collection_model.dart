@@ -45,6 +45,12 @@ class CollectionModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void remove(int id) {
+    _movieReleases.removeWhere((element) => element.id == id);
+    _recent.removeWhere((element) => element.id == id);
+    notifyListeners();
+  }
+
   void setInitialState(List<MovieRelease> releases) {
     _movieReleases.addAll(releases);
   }

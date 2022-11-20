@@ -5,15 +5,45 @@ import 'package:flutter/material.dart';
 import '../enums/media_type.dart';
 import 'condition_icon.dart';
 
+typedef OnDeleteCallback = void Function(int id);
+
 class ReleaseListTile extends StatelessWidget {
-  const ReleaseListTile({required this.release, super.key});
+  const ReleaseListTile(
+      {required this.release, required this.onDelete, super.key});
   final MovieRelease release;
+  final OnDeleteCallback onDelete;
+
+  void menuItemSelected(String? value) {
+    switch (value) {
+      case 'delete':
+        onDelete(release.id!);
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(release.name.isNotEmpty ? release.name : release.barcode),
-      subtitle: Text(mediaTypeFormFieldValues[release.mediaType] ?? ""),
-      trailing: ConditionIcon(condition: release.condition),
+      subtitle: Row(
+        children: [
+          Expanded(
+              child: Text(mediaTypeFormFieldValues[release.mediaType] ?? "")),
+          ConditionIcon(condition: release.condition),
+        ],
+      ),
+      leading: const Icon(Icons.image),
+      trailing: PopupMenuButton(
+        itemBuilder: (context) {
+          return [
+            const PopupMenuItem(
+              value: 'delete',
+              child: Text('Delete'),
+            )
+          ];
+        },
+        onSelected: menuItemSelected,
+      ),
       onTap: () => {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {

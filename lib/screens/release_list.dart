@@ -64,6 +64,14 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
         }));
       }
 
+      Future<void> onReleaseDelete(int id) async {
+        await releaseService.deleteRelease(id);
+        // TODO: data from CollectionModel is not used here
+        cart.remove(id);
+        _futureGetReleases = _getReleases();
+        setState(() {});
+      }
+
       return Scaffold(
         drawer: const MainDrawer(),
         appBar: AppBar(
@@ -87,6 +95,7 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
               itemBuilder: (context, index) {
                 return ReleaseListTile(
                   release: snapshot.data![index],
+                  onDelete: onReleaseDelete,
                 );
               },
             );
