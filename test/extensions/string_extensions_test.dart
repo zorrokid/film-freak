@@ -18,7 +18,7 @@ void main() {
     });
   });
 
-  group('capitalizeEachWord0', () {
+  group('capitalizeEachWord', () {
     test('each word should be capitalized', () {
       const inputString = "hello world!";
       const expextedString = "Hello World!";
@@ -30,6 +30,27 @@ void main() {
       const String inputString = "";
       const expectedString = "";
       final result = inputString.capitalizeEachWord();
+      expect(result, expectedString);
+    });
+  });
+
+  group('normalize', () {
+    test('linebreaks should be removed', () {
+      const String inputString = 'hello \nworld';
+      const String expectedString = 'hello world';
+      final result = inputString.normalize();
+      expect(result, expectedString);
+    });
+    test('tabs should be removed', () {
+      const String inputString = 'hello\t world';
+      const String expectedString = 'hello world';
+      final result = inputString.normalize();
+      expect(result, expectedString);
+    });
+    test('empty space char should remain', () {
+      const String inputString = 'hello world';
+      const String expectedString = 'hello world';
+      final result = inputString.normalize();
       expect(result, expectedString);
     });
   });

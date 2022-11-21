@@ -278,7 +278,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
       return;
     }
     if (capitalizeWords) {
-      text = text.capitalizeEachWord();
+      text = text.normalize().capitalizeEachWord();
     }
     controller.value = TextEditingValue(text: text);
   }

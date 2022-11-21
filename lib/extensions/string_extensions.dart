@@ -10,6 +10,12 @@ extension CaptitalizeExtension on String {
   }
 
   String capitalizeEachWord() {
-    return split(" ").map((e) => e.capitalizeFirstLetter()).join(" ");
+    return split(" ").map((e) => e.trim().capitalizeFirstLetter()).join(" ");
+  }
+}
+
+extension NormalizeExtension on String {
+  String normalize() {
+    return replaceAll(RegExp(r'[\n\t]'), '');
   }
 }
