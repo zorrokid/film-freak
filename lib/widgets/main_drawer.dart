@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../persistence/collection_model.dart';
 import '../screens/about_view.dart';
 import '../screens/import_view.dart';
-import '../screens/release_list.dart';
+import '../screens/movie_releases_list_view.dart';
 import '../services/file_importer.dart';
 
 class MainDrawer extends StatefulWidget {

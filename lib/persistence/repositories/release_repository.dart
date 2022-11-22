@@ -3,6 +3,8 @@ import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/repositories/repository_base.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../models/movie_releases_list_filter.dart';
+
 class ReleaseRepository extends RepositoryBase {
   ReleaseRepository(DatabaseProvider databaseProvider)
       : super(databaseProvider, 'releases');
@@ -25,11 +27,24 @@ class ReleaseRepository extends RepositoryBase {
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
-  Future<Iterable<MovieRelease>> queryReleases() async {
+  Future<Iterable<MovieRelease>> queryReleases(
+      MovieReleasesListFilter? filter) async {
     Database db = await databaseProvider.database;
-    List<Map<String, Object?>> queryResult =
-        await db.rawQuery('SELECT * FROM $tableName');
-    var result = queryResult.map<MovieRelease>((e) => MovieRelease.fromMap(e));
+
+    List<Object?>? whereArgs;
+    String? where;
+
+    if (filter != null && filter.barcode != null) {
+      final whereConditions = <String>[];
+      whereArgs = <Object?>[];
+      whereConditions.add('barcode = ?');
+      whereArgs.add(filter.barcode!);
+      where = whereConditions.join(' AND ');
+    }
+
+    final query = await db.query(tableName, where: where, whereArgs: whereArgs);
+
+    var result = query.map<MovieRelease>((e) => MovieRelease.fromMap(e));
     return result;
   }
 
@@ -46,5 +61,13 @@ class ReleaseRepository extends RepositoryBase {
     List<Map<String, Object?>> result = await db
         .rawQuery("SELECT COUNT(*) FROM $tableName WHERE barcode='$barcode'");
     return Sqflite.firstIntValue(result)! > 0;
+  }
+
+  Future<Iterable<MovieRelease>> getLatest(int count) async {
+    Database db = await databaseProvider.database;
+    List<Map<String, Object?>> queryResult = await db.rawQuery(
+        'SELECT * FROM $tableName ORDER BY modifiedTime DESC LIMIT $count');
+    var result = queryResult.map<MovieRelease>((e) => MovieRelease.fromMap(e));
+    return result;
   }
 }

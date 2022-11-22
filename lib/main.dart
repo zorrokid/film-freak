@@ -11,10 +11,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initializeLogging();
   cameras = await availableCameras();
-  final model = CollectionModel();
-  model.setInitialState([]);
   runApp(
-    ChangeNotifierProvider(create: (context) => model, child: const MyApp()),
+    ChangeNotifierProvider(
+        create: (context) => initializeCollectionModel(), child: const MyApp()),
   );
 }
 
