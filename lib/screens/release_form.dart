@@ -50,7 +50,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   final _nameController = TextEditingController();
   final _barcodeController = TextEditingController();
   final _notesController = TextEditingController();
-  final _movieReleaseService = MovieReleaseService();
+  final _movieReleaseService = initializeReleaseService();
 
   int _selectedPicIndex = 0;
 

@@ -1,12 +1,10 @@
 import 'package:film_freak/models/movie_releases_list_filter.dart';
 import 'package:film_freak/services/movie_release_service.dart';
+import 'package:film_freak/widgets/filter_list.dart';
 import 'package:film_freak/widgets/main_drawer.dart';
-import 'package:film_freak/widgets/release_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/confirm_dialog.dart';
-import '../widgets/error_display_widget.dart';
-import '../widgets/spinner.dart';
+import '../utils/dialog_utls.dart';
 import 'release_form.dart';
 import '../persistence/collection_model.dart';
 import '../entities/movie_release.dart';
@@ -23,17 +21,16 @@ class MovieReleasesList extends StatefulWidget {
 }
 
 class _MovieReleasesListState extends State<MovieReleasesList> {
-  late Future<List<MovieRelease>> _futureGetReleases;
-  final releaseService = MovieReleaseService();
+  final releaseService = initializeReleaseService();
 
   @override
   void initState() {
     super.initState();
-    _futureGetReleases = _getReleases();
   }
 
   Future<List<MovieRelease>> _getReleases() async {
-    Iterable<MovieRelease> releases = await releaseService.getMovieReleases();
+    Iterable<MovieRelease> releases =
+        await releaseService.getMovieReleases(widget.filter);
     if (widget.filter != null) {
       if (widget.filter!.barcode != null) {
         releases = releases
@@ -56,23 +53,6 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
     return releases;
   }
 
-  Future<bool> _okToDelete(BuildContext context) async {
-    return await showDialog<bool>(
-            context: context,
-            builder: (BuildContext context) {
-              return ConfirmDialog(
-                  title: 'Are you sure?',
-                  message: 'Are you really sure you want to delete the item?',
-                  onContinue: () {
-                    Navigator.pop(context, true);
-                  },
-                  onCancel: () {
-                    Navigator.pop(context, false);
-                  });
-            }) ??
-        false;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
@@ -82,18 +62,16 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
         }));
       }
 
-      Future<void> onReleaseDelete(int id) async {
-        final isOkToDelete = await _okToDelete(context);
+      Future<void> onDelete(int id) async {
+        final isOkToDelete = await okToDelete(context, 'Are you sure?',
+            'Are you really sure you want to delete the item?');
         if (!isOkToDelete) return;
         await releaseService.deleteRelease(id);
         // TODO: data from CollectionModel is not used here
-        cart.remove(id);
-        setState(() {
-          _futureGetReleases = _getReleases();
-        });
+        //cart.remove(id);
       }
 
-      Future<void> onReleaseEdit(int id) async {
+      Future<void> onEdit(int id) async {
         await Navigator.push(context, MaterialPageRoute(
           builder: (context) {
             return ReleaseForm(
@@ -101,9 +79,6 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
             );
           },
         ));
-        setState(() {
-          _futureGetReleases = _getReleases();
-        });
       }
 
       return Scaffold(
@@ -111,30 +86,10 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
         appBar: AppBar(
           title: const Text('Results'),
         ),
-        body: FutureBuilder(
-          future: _futureGetReleases,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-            if (snapshot.hasError) {
-              return ErrorDisplayWidget(
-                snapshot.error.toString(),
-              );
-            }
-            if (!snapshot.hasData) {
-              return const Spinner();
-            }
-            cart.reset(snapshot.data! as List<MovieRelease>, false);
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return ReleaseListTile(
-                  release: snapshot.data![index],
-                  onDelete: onReleaseDelete,
-                  onEdit: onReleaseEdit,
-                );
-              },
-            );
-          },
+        body: FilterList(
+          fetchMethod: _getReleases,
+          onDelete: onDelete,
+          onEdit: onEdit,
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: addRelease,

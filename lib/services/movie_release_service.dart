@@ -1,4 +1,5 @@
 import 'package:film_freak/models/movie_release_view_model.dart';
+import 'package:film_freak/models/movie_releases_list_filter.dart';
 import 'package:film_freak/utils/file_utils.dart';
 import 'package:logging/logging.dart';
 
@@ -9,20 +10,31 @@ import '../persistence/repositories/release_properties_repository.dart';
 import '../persistence/repositories/release_repository.dart';
 import '../utils/directory_utils.dart';
 
+MovieReleaseService initializeReleaseService() {
+  final dbProvider = DatabaseProvider.instance;
+  return MovieReleaseService(
+      releaseRepository: ReleaseRepository(dbProvider),
+      releasePicturesRepository: ReleasePicturesRepository(dbProvider),
+      releasePropertiesRepository: ReleasePropertiesRepository(dbProvider));
+}
+
 class MovieReleaseService {
+  MovieReleaseService(
+      {required this.releaseRepository,
+      required this.releasePicturesRepository,
+      required this.releasePropertiesRepository});
+
   final log = Logger('MovieReleaseService');
-  final _releaseRepository = ReleaseRepository(DatabaseProvider.instance);
-  final _releasePicturesRepository =
-      ReleasePicturesRepository(DatabaseProvider.instance);
-  final _releasePropertiesRepository =
-      ReleasePropertiesRepository(DatabaseProvider.instance);
+  final ReleaseRepository releaseRepository;
+  final ReleasePicturesRepository releasePicturesRepository;
+  final ReleasePropertiesRepository releasePropertiesRepository;
 
   Future<MovieReleaseViewModel> getReleaseData(int releaseId) async {
-    final release = await _releaseRepository.getRelease(releaseId);
+    final release = await releaseRepository.getRelease(releaseId);
     final releasePictures =
-        await _releasePicturesRepository.getByReleaseId(releaseId);
+        await releasePicturesRepository.getByReleaseId(releaseId);
     final releaseProperties =
-        await _releasePropertiesRepository.getByReleaseId(releaseId);
+        await releasePropertiesRepository.getByReleaseId(releaseId);
     return MovieReleaseViewModel(
         release: release,
         releasePictures: releasePictures.toList(),
@@ -42,56 +54,52 @@ class MovieReleaseService {
       id = viewModel.release.id!;
       await _deleteObsoletedPics(viewModel);
       await _deleteObsoletedProperties(viewModel);
-      await _releaseRepository.updateRelease(viewModel.release);
+      await releaseRepository.updateRelease(viewModel.release);
     } else {
-      id = await _releaseRepository.insertRelease(viewModel.release);
+      id = await releaseRepository.insertRelease(viewModel.release);
     }
-    await _releasePicturesRepository.upsert(id, viewModel.releasePictures);
-    await _releasePropertiesRepository.upsert(id, viewModel.releaseProperties);
+    await releasePicturesRepository.upsert(id, viewModel.releasePictures);
+    await releasePropertiesRepository.upsert(id, viewModel.releaseProperties);
 
     return id;
   }
 
   Future<void> _deleteObsoletedPics(MovieReleaseViewModel model) async {
     final id = model.release.id!;
-    final originalPicsInDb =
-        await _releasePicturesRepository.getByReleaseId(id);
+    final originalPicsInDb = await releasePicturesRepository.getByReleaseId(id);
     final modifiedPicsIds = model.releasePictures.map((e) => e.id);
     final picIdsToBeDeleted =
         originalPicsInDb.where((e) => !modifiedPicsIds.contains(e.id));
     for (final pic in picIdsToBeDeleted) {
-      await _releasePicturesRepository.delete(pic.id!);
+      await releasePicturesRepository.delete(pic.id!);
     }
   }
 
   Future<void> _deleteObsoletedProperties(MovieReleaseViewModel model) async {
     final id = model.release.id!;
     final originalPropsInDb =
-        await _releasePropertiesRepository.getByReleaseId(id);
+        await releasePropertiesRepository.getByReleaseId(id);
     final modifiedPropTypes =
         model.releaseProperties.map((e) => e.propertyType);
     final propsToBeDeleted = originalPropsInDb
         .where((e) => !modifiedPropTypes.contains(e.propertyType));
     for (final propId in propsToBeDeleted) {
-      await _releasePropertiesRepository.delete(propId.id!);
+      await releasePropertiesRepository.delete(propId.id!);
     }
   }
 
-  // Future<void> upsertPicture(ReleasePicture picture) async {
-  //   await _releasePicturesRepository.upsert(picture);
-  // }
-
   Future<void> deletePicture(int pictureId) async {
-    await _releasePicturesRepository.delete(pictureId);
+    await releasePicturesRepository.delete(pictureId);
   }
 
-  Future<Iterable<MovieRelease>> getMovieReleases() async {
-    final releases = await _releaseRepository.queryReleases();
+  Future<Iterable<MovieRelease>> getMovieReleases(
+      MovieReleasesListFilter? filter) async {
+    final releases = await releaseRepository.queryReleases(filter);
     return releases;
   }
 
   Future<bool> deleteRelease(int releaseId) async {
-    final pics = await _releasePicturesRepository.getByReleaseId(releaseId);
+    final pics = await releasePicturesRepository.getByReleaseId(releaseId);
 
     final fileNames = pics.map((p) => p.filename);
     final filePath = await getReleasePicsSaveDir();
@@ -103,7 +111,7 @@ class MovieReleaseService {
       return false;
     }
     final picRows =
-        await _releasePicturesRepository.deleteByReleaseId(releaseId);
+        await releasePicturesRepository.deleteByReleaseId(releaseId);
 
     if (picRows < pics.length) {
       log.warning('''Count of deleted pic rows $picRows less than 
@@ -111,9 +119,9 @@ class MovieReleaseService {
         Skipping deleting release from DB.''');
       return false;
     }
-    await _releasePropertiesRepository.deleteByReleaseId(releaseId);
+    await releasePropertiesRepository.deleteByReleaseId(releaseId);
     log.info('Deleting relase with id $releaseId.');
-    await _releaseRepository.delete(releaseId);
+    await releaseRepository.delete(releaseId);
 
     return true;
   }
