@@ -50,6 +50,10 @@ dependencies:
     image:
     file_picker:
     logging:
+    http: 
+    firebase_remote_config: ^3.0.6 
+    firebase_analytics: ^5.0.15
+    firebase_core: ^2.3.0
 
 dev_dependencies:
     flutter_test:

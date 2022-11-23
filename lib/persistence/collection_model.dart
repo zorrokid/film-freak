@@ -3,12 +3,6 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:film_freak/entities/movie_release.dart';
 
-CollectionModel initializeCollectionModel() {
-  final model = CollectionModel();
-  model.setInitialState([]);
-  return model;
-}
-
 class CollectionModel extends ChangeNotifier {
   final List<MovieRelease> _movieReleases = [];
 
