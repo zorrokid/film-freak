@@ -38,3 +38,4 @@ Some of the features currently implemented are:
 To build, install and run this app you need to (more comprehensive instructions will be added later):
 - [Install Flutter SDK](https://docs.flutter.dev/get-started/install)
 - [Install Firebase related tools and register app to a Firebase account](https://firebase.google.com/docs/flutter/setup?platform=android)
+- [Install to your device](https://docs.flutter.dev/deployment/android#install-an-apk-on-a-device)
