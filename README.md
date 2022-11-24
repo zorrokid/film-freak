@@ -32,3 +32,9 @@ Some of the features currently implemented are:
 - Fill in the basic info related to collection item (such as release name, media type, case type and condition)
 - Store items to local database
 - Search TMDB API for movies - search text can be selected from active image
+
+## Build & Run
+
+To build, install and run this app you need to (more comprehensive instructions will be added later):
+- [Install Flutter SDK](https://docs.flutter.dev/get-started/install)
+- [Install Firebase related tools and register app to your Firebase account](https://firebase.google.com/docs/flutter/setup?platform=android)
