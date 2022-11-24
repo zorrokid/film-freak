@@ -14,6 +14,8 @@ Currently data is saved to a local [SQLite](https://www.sqlite.org) database but
 
 One of the features I've been focusing from the start is using [Google ML Kit](https://developers.google.com/ml-kit) to recognize text from images and implementing a widget to fill textual form fields by selecting text from a image.
 
+[Firebase Remote Config](https://firebase.google.com/docs/remote-config) is used for storing configurations such as API keys.
+
 Currently developing this only for Android target since possible to test only with Android devices.
 
 ## Features
