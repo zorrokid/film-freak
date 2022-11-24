@@ -32,6 +32,7 @@ import '../widgets/preview_pic.dart';
 import '../widgets/release_pic_crop.dart';
 import '../widgets/release_pic_selection.dart';
 import 'image_process_view.dart';
+import '../features/tmdb_search/tmdb_movie_search_screen.dart';
 
 class ReleaseForm extends StatefulWidget {
   const ReleaseForm({this.barcode, this.id, super.key});
@@ -51,6 +52,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   final _barcodeController = TextEditingController();
   final _notesController = TextEditingController();
   final _movieReleaseService = initializeReleaseService();
+  final _movieSearchTextController = TextEditingController();
 
   int _selectedPicIndex = 0;
 
@@ -283,6 +285,19 @@ class _ReleaseFormState extends State<ReleaseForm> {
     controller.value = TextEditingValue(text: text);
   }
 
+  Future<void> _searchMovie() async {
+    final searchText = _movieSearchTextController.text;
+    if (searchText.isEmpty) {
+      return;
+    }
+    var movieId = await Navigator.push(context,
+        MaterialPageRoute<String>(builder: (context) {
+      return TmdbMovieSearchScreen(
+        searchText: searchText,
+      );
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
@@ -406,6 +421,27 @@ class _ReleaseFormState extends State<ReleaseForm> {
                             capitalizeWords: true),
                         icon: const Icon(Icons.image),
                       )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DecoratedTextFormField(
+                          controller: _movieSearchTextController,
+                          label: 'Search movie',
+                          required: false,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => getTextFromImage(
+                            context, _movieSearchTextController,
+                            capitalizeWords: true),
+                        icon: const Icon(Icons.image),
+                      ),
+                      IconButton(
+                        onPressed: _searchMovie,
+                        icon: const Icon(Icons.search),
+                      ),
                     ],
                   ),
                   DropDownFormField(
