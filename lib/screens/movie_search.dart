@@ -9,8 +9,32 @@ import '../widgets/main_drawer.dart';
 import '../widgets/spinner.dart';
 
 class MovieSearchResult {
-  MovieSearchResult({required this.name});
-  String name;
+  MovieSearchResult(
+      {required this.id,
+      required this.title,
+      required this.originalTitle,
+      required this.overview,
+      required this.releaseDate,
+      required this.isAdult,
+      required this.posterPath});
+  int id;
+  String title;
+  String originalTitle;
+  String overview;
+  String releaseDate;
+  bool isAdult;
+  String posterPath;
+
+  static MovieSearchResult fromJson(Map<String, Object?> json) {
+    return MovieSearchResult(
+        id: json['id'] as int,
+        title: json['title'] as String,
+        originalTitle: json['original_title'] as String,
+        overview: json['overview'] as String,
+        releaseDate: json['release_date'] as String,
+        isAdult: json['adult'] as bool,
+        posterPath: json['poster_path'] as String);
+  }
 }
 
 const String tmdbApiBaseUrl = 'https://api.themoviedb.org';
@@ -39,8 +63,12 @@ class _MovieSearchState extends State<MovieSearch> {
     final query =
         '$tmdbApiBaseUrl/$tmdbDbApiVersion/search/movie?api_key=$tmdbApiKey&query=${widget.searchText}';
     final result = await http.get(Uri.parse(query));
-    // TODO: map result to MovieSearchResult list
-    return [];
+    if (result.body.isEmpty) return [];
+    final jsonContent = json.decode(result.body);
+    final moviesResultJson = jsonContent['results'] as List;
+    final moviesResult =
+        moviesResultJson.map((e) => MovieSearchResult.fromJson(e)).toList();
+    return moviesResult;
   }
 
   @override
@@ -66,7 +94,7 @@ class _MovieSearchState extends State<MovieSearch> {
             itemCount: results.length,
             itemBuilder: (context, index) {
               return ListTile(
-                title: Text(results[index].name),
+                title: Text(results[index].title),
               );
             },
           );
