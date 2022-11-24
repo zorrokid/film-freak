@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import './tmdb_movie_result.dart';
 import './tmdb_search.dart';
 import '../../widgets/error_display_widget.dart';
-import '../../widgets/main_drawer.dart';
 import '../../widgets/spinner.dart';
 
 class TmdbMovieSearchScreen extends StatefulWidget {
