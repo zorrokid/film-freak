@@ -27,13 +27,15 @@ class MovieSearchResult {
 
   static MovieSearchResult fromJson(Map<String, Object?> json) {
     return MovieSearchResult(
-        id: json['id'] as int,
-        title: json['title'] as String,
+        id: json['id'] != null ? json['id'] as int : 0,
+        title: json['title'] != null ? json['title'] as String : '',
         originalTitle: json['original_title'] as String,
-        overview: json['overview'] as String,
-        releaseDate: json['release_date'] as String,
-        isAdult: json['adult'] as bool,
-        posterPath: json['poster_path'] as String);
+        overview: json['overview'] != null ? json['overview'] as String : '',
+        releaseDate:
+            json['release_date'] != null ? json['release_date'] as String : '',
+        isAdult: json['adult'] != null ? json['adult'] as bool : false,
+        posterPath:
+            json['poster_path'] != null ? json['poster_path'] as String : '');
   }
 }
 

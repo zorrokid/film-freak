@@ -52,7 +52,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   final _barcodeController = TextEditingController();
   final _notesController = TextEditingController();
   final _movieReleaseService = initializeReleaseService();
-  final _movieSearchController = TextEditingController();
+  final _movieSearchTextController = TextEditingController();
 
   int _selectedPicIndex = 0;
 
@@ -286,7 +286,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   Future<void> _searchMovie() async {
-    final searchText = _movieSearchController.text;
+    final searchText = _movieSearchTextController.text;
     if (searchText.isEmpty) {
       return;
     }
@@ -427,10 +427,16 @@ class _ReleaseFormState extends State<ReleaseForm> {
                     children: [
                       Expanded(
                         child: DecoratedTextFormField(
-                          controller: _movieSearchController,
+                          controller: _movieSearchTextController,
                           label: 'Search movie',
                           required: false,
                         ),
+                      ),
+                      IconButton(
+                        onPressed: () => getTextFromImage(
+                            context, _movieSearchTextController,
+                            capitalizeWords: true),
+                        icon: const Icon(Icons.image),
                       ),
                       IconButton(
                         onPressed: _searchMovie,
