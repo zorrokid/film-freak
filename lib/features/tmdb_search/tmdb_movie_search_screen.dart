@@ -27,7 +27,6 @@ class _TmdbMovieSearchScreenState extends State<TmdbMovieSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MainDrawer(),
       appBar: AppBar(
         title: const Text('Results'),
       ),
