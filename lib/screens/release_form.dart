@@ -32,7 +32,7 @@ import '../widgets/preview_pic.dart';
 import '../widgets/release_pic_crop.dart';
 import '../widgets/release_pic_selection.dart';
 import 'image_process_view.dart';
-import 'movie_search.dart';
+import '../features/tmdb_search/tmdb_movie_search_screen.dart';
 
 class ReleaseForm extends StatefulWidget {
   const ReleaseForm({this.barcode, this.id, super.key});
@@ -292,7 +292,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
     }
     var movieId = await Navigator.push(context,
         MaterialPageRoute<String>(builder: (context) {
-      return MovieSearch(
+      return TmdbMovieSearchScreen(
         searchText: searchText,
       );
     }));
