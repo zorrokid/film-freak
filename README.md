@@ -6,7 +6,7 @@ Click image to see video of WIP version:
 
 <a href="https://www.youtube.com/watch?v=czIBQMUGwhk"><img src="https://lh3.googleusercontent.com/S-dSDK1nRnyJlx3nZD2pf0AAgu1vQ4O7pBZ1QqHVsoi2kt-Hj_rK1bdOaGEBWktHqB1igO1EgBqVnwK_sKl7IS7-3ghHRYeMvXG2BQAeixdzeFz2jTUzG3jASCHvYuFktSFeer9j9hC6IYNYFPKM4G4xTqZ-Yx6egd-ZrM4skxu_0FJq3vjS2dOdv5p8qGgpkb8qj2qj90SYXO6Po0WwFeXoOaUVJY50wGOGMHUx90kWsKMfTWJxZmNjF9vqS0usajyisZzztxHMpOxxeQ4vfCyGuiq-zZi30gG52pyClA0RPz-X-pLappzDxajQbRjF0qx4a9r02utlMl_L1yQWPxZo3dofbJ3nWBKqgjDav3VnfO9aTTXMVdxhrBlJctVjAoeMPHzSfIfk8e_eBGtcLuQ68CqcS-zY5JryOZicvJteQ76Jz8Z1UbOTMA1PufDa1F7lmhvYQ4yVbmQVr34KZg3YQpytFOa8KywdP764kbRCv9VaX0ir1mFNkEN0s9RoUAngpFKdOaLF7QTMAvxtEFNffsFJPY_w1mouqpxp71goxgdZlYdFgZMeHk28H5kMpjyxjxUEMMCAiw8QPtE7qC2vY2KMkBO696ywcnZNlUghXz44gRp8LWKTqb7U-Iblaqn40DHc0kFpNX-tvvYsHzHU39s1pskF2khTHQuL7lBTTTwFUGwcD2-jSgHuDNEndgDfy9EHy6iZBm08uYf4G2jVOalib9bN35Sp0YuofqUcy4gBeYbiyS6dIKVYEMtUT7Vivo6BmG3Ny4rjd33dnpi8eU0SFHriTROuRcKjvMLSD_diFq2FMlyVCzZlMGV6goMzi0qfHWKYUD_fczAlg3sPA7z37gTHgvLHoyojf7mPKP3VgZSWnUMomH1-xSiOMB-gnL_RuYPFe1o0rJDssLuksZiFB0sXFqtW6sMZ3VmOhQ=w1095-h651-no?authuser=0" alt="View in YouTube" width="300px"/></a>
 
-## Technology
+## Tech
 
 It's implemented with [Flutter SDK](https://flutter.dev/) using [Dart](https://dart.dev/) programming language. This is my first serious attempt with Flutter and I must say I'm quite impressed with it. I really enjoy developing with Flutter and Dart.
 
@@ -29,3 +29,4 @@ Some of the features currently implemented are:
 - Assign different kind of properties for collection item
 - Fill in the basic info related to collection item (such as release name, media type, case type and condition)
 - Store items to local database
+- Search TMDB API for movies - search text can be selected from active image
