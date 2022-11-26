@@ -1,6 +1,5 @@
 import 'package:film_freak/features/tmdb_search/tmdb_configuration.dart';
 import 'package:flutter/material.dart';
-
 import './tmdb_movie_result.dart';
 import 'tmdb_search_service.dart';
 import '../../widgets/error_display_widget.dart';

@@ -17,4 +17,9 @@ class MovieRepository extends RepositoryBase<Movie> {
     }
     return await db.insert(tableName, movie.map);
   }
+
+  Future<Movie?> getByTmdbId(int id) async {
+    final res = await getById(id, 'tmdbId', Movie.fromMap);
+    return res.isNotEmpty ? res.first : null;
+  }
 }

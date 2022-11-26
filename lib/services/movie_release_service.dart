@@ -65,6 +65,14 @@ class MovieReleaseService {
     int id;
 
     if (viewModel.movie != null) {
+      final movie = viewModel.movie!;
+      // check if movie entry with tmdb id already exists and assign id if it does
+      if (movie.id == null && movie.tmdbId != null) {
+        final existsingMovie = await movieRepository.getByTmdbId(movie.tmdbId!);
+        if (existsingMovie != null) {
+          movie.id = existsingMovie.id;
+        }
+      }
       final movieId = await movieRepository.upsert(viewModel.movie!);
       viewModel.release.movieId = movieId;
     }

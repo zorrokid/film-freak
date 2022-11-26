@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:film_freak/entities/release_property.dart';
 import 'package:film_freak/enums/release_property_type.dart';
 import 'package:film_freak/extensions/string_extensions.dart';
+import 'package:film_freak/features/tmdb_search/tmdb_movie_result.dart';
 import 'package:film_freak/models/movie_release_view_model.dart';
 import 'package:film_freak/enums/picture_type.dart';
 import 'package:film_freak/entities/release_picture.dart';
@@ -19,7 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:film_freak/enums/case_type.dart';
 import 'package:film_freak/entities/movie_release.dart';
 
-import '../features/tmdb_search/tmdb_movie_result.dart';
+import '../entities/movie.dart';
 import '../persistence/collection_model.dart';
 import '../enums/condition.dart';
 import '../enums/media_type.dart';
@@ -69,7 +70,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   List<ReleasePicture> _pictures = <ReleasePicture>[];
   final _picturesToDelete = <ReleasePicture>[];
   List<ReleaseProperty> _properties = <ReleaseProperty>[];
-  TmdbMovieResult? _movie;
+  Movie? _movie;
 
   @override
   void initState() {
@@ -195,6 +196,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
     _mediaType = model.release.mediaType;
     _caseType = model.release.caseType;
     _condition = model.release.condition;
+    _movie = model.movie;
 
     // do not setState!
 
@@ -217,7 +219,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
       release: release,
       releasePictures: _pictures,
       releaseProperties: _properties,
-      movie: _movie != null ? _movieReleaseService.toMovie(_movie!) : null,
+      movie: _movie,
     );
   }
 
@@ -315,8 +317,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
       ),
     );
     if (movieResult == null) return;
+    final movie = _movieReleaseService.toMovie(movieResult);
     setState(() {
-      _movie = movieResult;
+      _movie = movie;
     });
   }
 
@@ -444,6 +447,16 @@ class _ReleaseFormState extends State<ReleaseForm> {
                             capitalizeWords: true),
                         icon: const Icon(Icons.image),
                       )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text('Movie: '),
+                      ),
+                      _movie != null
+                          ? Text(_movie!.title)
+                          : const Text('Not selected'),
                     ],
                   ),
                   Row(
