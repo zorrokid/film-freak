@@ -1,8 +1,11 @@
+import 'package:film_freak/features/tmdb_search/tmdb_movie_result.dart';
 import 'package:film_freak/models/movie_release_view_model.dart';
 import 'package:film_freak/models/movie_releases_list_filter.dart';
+import 'package:film_freak/persistence/repositories/movie_repository.dart';
 import 'package:film_freak/utils/file_utils.dart';
 import 'package:logging/logging.dart';
 
+import '../entities/movie.dart';
 import '../entities/movie_release.dart';
 import '../persistence/db_provider.dart';
 import '../persistence/repositories/release_pictures_repository.dart';
@@ -15,19 +18,22 @@ MovieReleaseService initializeReleaseService() {
   return MovieReleaseService(
       releaseRepository: ReleaseRepository(dbProvider),
       releasePicturesRepository: ReleasePicturesRepository(dbProvider),
-      releasePropertiesRepository: ReleasePropertiesRepository(dbProvider));
+      releasePropertiesRepository: ReleasePropertiesRepository(dbProvider),
+      movieRepository: MovieRepository(dbProvider));
 }
 
 class MovieReleaseService {
   MovieReleaseService(
       {required this.releaseRepository,
       required this.releasePicturesRepository,
-      required this.releasePropertiesRepository});
+      required this.releasePropertiesRepository,
+      required this.movieRepository});
 
   final log = Logger('MovieReleaseService');
   final ReleaseRepository releaseRepository;
   final ReleasePicturesRepository releasePicturesRepository;
   final ReleasePropertiesRepository releasePropertiesRepository;
+  final MovieRepository movieRepository;
 
   Future<MovieReleaseViewModel> getReleaseData(int releaseId) async {
     final release = await releaseRepository.getRelease(releaseId);
@@ -35,14 +41,21 @@ class MovieReleaseService {
         await releasePicturesRepository.getByReleaseId(releaseId);
     final releaseProperties =
         await releasePropertiesRepository.getByReleaseId(releaseId);
+
+    Movie? movie;
+    if (release.movieId != null) {
+      movie = await movieRepository.get(release.movieId!, Movie.fromMap);
+    }
     return MovieReleaseViewModel(
-        release: release,
-        releasePictures: releasePictures.toList(),
-        releaseProperties: releaseProperties.toList());
+      release: release,
+      releasePictures: releasePictures.toList(),
+      releaseProperties: releaseProperties.toList(),
+      movie: movie,
+    );
   }
 
   MovieReleaseViewModel initializeModel(String? barcode) {
-    final release = MovieRelease.init();
+    final release = MovieRelease.empty();
     release.barcode = barcode ?? '';
     return MovieReleaseViewModel(
         release: release, releasePictures: [], releaseProperties: []);
@@ -50,6 +63,20 @@ class MovieReleaseService {
 
   Future<int> upsert(MovieReleaseViewModel viewModel) async {
     int id;
+
+    if (viewModel.movie != null) {
+      final movie = viewModel.movie!;
+      // check if movie entry with tmdb id already exists and assign id if it does
+      if (movie.id == null && movie.tmdbId != null) {
+        final existsingMovie = await movieRepository.getByTmdbId(movie.tmdbId!);
+        if (existsingMovie != null) {
+          movie.id = existsingMovie.id;
+        }
+      }
+      final movieId = await movieRepository.upsert(viewModel.movie!);
+      viewModel.release.movieId = movieId;
+    }
+
     if (viewModel.release.id != null) {
       id = viewModel.release.id!;
       await _deleteObsoletedPics(viewModel);
@@ -124,5 +151,15 @@ class MovieReleaseService {
     await releaseRepository.delete(releaseId);
 
     return true;
+  }
+
+  Movie toMovie(TmdbMovieResult tmdbMovieResult) {
+    return Movie(
+      tmdbId: tmdbMovieResult.id,
+      originalTitle: tmdbMovieResult.originalTitle,
+      title: tmdbMovieResult.title,
+      overView: tmdbMovieResult.overview,
+      releaseDate: DateTime.tryParse(tmdbMovieResult.releaseDate),
+    );
   }
 }

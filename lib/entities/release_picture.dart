@@ -3,21 +3,30 @@ import 'package:film_freak/enums/picture_type.dart';
 import 'entity.dart';
 
 class ReleasePicture extends ChildEntity<ReleasePicture> {
-  // when creating a new entity id is set after entity is saved to db:
-  int? id;
   // when creating a new release id is set after entity is saved to db:
   String filename;
   PictureType pictureType;
-  DateTime? createdTime;
-  DateTime? modifiedTime;
-  ReleasePicture(int? releaseId,
-      {this.id,
-      required this.filename,
-      required this.pictureType,
-      this.createdTime,
-      this.modifiedTime})
-      : super(releaseId: releaseId);
 
+  ReleasePicture.full(
+    int? releaseId,
+    int? id,
+    DateTime? createdTime,
+    DateTime? modifiedTime, {
+    required this.filename,
+    required this.pictureType,
+  }) : super.full(
+          id,
+          createdTime,
+          modifiedTime,
+        );
+
+  ReleasePicture(
+    int? id, {
+    required this.filename,
+    required this.pictureType,
+  }) : super(id);
+
+  @override
   Map<String, dynamic> get map => {
         'id': id,
         'releaseId': releaseId,
@@ -28,9 +37,13 @@ class ReleasePicture extends ChildEntity<ReleasePicture> {
       };
 
   static ReleasePicture fromMap(Map<String, dynamic> map) {
-    return ReleasePicture(map['releaseId'] as int,
-        id: map['id'] as int,
-        filename: map['filename'],
-        pictureType: PictureType.values[map['pictureType'] as int]);
+    return ReleasePicture.full(
+      map['releaseId'] as int,
+      map['id'] as int,
+      map['createdTime'] as DateTime,
+      map['modifiedTime'] as DateTime,
+      filename: map['filename'],
+      pictureType: PictureType.values[map['pictureType'] as int],
+    );
   }
 }

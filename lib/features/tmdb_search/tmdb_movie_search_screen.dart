@@ -1,7 +1,5 @@
 import 'package:film_freak/features/tmdb_search/tmdb_configuration.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-
 import './tmdb_movie_result.dart';
 import 'tmdb_search_service.dart';
 import '../../widgets/error_display_widget.dart';
@@ -22,11 +20,23 @@ class _TmdbMovieSearchScreenState extends State<TmdbMovieSearchScreen> {
   late Future<List<TmdbMovieResult>> _futureSearchResult;
   late Future<TmdbConfiguration?> _futureConfiguration;
 
+  TmdbMovieResult? _selection;
+
   @override
   void initState() {
     super.initState();
     _futureSearchResult = _searchService.getMovies(widget.searchText);
     _futureConfiguration = _searchService.getConfiguration();
+  }
+
+  void onSelectionDone(BuildContext context) {
+    Navigator.pop(context, _selection);
+  }
+
+  void setSelected(TmdbMovieResult selected) {
+    setState(() {
+      _selection = selected;
+    });
   }
 
   @override
@@ -58,10 +68,18 @@ class _TmdbMovieSearchScreenState extends State<TmdbMovieSearchScreen> {
                     ? Image.network(
                         '${config.secureBaseUrl}${config.posterSizes[0]}/${results[index].posterPath}')
                     : const Icon(Icons.image),
+                trailing: _selection == results[index]
+                    ? const Icon(Icons.check)
+                    : null,
+                onTap: () => setSelected(results[index]),
               );
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => onSelectionDone(context),
+        child: const Icon(Icons.done),
       ),
     );
   }

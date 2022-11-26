@@ -32,4 +32,16 @@ Map<int, String> migrationScripts = {
           createdTime DATETIME,
           modifiedTime DATETIME
      )''',
+  18: '''CREATE TABLE movies(
+          id INTEGER PRIMARY KEY,
+          tmdbId INTEGER,
+          title STRING,
+          originalTitle STRING,
+          overView STRING,
+          releaseDate DATETIME,
+          createdTime DATETIME,
+          updatedTime DATETIME
+    )''',
+  19: 'ALTER TABLE releases ADD COLUMN movieId INTEGER',
+  20: 'ALTER TABLE movies RENAME COLUMN updatedTime TO modifiedTime',
 };

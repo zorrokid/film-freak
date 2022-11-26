@@ -9,7 +9,7 @@ class ReleasePropertiesRepository extends RepositoryBase<ReleaseProperty> {
       : super(databaseProvider, 'releaseProperties');
 
   Future<Iterable<ReleaseProperty>> getByReleaseId(int releaseId) async {
-    return super.getBy(releaseId, "releaseId", ReleaseProperty.fromMap);
+    return super.getById(releaseId, "releaseId", ReleaseProperty.fromMap);
   }
 
   Future<List<int>> upsert(
