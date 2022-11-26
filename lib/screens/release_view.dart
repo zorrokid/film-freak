@@ -24,7 +24,7 @@ class ReleaseView extends StatelessWidget {
     return Consumer<CollectionModel>(builder: (context, cart, child) {
       var release = cart.movieReleases.firstWhere(
         (element) => element.id == releaseId,
-        orElse: () => MovieRelease.init(),
+        orElse: () => MovieRelease.empty(),
       );
       var title = release.name.isNotEmpty ? release.name : release.barcode;
       return Scaffold(
@@ -68,6 +68,14 @@ class ReleaseView extends StatelessWidget {
                   Text(conditionFormFieldValues[release.condition] ?? ''),
                 ],
               ),
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text("Movie:"),
+                  ),
+                  Text('${release.movieId ?? ' '}'),
+                ],
+              )
             ],
           ),
         ),

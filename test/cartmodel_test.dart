@@ -15,14 +15,12 @@ void main() {
       expect(model.totalMovieReleases, 1);
     });
 
-    model.add(MovieRelease(
-        id: 1,
+    model.add(MovieRelease.full(1, DateTime.now(), DateTime.now(),
         mediaType: MediaType.dvd,
         name: 'Star Wars',
         barcode: '',
         caseType: CaseType.regularDvd,
         condition: Condition.unknown,
-        createdTime: DateTime.now(),
         notes: '',
         hasSlipCover: false));
   });

@@ -3,19 +3,26 @@ import 'package:film_freak/entities/entity.dart';
 import '../enums/release_property_type.dart';
 
 class ReleaseProperty extends ChildEntity<ReleaseProperty> {
-  // when creating a new entity id is set after entity is saved to db:
-  int? id;
   ReleasePropertyType propertyType;
-  DateTime? createdTime;
-  DateTime? modifiedTime;
 
-  ReleaseProperty(int? releaseId,
-      {this.id,
-      required this.propertyType,
-      this.createdTime,
-      this.modifiedTime})
-      : super(releaseId: releaseId);
+  ReleaseProperty.full(
+    int? releaseId,
+    int? id,
+    DateTime? createdTime,
+    DateTime? modifiedTime, {
+    required this.propertyType,
+  }) : super.full(
+          id,
+          createdTime,
+          modifiedTime,
+        );
 
+  ReleaseProperty(
+    int? id, {
+    required this.propertyType,
+  }) : super(id);
+
+  @override
   Map<String, dynamic> get map => {
         'id': id,
         'releaseId': releaseId,
@@ -25,12 +32,12 @@ class ReleaseProperty extends ChildEntity<ReleaseProperty> {
       };
 
   static ReleaseProperty fromMap(Map<String, Object?> map) {
-    return ReleaseProperty(
+    return ReleaseProperty.full(
       map['releaseId'] as int,
-      id: map['id'] as int,
+      map['id'] as int,
+      map['createdTime'] as DateTime,
+      map['modifiedTime'] as DateTime,
       propertyType: ReleasePropertyType.values[map['propertyType'] as int],
-      createdTime: DateTime.parse(map['createdTime'] as String),
-      modifiedTime: DateTime.parse(map['modifiedTime'] as String),
     );
   }
 }

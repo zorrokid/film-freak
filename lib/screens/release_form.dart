@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:film_freak/enums/case_type.dart';
 import 'package:film_freak/entities/movie_release.dart';
 
+import '../features/tmdb_search/tmdb_movie_result.dart';
 import '../persistence/collection_model.dart';
 import '../enums/condition.dart';
 import '../enums/media_type.dart';
@@ -68,6 +69,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   List<ReleasePicture> _pictures = <ReleasePicture>[];
   final _picturesToDelete = <ReleasePicture>[];
   List<ReleaseProperty> _properties = <ReleaseProperty>[];
+  TmdbMovieResult? _movie;
 
   @override
   void initState() {
@@ -201,19 +203,21 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   MovieReleaseViewModel _buildModel() {
     final release = MovieRelease(
-        id: _id,
-        name: _nameController.text,
-        mediaType: _mediaType,
-        barcode: _barcodeController.text,
-        caseType: _caseType,
-        condition: _condition,
-        hasSlipCover: _hasSlipCover ?? false,
-        notes: _notesController.text);
+      _id,
+      name: _nameController.text,
+      mediaType: _mediaType,
+      barcode: _barcodeController.text,
+      caseType: _caseType,
+      condition: _condition,
+      hasSlipCover: _hasSlipCover ?? false,
+      notes: _notesController.text,
+    );
 
     return MovieReleaseViewModel(
       release: release,
       releasePictures: _pictures,
       releaseProperties: _properties,
+      movie: _movie != null ? _movieReleaseService.toMovie(_movie!) : null,
     );
   }
 
@@ -249,26 +253,36 @@ class _ReleaseFormState extends State<ReleaseForm> {
     final picDir = await getReleasePicsSaveDir();
     final imagePath = p.join(picDir.path, picToCrop.filename);
     if (!mounted) return;
-    await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ImageProcessView(imagePath: imagePath);
-    }));
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return ImageProcessView(imagePath: imagePath);
+        },
+      ),
+    );
     imageCache.clear();
     imageCache.clearLiveImages;
   }
 
   Future<void> selectProperties() async {
     final List<ReleaseProperty>? selectedProperties = await Navigator.push(
-        context, MaterialPageRoute<List<ReleaseProperty>>(builder: (context) {
-      return PropertySelectionView(
-        initialSelection: _properties,
-        releaseId: _id,
-      );
-    }));
-    if (selectedProperties != null) {
-      setState(() {
-        _properties = selectedProperties;
-      });
-    }
+      context,
+      MaterialPageRoute<List<ReleaseProperty>>(
+        builder: (context) {
+          return PropertySelectionView(
+            initialSelection: _properties,
+            releaseId: _id,
+          );
+        },
+      ),
+    );
+
+    if (selectedProperties == null) return;
+
+    setState(() {
+      _properties = selectedProperties;
+    });
   }
 
   Future<void> getTextFromImage(
@@ -290,12 +304,20 @@ class _ReleaseFormState extends State<ReleaseForm> {
     if (searchText.isEmpty) {
       return;
     }
-    var movieId = await Navigator.push(context,
-        MaterialPageRoute<String>(builder: (context) {
-      return TmdbMovieSearchScreen(
-        searchText: searchText,
-      );
-    }));
+    final movieResult = await Navigator.push(
+      context,
+      MaterialPageRoute<TmdbMovieResult>(
+        builder: (context) {
+          return TmdbMovieSearchScreen(
+            searchText: searchText,
+          );
+        },
+      ),
+    );
+    if (movieResult == null) return;
+    setState(() {
+      _movie = movieResult;
+    });
   }
 
   @override
@@ -307,9 +329,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: isEditMode()
-                  ? Text('Updating ${viewModel.release.name}')
-                  : Text('Adding ${viewModel.release.name}')),
+            content: isEditMode()
+                ? Text('Updating ${viewModel.release.name}')
+                : Text('Adding ${viewModel.release.name}'),
+          ),
         );
 
         final id = await _movieReleaseService.upsert(viewModel);
