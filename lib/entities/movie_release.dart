@@ -14,10 +14,10 @@ class MovieRelease extends Entity<MovieRelease> {
   bool hasSlipCover;
   int? movieId;
 
-  MovieRelease.full(
+  MovieRelease.full({
     int? id,
     DateTime? createdTime,
-    DateTime? modifiedTime, {
+    DateTime? modifiedTime,
     required this.name,
     required this.mediaType,
     required this.barcode,
@@ -32,8 +32,8 @@ class MovieRelease extends Entity<MovieRelease> {
           modifiedTime: modifiedTime,
         );
 
-  MovieRelease(
-    int? id, {
+  MovieRelease({
+    int? id,
     required this.name,
     required this.mediaType,
     required this.barcode,
@@ -46,7 +46,6 @@ class MovieRelease extends Entity<MovieRelease> {
 
   MovieRelease.empty()
       : this(
-          null,
           name: '',
           barcode: '',
           caseType: CaseType.unknown,
@@ -54,7 +53,6 @@ class MovieRelease extends Entity<MovieRelease> {
           hasSlipCover: false,
           mediaType: MediaType.unknown,
           notes: '',
-          movieId: null,
         );
 
   @override
@@ -73,9 +71,9 @@ class MovieRelease extends Entity<MovieRelease> {
 
   static MovieRelease fromMap(Map<String, Object?> map) {
     return MovieRelease.full(
-      map['id'] as int,
-      DateTime.parse(map['createdTime'] as String),
-      DateTime.parse(map['modifiedTime'] as String),
+      id: map['id'] as int,
+      createdTime: DateTime.parse(map['createdTime'] as String),
+      modifiedTime: DateTime.parse(map['modifiedTime'] as String),
       name: map['name'] as String,
       mediaType: MediaType.values[map['mediaType'] as int],
       barcode: map['barcode'] as String,
@@ -102,7 +100,6 @@ class MovieRelease extends Entity<MovieRelease> {
   */
   static MovieRelease fromJson(Map<String, Object?> json) {
     return MovieRelease(
-      null,
       name: json['name'] as String,
       mediaType: MediaType.values[json['mediaType'] as int],
       barcode: json['barcode'] as String,

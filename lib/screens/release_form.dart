@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:film_freak/entities/release_property.dart';
-import 'package:film_freak/enums/release_property_type.dart';
 import 'package:film_freak/extensions/string_extensions.dart';
 import 'package:film_freak/features/tmdb_search/tmdb_movie_result.dart';
 import 'package:film_freak/models/movie_release_view_model.dart';
@@ -33,6 +32,7 @@ import '../widgets/decorated_text_form_field.dart';
 import '../widgets/preview_pic.dart';
 import '../widgets/release_pic_crop.dart';
 import '../widgets/release_pic_selection.dart';
+import '../widgets/release_properties.dart';
 import 'image_process_view.dart';
 import '../features/tmdb_search/tmdb_movie_search_screen.dart';
 
@@ -205,7 +205,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   MovieReleaseViewModel _buildModel() {
     final release = MovieRelease(
-      _id,
+      id: _id,
       name: _nameController.text,
       mediaType: _mediaType,
       barcode: _barcodeController.text,
@@ -224,8 +224,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   void _onPictureSelected(String filename) {
-    final newPic = ReleasePicture(_id,
-        filename: filename, pictureType: PictureType.coverFront);
+    final newPic = ReleasePicture(
+        releaseId: _id,
+        filename: filename,
+        pictureType: PictureType.coverFront);
     setState(() {
       _pictures.add(newPic);
       _selectedPicIndex = _pictures.length - 1;
@@ -513,26 +515,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                           icon: const Icon(Icons.camera)),
                     ],
                   ),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    children: _properties
-                        .map(
-                          (e) => Padding(
-                            padding: const EdgeInsets.all(3),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(3),
-                                child: Text(releasePropertyFieldValues[
-                                    e.propertyType]!),
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
+                  ReleaseProperties(
+                    releaseProperties: _properties,
                   ),
                   ElevatedButton(
                     onPressed: selectProperties,

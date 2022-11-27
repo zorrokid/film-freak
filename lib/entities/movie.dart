@@ -7,10 +7,10 @@ class Movie extends Entity<Movie> {
   String? overView;
   DateTime? releaseDate;
 
-  Movie.full(
+  Movie.full({
     int? id,
     DateTime? createdTime,
-    DateTime? modifiedTime, {
+    DateTime? modifiedTime,
     required this.title,
     required this.originalTitle,
     this.tmdbId,
@@ -43,9 +43,9 @@ class Movie extends Entity<Movie> {
 
   static Movie fromMap(Map<String, Object?> map) {
     return Movie.full(
-      map['id'] as int,
-      DateTime.parse(map['createdTime'] as String),
-      DateTime.parse(map['modifiedTime'] as String),
+      id: map['id'] as int,
+      createdTime: DateTime.parse(map['createdTime'] as String),
+      modifiedTime: DateTime.parse(map['modifiedTime'] as String),
       tmdbId: map['tmdbId'] as int,
       title: map['title'] as String,
       originalTitle: map['originalTitle'] as String,

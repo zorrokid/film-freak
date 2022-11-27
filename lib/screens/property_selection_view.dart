@@ -31,7 +31,12 @@ class _PropertySelectionViewState extends State<PropertySelectionView> {
       });
     } else {
       setState(() {
-        selection.add(ReleaseProperty(widget.releaseId, propertyType: value));
+        selection.add(
+          ReleaseProperty(
+            releaseId: widget.releaseId,
+            propertyType: value,
+          ),
+        );
       });
     }
   }

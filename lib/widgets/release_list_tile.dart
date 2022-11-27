@@ -59,7 +59,7 @@ class ReleaseListTile extends StatelessWidget {
       onTap: () => {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {
-            return ReleaseView(releaseId: release.id!);
+            return ReleaseView(id: release.id!);
           },
         ))
       },

@@ -5,22 +5,26 @@ import '../enums/release_property_type.dart';
 class ReleaseProperty extends ChildEntity<ReleaseProperty> {
   ReleasePropertyType propertyType;
 
-  ReleaseProperty.full(
+  ReleaseProperty.full({
     int? releaseId,
     int? id,
     DateTime? createdTime,
-    DateTime? modifiedTime, {
+    DateTime? modifiedTime,
     required this.propertyType,
   }) : super.full(
-          id,
-          createdTime,
-          modifiedTime,
+          id: id,
+          createdTime: createdTime,
+          modifiedTime: modifiedTime,
         );
 
-  ReleaseProperty(
-    int? id, {
+  ReleaseProperty({
+    int? id,
+    int? releaseId,
     required this.propertyType,
-  }) : super(id);
+  }) : super(
+          id: id,
+          releaseId: releaseId,
+        );
 
   @override
   Map<String, dynamic> get map => {
@@ -33,10 +37,10 @@ class ReleaseProperty extends ChildEntity<ReleaseProperty> {
 
   static ReleaseProperty fromMap(Map<String, Object?> map) {
     return ReleaseProperty.full(
-      map['releaseId'] as int,
-      map['id'] as int,
-      map['createdTime'] as DateTime,
-      map['modifiedTime'] as DateTime,
+      releaseId: map['releaseId'] as int,
+      id: map['id'] as int,
+      createdTime: DateTime.parse(map['createdTime'] as String),
+      modifiedTime: DateTime.parse(map['modifiedTime'] as String),
       propertyType: ReleasePropertyType.values[map['propertyType'] as int],
     );
   }
