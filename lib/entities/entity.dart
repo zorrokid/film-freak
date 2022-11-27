@@ -16,7 +16,7 @@ abstract class Entity<T> {
 abstract class ChildEntity<T> extends Entity<T> {
   int? releaseId;
 
-  ChildEntity.full({
+  ChildEntity({
     int? id,
     DateTime? createdTime,
     DateTime? modifiedTime,
@@ -26,9 +26,4 @@ abstract class ChildEntity<T> extends Entity<T> {
           createdTime: createdTime,
           modifiedTime: modifiedTime,
         );
-
-  ChildEntity({
-    int? id,
-    this.releaseId,
-  }) : super(id: id);
 }

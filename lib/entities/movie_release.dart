@@ -14,7 +14,7 @@ class MovieRelease extends Entity<MovieRelease> {
   bool hasSlipCover;
   int? movieId;
 
-  MovieRelease.full({
+  MovieRelease({
     int? id,
     DateTime? createdTime,
     DateTime? modifiedTime,
@@ -31,18 +31,6 @@ class MovieRelease extends Entity<MovieRelease> {
           createdTime: createdTime,
           modifiedTime: modifiedTime,
         );
-
-  MovieRelease({
-    int? id,
-    required this.name,
-    required this.mediaType,
-    required this.barcode,
-    required this.caseType,
-    required this.condition,
-    required this.hasSlipCover,
-    required this.notes,
-    this.movieId,
-  }) : super(id: id);
 
   MovieRelease.empty()
       : this(
@@ -70,7 +58,7 @@ class MovieRelease extends Entity<MovieRelease> {
       };
 
   static MovieRelease fromMap(Map<String, Object?> map) {
-    return MovieRelease.full(
+    return MovieRelease(
       id: map['id'] as int,
       createdTime: DateTime.parse(map['createdTime'] as String),
       modifiedTime: DateTime.parse(map['modifiedTime'] as String),
