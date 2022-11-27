@@ -14,10 +14,10 @@ class MovieRelease extends Entity<MovieRelease> {
   bool hasSlipCover;
   int? movieId;
 
-  MovieRelease.full(
+  MovieRelease({
     int? id,
     DateTime? createdTime,
-    DateTime? modifiedTime, {
+    DateTime? modifiedTime,
     required this.name,
     required this.mediaType,
     required this.barcode,
@@ -32,21 +32,8 @@ class MovieRelease extends Entity<MovieRelease> {
           modifiedTime: modifiedTime,
         );
 
-  MovieRelease(
-    int? id, {
-    required this.name,
-    required this.mediaType,
-    required this.barcode,
-    required this.caseType,
-    required this.condition,
-    required this.hasSlipCover,
-    required this.notes,
-    this.movieId,
-  }) : super(id: id);
-
   MovieRelease.empty()
       : this(
-          null,
           name: '',
           barcode: '',
           caseType: CaseType.unknown,
@@ -54,7 +41,6 @@ class MovieRelease extends Entity<MovieRelease> {
           hasSlipCover: false,
           mediaType: MediaType.unknown,
           notes: '',
-          movieId: null,
         );
 
   @override
@@ -72,10 +58,10 @@ class MovieRelease extends Entity<MovieRelease> {
       };
 
   static MovieRelease fromMap(Map<String, Object?> map) {
-    return MovieRelease.full(
-      map['id'] as int,
-      DateTime.parse(map['createdTime'] as String),
-      DateTime.parse(map['modifiedTime'] as String),
+    return MovieRelease(
+      id: map['id'] as int,
+      createdTime: DateTime.parse(map['createdTime'] as String),
+      modifiedTime: DateTime.parse(map['modifiedTime'] as String),
       name: map['name'] as String,
       mediaType: MediaType.values[map['mediaType'] as int],
       barcode: map['barcode'] as String,
@@ -102,7 +88,6 @@ class MovieRelease extends Entity<MovieRelease> {
   */
   static MovieRelease fromJson(Map<String, Object?> json) {
     return MovieRelease(
-      null,
       name: json['name'] as String,
       mediaType: MediaType.values[json['mediaType'] as int],
       barcode: json['barcode'] as String,

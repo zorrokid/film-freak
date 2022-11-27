@@ -7,24 +7,18 @@ class ReleasePicture extends ChildEntity<ReleasePicture> {
   String filename;
   PictureType pictureType;
 
-  ReleasePicture.full(
+  ReleasePicture({
     int? releaseId,
     int? id,
     DateTime? createdTime,
-    DateTime? modifiedTime, {
+    DateTime? modifiedTime,
     required this.filename,
     required this.pictureType,
-  }) : super.full(
-          id,
-          createdTime,
-          modifiedTime,
+  }) : super(
+          id: id,
+          createdTime: createdTime,
+          modifiedTime: modifiedTime,
         );
-
-  ReleasePicture(
-    int? id, {
-    required this.filename,
-    required this.pictureType,
-  }) : super(id);
 
   @override
   Map<String, dynamic> get map => {
@@ -37,11 +31,11 @@ class ReleasePicture extends ChildEntity<ReleasePicture> {
       };
 
   static ReleasePicture fromMap(Map<String, dynamic> map) {
-    return ReleasePicture.full(
-      map['releaseId'] as int,
-      map['id'] as int,
-      map['createdTime'] as DateTime,
-      map['modifiedTime'] as DateTime,
+    return ReleasePicture(
+      releaseId: map['releaseId'] as int,
+      id: map['id'] as int,
+      createdTime: DateTime.parse(map['createdTime'] as String),
+      modifiedTime: DateTime.parse(map['modifiedTime'] as String),
       filename: map['filename'],
       pictureType: PictureType.values[map['pictureType'] as int],
     );
