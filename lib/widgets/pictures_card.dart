@@ -64,8 +64,8 @@ class _PicturesCardState extends State<PicturesCard> {
             children: [
               Row(
                 children: [
-                  SizedBox(
-                      width: 100,
+                  Expanded(
+                      flex: 1,
                       child: _selectedPicIndex > 0
                           ? PreviewPic(
                               releasePicture:
@@ -73,9 +73,9 @@ class _PicturesCardState extends State<PicturesCard> {
                               saveDirPath: snapshot.data!.path,
                               picTapped: prevPic,
                             )
-                          : null),
-                  Flexible(
-                    fit: FlexFit.loose,
+                          : Container()),
+                  Expanded(
+                    flex: 2,
                     child: widget.pictures.isNotEmpty
                         ? PictureTypeViewer(
                             releasePicture: widget.pictures[_selectedPicIndex],
@@ -86,8 +86,8 @@ class _PicturesCardState extends State<PicturesCard> {
                             size: 200,
                           ),
                   ),
-                  SizedBox(
-                    width: 100,
+                  Expanded(
+                    flex: 1,
                     child: widget.pictures.length > 1 &&
                             _selectedPicIndex < widget.pictures.length - 1
                         ? PreviewPic(
@@ -96,7 +96,7 @@ class _PicturesCardState extends State<PicturesCard> {
                             saveDirPath: snapshot.data!.path,
                             picTapped: nextPic,
                           )
-                        : null,
+                        : Container(),
                   ),
                 ],
               ),
