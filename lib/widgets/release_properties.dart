@@ -8,25 +8,27 @@ class ReleaseProperties extends StatelessWidget {
   final List<ReleaseProperty> releaseProperties;
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      children: releaseProperties
-          .map(
-            (e) => Padding(
-              padding: const EdgeInsets.all(3),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(3),
-                  child: Text(releasePropertyFieldValues[e.propertyType]!),
+    return Card(
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        children: releaseProperties
+            .map(
+              (e) => Padding(
+                padding: const EdgeInsets.all(3),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: Text(releasePropertyFieldValues[e.propertyType]!),
+                  ),
                 ),
               ),
-            ),
-          )
-          .toList(),
+            )
+            .toList(),
+      ),
     );
   }
 }

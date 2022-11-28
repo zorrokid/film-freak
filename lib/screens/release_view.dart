@@ -1,25 +1,20 @@
-import 'dart:io';
-
-import 'package:film_freak/models/movie_release_view_model.dart';
-import 'package:film_freak/entities/release_picture.dart';
-import 'package:film_freak/screens/release_form.dart';
-import 'package:film_freak/widgets/error_display_widget.dart';
-import 'package:film_freak/widgets/release_properties.dart';
-import 'package:film_freak/widgets/spinner.dart';
+import 'package:film_freak/widgets/movie_card.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:provider/provider.dart';
-import 'package:film_freak/enums/case_type.dart';
 
+import '../models/movie_release_view_model.dart';
+import '../entities/release_picture.dart';
+import '../screens/release_form.dart';
+import '../widgets/error_display_widget.dart';
+import '../widgets/release_properties.dart';
+import '../widgets/spinner.dart';
 import '../persistence/collection_model.dart';
-import '../enums/condition.dart';
-import '../enums/media_type.dart';
-
 import '../services/movie_release_service.dart';
 import '../utils/directory_utils.dart';
-
-import '../widgets/labelled_text.dart';
 import '../widgets/picture_type_viewer.dart';
 import '../widgets/preview_pic.dart';
+import '../widgets/release_details_card.dart';
 
 class ReleaseView extends StatefulWidget {
   const ReleaseView({required this.id, super.key});
@@ -112,6 +107,8 @@ class _ReleasViewState extends State<ReleaseView> {
             return Scaffold(
               appBar: AppBar(title: Text(viewModel.release.name)),
               body: ListView(
+                padding: const EdgeInsets.only(
+                    bottom: kFloatingActionButtonMargin + 48),
                 children: [
                   Row(
                     children: [
@@ -158,36 +155,11 @@ class _ReleasViewState extends State<ReleaseView> {
                               '${_selectedPicIndex + 1}/${_pictures.length}'),
                     ),
                   ]),
-                  LabelledText(
-                    label: 'Release name',
-                    value: viewModel.release.name,
-                  ),
-                  LabelledText(
-                    label: 'Barcode',
-                    value: viewModel.release.barcode,
-                  ),
-                  LabelledText(
-                      label: 'Movie', value: viewModel.movie?.title ?? ''),
-                  LabelledText(
-                    label: 'Media type',
-                    value:
-                        mediaTypeFormFieldValues[viewModel.release.mediaType]!,
-                  ),
-                  LabelledText(
-                    label: 'Case type',
-                    value: caseTypeFormFieldValues[viewModel.release.caseType]!,
-                  ),
-                  LabelledText(
-                    label: 'Condition',
-                    value:
-                        conditionFormFieldValues[viewModel.release.condition]!,
-                  ),
+                  if (viewModel.movie != null)
+                    MovieCard(movie: viewModel.movie!),
+                  ReleaseDetailsCard(release: viewModel.release),
                   ReleaseProperties(
                     releaseProperties: viewModel.releaseProperties,
-                  ),
-                  LabelledText(
-                    label: 'Notes',
-                    value: viewModel.release.notes,
                   ),
                 ],
               ),
