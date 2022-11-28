@@ -5,9 +5,9 @@ import 'package:film_freak/widgets/preview_pic.dart';
 import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 
-import '../entities/release_picture.dart';
-import '../utils/directory_utils.dart';
-import 'error_display_widget.dart';
+import '../../entities/release_picture.dart';
+import '../../utils/directory_utils.dart';
+import '../../widgets/error_display_widget.dart';
 
 class PicturesCard extends StatefulWidget {
   const PicturesCard({super.key, required this.pictures});

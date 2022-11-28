@@ -1,4 +1,4 @@
-import 'package:film_freak/widgets/pictures_card.dart';
+import 'package:film_freak/features/view_release/pictures_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
