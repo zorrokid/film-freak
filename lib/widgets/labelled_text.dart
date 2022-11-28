@@ -6,13 +6,32 @@ class LabelledText extends StatelessWidget {
   final String value;
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Expanded(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Expanded(
-          child: Text(label),
+        Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Row(
+            children: [
+              Text(
+                label,
+                style: DefaultTextStyle.of(context)
+                    .style
+                    .apply(fontSizeFactor: 0.7),
+              )
+            ],
+          ),
         ),
-        Text(value)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: Row(
+            children: [
+              Expanded(child: Text(value)),
+            ],
+          ),
+        ),
       ],
-    );
+    ));
   }
 }
