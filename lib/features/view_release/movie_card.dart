@@ -1,7 +1,7 @@
-import 'package:film_freak/entities/movie.dart';
-import 'package:film_freak/widgets/labelled_text.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../entities/movie.dart';
+import '../../widgets/labelled_text.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard({super.key, required this.movie});

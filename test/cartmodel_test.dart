@@ -15,7 +15,7 @@ void main() {
       expect(model.totalMovieReleases, 1);
     });
 
-    model.add(MovieRelease.full(1, DateTime.now(), DateTime.now(),
+    model.add(MovieRelease(
         mediaType: MediaType.dvd,
         name: 'Star Wars',
         barcode: '',
