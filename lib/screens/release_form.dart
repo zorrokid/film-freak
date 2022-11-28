@@ -25,7 +25,6 @@ import '../enums/condition.dart';
 import '../enums/media_type.dart';
 
 import '../services/movie_release_service.dart';
-import '../utils/directory_utils.dart';
 import 'package:path/path.dart' as p;
 
 import '../widgets/decorated_text_form_field.dart';
@@ -245,11 +244,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
     });
   }
 
-  Future<void> _onCropPressed() async {
+  Future<void> _onCropPressed(String saveDir) async {
     if (_pictures.isEmpty) return;
     final picToCrop = _pictures[_selectedPicIndex];
-    final picDir = await getReleasePicsSaveDir();
-    final imagePath = p.join(picDir.path, picToCrop.filename);
+    final imagePath = p.join(saveDir, picToCrop.filename);
     if (!mounted) return;
     await Navigator.push(
       context,
@@ -321,7 +319,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, cart, child) {
+    return Consumer<CollectionModel>(builder: (context, appState, child) {
       Future<void> submit() async {
         if (!_formKey.currentState!.validate()) return;
         final viewModel = _buildModel();
@@ -338,15 +336,13 @@ class _ReleaseFormState extends State<ReleaseForm> {
         viewModel.release.id = id;
 
         if (isEditMode()) {
-          cart.update(viewModel.release);
+          appState.update(viewModel.release);
         } else {
-          cart.add(viewModel.release);
+          appState.add(viewModel.release);
         }
 
-        final picDir = await getReleasePicsSaveDir();
-
         for (final picToDelete in _picturesToDelete) {
-          final imagePath = p.join(picDir.path, picToDelete.filename);
+          final imagePath = p.join(appState.saveDir, picToDelete.filename);
           final imageFile = File(imagePath);
           await imageFile.delete();
         }
@@ -386,7 +382,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                               ? PreviewPic(
                                   releasePicture:
                                       _pictures[_selectedPicIndex - 1],
-                                  saveDirPath: cart.saveDir,
+                                  saveDirPath: appState.saveDir,
                                   picTapped: prevPic,
                                 )
                               : null),
@@ -395,7 +391,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                             ? PictureTypeSelection(
                                 onValueChanged: _selectedImageChanged,
                                 releasePicture: _pictures[_selectedPicIndex],
-                                saveDirPath: cart.saveDir,
+                                saveDirPath: appState.saveDir,
                               )
                             : const Icon(
                                 Icons.image,
@@ -409,7 +405,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                             ? PreviewPic(
                                 releasePicture:
                                     _pictures[_selectedPicIndex + 1],
-                                saveDirPath: cart.saveDir,
+                                saveDirPath: appState.saveDir,
                                 picTapped: nextPic,
                               )
                             : null,
@@ -424,8 +420,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
                               '${_selectedPicIndex + 1}/${_pictures.length}'),
                     ),
                     ReleasePictureDelete(onDelete: _onDelete),
-                    ReleasePictureCrop(onCropPressed: _onCropPressed),
-                    ReleasePictureSelection(onValueChanged: _onPictureSelected)
+                    ReleasePictureCrop(
+                        onCropPressed: () => _onCropPressed(appState.saveDir)),
+                    ReleasePictureSelection(
+                        onValueChanged: _onPictureSelected,
+                        saveDir: appState.saveDir)
                   ]),
                   Row(
                     children: [
@@ -438,7 +437,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       ),
                       IconButton(
                         onPressed: () => getTextFromImage(
-                            context, _nameController, cart.saveDir,
+                            context, _nameController, appState.saveDir,
                             capitalizeWords: true),
                         icon: const Icon(Icons.image),
                       )
@@ -464,8 +463,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () => getTextFromImage(
-                            context, _movieSearchTextController, cart.saveDir,
+                        onPressed: () => getTextFromImage(context,
+                            _movieSearchTextController, appState.saveDir,
                             capitalizeWords: true),
                         icon: const Icon(Icons.image),
                       ),
@@ -527,7 +526,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       ),
                       IconButton(
                         onPressed: () => getTextFromImage(
-                            context, _notesController, cart.saveDir),
+                            context, _notesController, appState.saveDir),
                         icon: const Icon(Icons.image),
                       ),
                     ],

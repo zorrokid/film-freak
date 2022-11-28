@@ -42,7 +42,7 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, cart, child) {
+    return Consumer<CollectionModel>(builder: (context, appState, child) {
       return FutureBuilder(
           future: _futureModel,
           builder: (BuildContext context,
@@ -80,8 +80,10 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child:
-                            PicturesCard(pictures: viewModel.releasePictures),
+                        child: PicturesCard(
+                          pictures: viewModel.releasePictures,
+                          saveDir: appState.saveDir,
+                        ),
                       ),
                     ],
                   ),
