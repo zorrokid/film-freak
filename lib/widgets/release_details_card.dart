@@ -52,14 +52,15 @@ class ReleaseDetailsCard extends StatelessWidget {
             ),
           ],
         ),
-        Row(
-          children: [
-            LabelledText(
-              label: 'Notes',
-              value: release.notes,
-            ),
-          ],
-        ),
+        if (release.notes.isNotEmpty)
+          Row(
+            children: [
+              LabelledText(
+                label: 'Notes',
+                value: release.notes,
+              ),
+            ],
+          ),
       ]),
     );
   }
