@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../entities/movie_release.dart';
-import '../widgets/labelled_text.dart';
-import '../enums/case_type.dart';
-import '../enums/condition.dart';
-import '../enums/media_type.dart';
+import '../../entities/movie_release.dart';
+import '../../enums/case_type.dart';
+import '../../enums/condition.dart';
+import '../../enums/media_type.dart';
+import '../../widgets/labelled_text.dart';
 
 class ReleaseDetailsCard extends StatelessWidget {
   const ReleaseDetailsCard({super.key, required this.release});

@@ -1,5 +1,5 @@
 import 'package:film_freak/entities/movie_release.dart';
-import 'package:film_freak/screens/release_view.dart';
+import 'package:film_freak/features/view_release/release_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../enums/media_type.dart';
@@ -59,7 +59,7 @@ class ReleaseListTile extends StatelessWidget {
       onTap: () => {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {
-            return ReleaseView(id: release.id!);
+            return ReleaseScreen(id: release.id!);
           },
         ))
       },

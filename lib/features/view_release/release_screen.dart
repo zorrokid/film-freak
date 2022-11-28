@@ -1,29 +1,29 @@
-import 'package:film_freak/widgets/movie_card.dart';
 import 'package:film_freak/widgets/pictures_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/movie_release_view_model.dart';
-import '../screens/release_form.dart';
-import '../widgets/error_display_widget.dart';
-import '../widgets/release_properties.dart';
-import '../widgets/spinner.dart';
-import '../persistence/collection_model.dart';
-import '../services/movie_release_service.dart';
-import '../widgets/release_details_card.dart';
+import '../../models/movie_release_view_model.dart';
+import '../../screens/release_form.dart';
+import '../../widgets/error_display_widget.dart';
+import '../../widgets/release_properties.dart';
+import '../../widgets/spinner.dart';
+import '../../persistence/collection_model.dart';
+import '../../services/movie_release_service.dart';
+import 'release_details_card.dart';
+import 'movie_card.dart';
 
-class ReleaseView extends StatefulWidget {
-  const ReleaseView({required this.id, super.key});
+class ReleaseScreen extends StatefulWidget {
+  const ReleaseScreen({required this.id, super.key});
 
   final int id;
 
   @override
-  State<ReleaseView> createState() {
-    return _ReleasViewState();
+  State<ReleaseScreen> createState() {
+    return _ReleaseScreenState();
   }
 }
 
-class _ReleasViewState extends State<ReleaseView> {
+class _ReleaseScreenState extends State<ReleaseScreen> {
   final _movieReleaseService = initializeReleaseService();
 
   // form state
