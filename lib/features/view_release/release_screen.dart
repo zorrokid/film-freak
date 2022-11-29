@@ -1,4 +1,4 @@
-import 'package:film_freak/widgets/pictures_card.dart';
+import 'package:film_freak/features/view_release/pictures_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +8,7 @@ import '../../widgets/error_display_widget.dart';
 import '../../widgets/release_properties.dart';
 import '../../widgets/spinner.dart';
 import '../../persistence/collection_model.dart';
-import '../../services/movie_release_service.dart';
+import '../../services/collection_item_service.dart';
 import 'release_details_card.dart';
 import 'movie_card.dart';
 
@@ -42,7 +42,7 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, cart, child) {
+    return Consumer<CollectionModel>(builder: (context, appState, child) {
       return FutureBuilder(
           future: _futureModel,
           builder: (BuildContext context,
@@ -80,8 +80,10 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child:
-                            PicturesCard(pictures: viewModel.releasePictures),
+                        child: PicturesCard(
+                          pictures: viewModel.releasePictures,
+                          saveDir: appState.saveDir,
+                        ),
                       ),
                     ],
                   ),

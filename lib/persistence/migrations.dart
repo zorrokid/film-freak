@@ -1,4 +1,4 @@
-Map<int, String> migrationScripts = {
+final migrationScripts = <int, String>{
   // initial create is version 1
   1: '''CREATE TABLE releases(
           id INTEGER PRIMARY KEY, 

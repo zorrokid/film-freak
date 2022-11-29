@@ -18,12 +18,13 @@ Future<void> main() async {
   );
 
   await initializeRemoteConfig();
+  final collectionModel = await initializeCollectionModel();
 
   initializeLogging();
   cameras = await availableCameras();
   runApp(
     ChangeNotifierProvider(
-        create: (context) => initializeCollectionModel(), child: const MyApp()),
+        create: (context) => collectionModel, child: const MyApp()),
   );
 }
 

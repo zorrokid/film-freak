@@ -24,8 +24,7 @@ import '../persistence/collection_model.dart';
 import '../enums/condition.dart';
 import '../enums/media_type.dart';
 
-import '../services/movie_release_service.dart';
-import '../utils/directory_utils.dart';
+import '../services/collection_item_service.dart';
 import 'package:path/path.dart' as p;
 
 import '../widgets/decorated_text_form_field.dart';
@@ -60,7 +59,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   // form state
   late Future<MovieReleaseViewModel> _futureModel;
-  late Future<Directory> _futureSaveDirectory;
   late int? _id;
   late String? _barcode;
   MediaType _mediaType = MediaType.unknown;
@@ -78,7 +76,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
     _id = widget.id;
     _barcode = widget.barcode;
     _futureModel = _loadData();
-    _futureSaveDirectory = _getSaveDirectory();
   }
 
   void _selectedImageChanged(PictureType pictureType) {
@@ -141,21 +138,17 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   bool isEditMode() => _id != null;
 
-  Future<Directory> _getSaveDirectory() async {
-    return await getReleasePicsSaveDir();
-  }
-
-  Future<String?> _getSelectedImagePath() async {
+  Future<String?> _getSelectedImagePath(String saveDir) async {
     if (_pictures.isEmpty) return null;
     if (_selectedPicIndex > _pictures.length - 1) return null;
     final selectedPic = _pictures[_selectedPicIndex];
-    final saveDir = await getReleasePicsSaveDir();
-    final path = p.join(saveDir.path, selectedPic.filename);
+    final path = p.join(saveDir, selectedPic.filename);
     return path;
   }
 
-  Future<String?> _getImageTextSelection(BuildContext context) async {
-    final imagePath = await _getSelectedImagePath();
+  Future<String?> _getImageTextSelection(
+      BuildContext context, String saveDir) async {
+    final imagePath = await _getSelectedImagePath(saveDir);
     if (imagePath == null || !mounted) return null;
     var selectedText = await Navigator.push(context,
         MaterialPageRoute<String>(builder: (context) {
@@ -251,11 +244,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
     });
   }
 
-  Future<void> _onCropPressed() async {
+  Future<void> _onCropPressed(String saveDir) async {
     if (_pictures.isEmpty) return;
     final picToCrop = _pictures[_selectedPicIndex];
-    final picDir = await getReleasePicsSaveDir();
-    final imagePath = p.join(picDir.path, picToCrop.filename);
+    final imagePath = p.join(saveDir, picToCrop.filename);
     if (!mounted) return;
     await Navigator.push(
       context,
@@ -290,9 +282,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   Future<void> getTextFromImage(
-      BuildContext context, TextEditingController controller,
+      BuildContext context, TextEditingController controller, String saveDir,
       {bool capitalizeWords = false}) async {
-    String? text = await _getImageTextSelection(context);
+    String? text = await _getImageTextSelection(context, saveDir);
 
     if (text == null) {
       return;
@@ -327,7 +319,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, cart, child) {
+    return Consumer<CollectionModel>(builder: (context, appState, child) {
       Future<void> submit() async {
         if (!_formKey.currentState!.validate()) return;
         final viewModel = _buildModel();
@@ -344,15 +336,13 @@ class _ReleaseFormState extends State<ReleaseForm> {
         viewModel.release.id = id;
 
         if (isEditMode()) {
-          cart.update(viewModel.release);
+          appState.update(viewModel.release);
         } else {
-          cart.add(viewModel.release);
+          appState.add(viewModel.release);
         }
 
-        final picDir = await getReleasePicsSaveDir();
-
         for (final picToDelete in _picturesToDelete) {
-          final imagePath = p.join(picDir.path, picToDelete.filename);
+          final imagePath = p.join(appState.saveDir, picToDelete.filename);
           final imageFile = File(imagePath);
           await imageFile.delete();
         }
@@ -368,9 +358,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 ? const Text('Edit release')
                 : const Text('Add a new release')),
         body: FutureBuilder(
-          future: Future.wait([_futureModel, _futureSaveDirectory]),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          future: _futureModel,
+          builder: (BuildContext context,
+              AsyncSnapshot<MovieReleaseViewModel> snapshot) {
             if (snapshot.hasError) {
               return ErrorDisplayWidget(snapshot.error.toString());
             }
@@ -378,8 +368,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
               return const Spinner();
             }
 
-            final MovieReleaseViewModel viewModel = snapshot.data![0];
-            final Directory saveDir = snapshot.data![1];
+            final MovieReleaseViewModel viewModel = snapshot.data!;
 
             return Form(
               key: _formKey,
@@ -393,7 +382,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                               ? PreviewPic(
                                   releasePicture:
                                       _pictures[_selectedPicIndex - 1],
-                                  saveDirPath: saveDir.path,
+                                  saveDirPath: appState.saveDir,
                                   picTapped: prevPic,
                                 )
                               : null),
@@ -402,7 +391,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                             ? PictureTypeSelection(
                                 onValueChanged: _selectedImageChanged,
                                 releasePicture: _pictures[_selectedPicIndex],
-                                saveDirPath: saveDir.path,
+                                saveDirPath: appState.saveDir,
                               )
                             : const Icon(
                                 Icons.image,
@@ -416,7 +405,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                             ? PreviewPic(
                                 releasePicture:
                                     _pictures[_selectedPicIndex + 1],
-                                saveDirPath: saveDir.path,
+                                saveDirPath: appState.saveDir,
                                 picTapped: nextPic,
                               )
                             : null,
@@ -431,8 +420,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
                               '${_selectedPicIndex + 1}/${_pictures.length}'),
                     ),
                     ReleasePictureDelete(onDelete: _onDelete),
-                    ReleasePictureCrop(onCropPressed: _onCropPressed),
-                    ReleasePictureSelection(onValueChanged: _onPictureSelected)
+                    ReleasePictureCrop(
+                        onCropPressed: () => _onCropPressed(appState.saveDir)),
+                    ReleasePictureSelection(
+                        onValueChanged: _onPictureSelected,
+                        saveDir: appState.saveDir)
                   ]),
                   Row(
                     children: [
@@ -445,7 +437,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       ),
                       IconButton(
                         onPressed: () => getTextFromImage(
-                            context, _nameController,
+                            context, _nameController, appState.saveDir,
                             capitalizeWords: true),
                         icon: const Icon(Icons.image),
                       )
@@ -471,8 +463,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () => getTextFromImage(
-                            context, _movieSearchTextController,
+                        onPressed: () => getTextFromImage(context,
+                            _movieSearchTextController, appState.saveDir,
                             capitalizeWords: true),
                         icon: const Icon(Icons.image),
                       ),
@@ -533,8 +525,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () =>
-                            getTextFromImage(context, _notesController),
+                        onPressed: () => getTextFromImage(
+                            context, _notesController, appState.saveDir),
                         icon: const Icon(Icons.image),
                       ),
                     ],

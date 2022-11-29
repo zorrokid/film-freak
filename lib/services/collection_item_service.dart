@@ -1,6 +1,8 @@
+import 'package:film_freak/enums/picture_type.dart';
 import 'package:film_freak/features/tmdb_search/tmdb_movie_result.dart';
+import 'package:film_freak/models/collection_item_list_model.dart';
 import 'package:film_freak/models/movie_release_view_model.dart';
-import 'package:film_freak/models/movie_releases_list_filter.dart';
+import 'package:film_freak/models/collection_item_query_specs.dart';
 import 'package:film_freak/persistence/repositories/movie_repository.dart';
 import 'package:film_freak/utils/file_utils.dart';
 import 'package:logging/logging.dart';
@@ -13,23 +15,23 @@ import '../persistence/repositories/release_properties_repository.dart';
 import '../persistence/repositories/release_repository.dart';
 import '../utils/directory_utils.dart';
 
-MovieReleaseService initializeReleaseService() {
+CollectionItemService initializeReleaseService() {
   final dbProvider = DatabaseProvider.instance;
-  return MovieReleaseService(
+  return CollectionItemService(
       releaseRepository: ReleaseRepository(dbProvider),
       releasePicturesRepository: ReleasePicturesRepository(dbProvider),
       releasePropertiesRepository: ReleasePropertiesRepository(dbProvider),
       movieRepository: MovieRepository(dbProvider));
 }
 
-class MovieReleaseService {
-  MovieReleaseService(
+class CollectionItemService {
+  CollectionItemService(
       {required this.releaseRepository,
       required this.releasePicturesRepository,
       required this.releasePropertiesRepository,
       required this.movieRepository});
 
-  final log = Logger('MovieReleaseService');
+  final log = Logger('CollectionItemService');
   final ReleaseRepository releaseRepository;
   final ReleasePicturesRepository releasePicturesRepository;
   final ReleasePropertiesRepository releasePropertiesRepository;
@@ -120,7 +122,7 @@ class MovieReleaseService {
   }
 
   Future<Iterable<MovieRelease>> getMovieReleases(
-      MovieReleasesListFilter? filter) async {
+      CollectionItemQuerySpecs? filter) async {
     final releases = await releaseRepository.queryReleases(filter);
     return releases;
   }
@@ -161,5 +163,39 @@ class MovieReleaseService {
       overView: tmdbMovieResult.overview,
       releaseDate: DateTime.tryParse(tmdbMovieResult.releaseDate),
     );
+  }
+
+  Future<Iterable<CollectionItemListModel>> getListModels(
+      CollectionItemQuerySpecs? filter) async {
+    final releases = await releaseRepository.queryReleases(filter);
+    final movieIds =
+        releases.where((e) => e.movieId != null).map((e) => e.movieId!).toSet();
+    final movies = await movieRepository.getByIds(movieIds);
+    final releaseIds = releases.map((e) => e.id!).toSet();
+    final pics = await releasePicturesRepository
+        .getByReleaseIds(releaseIds, [PictureType.coverFront]);
+
+    final collectionItems = releases.map((e) => CollectionItemListModel(
+          barcode: e.barcode,
+          caseType: e.caseType,
+          condition: e.condition,
+          id: e.id!,
+          mediaType: e.mediaType,
+          name: e.name,
+          movieName: e.movieId != null
+              ? movies.singleWhere((m) => m.id == e.movieId).title
+              : null,
+          picFileName: pics.any((p) => p.releaseId == e.id)
+              ? pics.firstWhere((p) => p.releaseId == e.id).filename
+              : null,
+        ));
+
+    return collectionItems;
+  }
+
+  Future<Iterable<CollectionItemListModel>> getLatest(int top) async {
+    final filter =
+        CollectionItemQuerySpecs(top: top, orderBy: OrderByEnum.latest);
+    return getListModels(filter);
   }
 }

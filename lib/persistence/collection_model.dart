@@ -4,7 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:film_freak/entities/movie_release.dart';
 
 class CollectionModel extends ChangeNotifier {
+  CollectionModel({required this.saveDir});
   final List<MovieRelease> _movieReleases = [];
+  String saveDir;
 
   UnmodifiableListView<MovieRelease> get movieReleases =>
       UnmodifiableListView(_movieReleases);

@@ -1,15 +1,15 @@
-import 'package:film_freak/entities/movie_release.dart';
+import 'package:film_freak/models/collection_item_list_model.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/repositories/release_repository.dart';
 import 'package:film_freak/widgets/filter_list.dart';
 import 'package:flutter/material.dart';
 
-import '../services/movie_release_service.dart';
+import '../services/collection_item_service.dart';
 import '../utils/dialog_utls.dart';
 import 'release_form.dart';
 import 'barcode_scanner_view.dart';
 import '../widgets/main_drawer.dart';
-import '../models/movie_releases_list_filter.dart';
+import '../models/collection_item_query_specs.dart';
 import 'movie_releases_list_view.dart';
 
 class ScanView extends StatefulWidget {
@@ -23,12 +23,11 @@ class ScanView extends StatefulWidget {
 
 class _ScanViewState extends State<ScanView> {
   final _repository = ReleaseRepository(DatabaseProvider.instance);
+  final _service = initializeReleaseService();
   final releaseService = initializeReleaseService();
 
-  Future<List<MovieRelease>> _getLatest() async {
-    final latest = await _repository.getLatest(10);
-    return latest.toList();
-  }
+  Future<Iterable<CollectionItemListModel>> _getLatest() async =>
+      await _service.getLatest(10);
 
   Future<void> barcodeScan() async {
     final barcode = await Navigator.push<String>(context,
@@ -42,10 +41,10 @@ class _ScanViewState extends State<ScanView> {
 
     if (!mounted) return;
 
-    var route = barcodeExists
+    final route = barcodeExists
         ? MaterialPageRoute<String>(builder: (context) {
             return MovieReleasesList(
-                filter: MovieReleasesListFilter(barcode: barcode));
+                filter: CollectionItemQuerySpecs(barcode: barcode));
           })
         : MaterialPageRoute<String>(builder: (context) {
             return ReleaseForm(

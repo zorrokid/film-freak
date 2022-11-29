@@ -2,8 +2,9 @@ import 'package:film_freak/entities/movie_release.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/repositories/repository_base.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:tuple/tuple.dart';
 
-import '../../models/movie_releases_list_filter.dart';
+import '../../models/collection_item_query_specs.dart';
 
 class ReleaseRepository extends RepositoryBase {
   ReleaseRepository(DatabaseProvider databaseProvider)
@@ -28,46 +29,68 @@ class ReleaseRepository extends RepositoryBase {
   }
 
   Future<Iterable<MovieRelease>> queryReleases(
-      MovieReleasesListFilter? filter) async {
+      CollectionItemQuerySpecs? filter) async {
     Database db = await databaseProvider.database;
 
-    List<Object?>? whereArgs;
-    String? where;
+    final queryArgs = filterToQueryArgs(filter);
 
-    if (filter != null && filter.barcode != null) {
-      final whereConditions = <String>[];
-      whereArgs = <Object?>[];
+    String? orderBy = getOrderBy(filter);
+
+    final query = await db.query(tableName,
+        where: queryArgs.item1,
+        whereArgs: queryArgs.item2,
+        orderBy: orderBy,
+        limit: filter?.top);
+
+    var result =
+        query.map<MovieRelease>((e) => MovieRelease.fromMap(e)).toList();
+    return result;
+  }
+
+  String? getOrderBy(CollectionItemQuerySpecs? filter) {
+    if (filter == null || filter.orderBy == null) return null;
+    final orderByClauses = <String>[];
+    if (filter.orderBy == OrderByEnum.latest) {
+      orderByClauses.add('modifiedTime DESC');
+    }
+    if (filter.orderBy == OrderByEnum.oldest) {
+      orderByClauses.add('modifiedTime ASC');
+    }
+    return orderByClauses.join(', ');
+  }
+
+  Tuple2<String?, List<Object?>?> filterToQueryArgs(
+      CollectionItemQuerySpecs? filter) {
+    if (filter == null) return const Tuple2(null, null);
+
+    final whereArgs = <Object?>[];
+    final whereConditions = <String>[];
+
+    if (filter.barcode != null) {
       whereConditions.add('barcode = ?');
       whereArgs.add(filter.barcode!);
-      where = whereConditions.join(' AND ');
     }
 
-    final query = await db.query(tableName, where: where, whereArgs: whereArgs);
+    if (whereConditions.isEmpty) {
+      return const Tuple2(null, null);
+    }
 
-    var result = query.map<MovieRelease>((e) => MovieRelease.fromMap(e));
-    return result;
+    final where = whereConditions.join(' AND ');
+    return Tuple2(where, whereArgs);
   }
 
   Future<MovieRelease> getRelease(int id) async {
     Database db = await databaseProvider.database;
     List<Map<String, Object?>> queryResult =
-        await db.rawQuery("SELECT * FROM $tableName WHERE id='$id'");
+        await db.query(tableName, where: 'id=?', whereArgs: [id]);
     var result = queryResult.map<MovieRelease>((e) => MovieRelease.fromMap(e));
     return result.first;
   }
 
   Future<bool> barcodeExists(String barcode) async {
     Database db = await databaseProvider.database;
-    List<Map<String, Object?>> result = await db
-        .rawQuery("SELECT COUNT(*) FROM $tableName WHERE barcode='$barcode'");
-    return Sqflite.firstIntValue(result)! > 0;
-  }
-
-  Future<Iterable<MovieRelease>> getLatest(int count) async {
-    Database db = await databaseProvider.database;
-    List<Map<String, Object?>> queryResult = await db.rawQuery(
-        'SELECT * FROM $tableName ORDER BY modifiedTime DESC LIMIT $count');
-    var result = queryResult.map<MovieRelease>((e) => MovieRelease.fromMap(e));
-    return result;
+    List<Map<String, Object?>> result =
+        await db.query(tableName, where: 'barcode=?', whereArgs: [barcode]);
+    return result.isNotEmpty;
   }
 }
