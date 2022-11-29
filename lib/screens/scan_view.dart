@@ -41,7 +41,7 @@ class _ScanViewState extends State<ScanView> {
 
     if (!mounted) return;
 
-    var route = barcodeExists
+    final route = barcodeExists
         ? MaterialPageRoute<String>(builder: (context) {
             return MovieReleasesList(
                 filter: CollectionItemQuerySpecs(barcode: barcode));

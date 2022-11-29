@@ -22,7 +22,7 @@ class DatabaseProvider {
     String path = join(await getDatabasesPath(), dbName);
 
     if (migrationScripts.isNotEmpty) {
-      var dbVersion = migrationScripts.keys.last;
+      final dbVersion = migrationScripts.keys.last;
       final database =
           openDatabase(path, version: dbVersion, onUpgrade: _onUpgrade);
       return database;
@@ -37,7 +37,7 @@ class DatabaseProvider {
       throw Exception('Migration for version $version missing!');
     }
     await db.execute(migrationScripts[version]!);
-    var setVersionCommand = 'PRAGMA user_version=$version';
+    final setVersionCommand = 'PRAGMA user_version=$version';
     await db.execute(setVersionCommand);
   }
 
@@ -45,15 +45,15 @@ class DatabaseProvider {
     for (var entry in migrationScripts.entries) {
       if (entry.key <= oldVersion || entry.key > newVersion) continue;
       await db.execute(entry.value);
-      var setVersionCommand = 'PRAGMA user_version=${entry.key}';
+      final setVersionCommand = 'PRAGMA user_version=${entry.key}';
       await db.execute(setVersionCommand);
     }
   }
 
   Future<bool> truncateDb() async {
     await _database?.close();
-    var path = join(await getDatabasesPath(), dbName);
-    var file = File(path);
+    final path = join(await getDatabasesPath(), dbName);
+    final file = File(path);
     if (await file.exists()) {
       await file.delete();
       _database = null;
