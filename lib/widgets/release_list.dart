@@ -1,4 +1,4 @@
-import 'package:film_freak/entities/movie_release.dart';
+import 'package:film_freak/models/collection_item_list_model.dart';
 import 'package:film_freak/widgets/release_list_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -6,15 +6,18 @@ typedef OnDeleteCallback = Future<void> Function(int id);
 typedef OnEditCallback = Future<void> Function(int id);
 
 class ReleaseList extends StatelessWidget {
-  const ReleaseList(
-      {super.key,
-      required this.releases,
-      required this.onDelete,
-      required this.onEdit});
+  const ReleaseList({
+    super.key,
+    required this.releases,
+    required this.onDelete,
+    required this.onEdit,
+    required this.saveDir,
+  });
 
-  final List<MovieRelease> releases;
+  final List<CollectionItemListModel> releases;
   final OnDeleteCallback onDelete;
   final OnEditCallback onEdit;
+  final String saveDir;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +25,10 @@ class ReleaseList extends StatelessWidget {
       itemCount: releases.length,
       itemBuilder: (context, index) {
         return ReleaseListTile(
-          release: releases[index],
+          collectionItem: releases[index],
           onDelete: onDelete,
           onEdit: onEdit,
+          saveDir: saveDir,
         );
       },
     );

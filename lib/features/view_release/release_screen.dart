@@ -8,7 +8,7 @@ import '../../widgets/error_display_widget.dart';
 import '../../widgets/release_properties.dart';
 import '../../widgets/spinner.dart';
 import '../../persistence/collection_model.dart';
-import '../../services/movie_release_service.dart';
+import '../../services/collection_item_service.dart';
 import 'release_details_card.dart';
 import 'movie_card.dart';
 

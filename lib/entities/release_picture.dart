@@ -16,6 +16,7 @@ class ReleasePicture extends ChildEntity<ReleasePicture> {
     required this.pictureType,
   }) : super(
           id: id,
+          releaseId: releaseId,
           createdTime: createdTime,
           modifiedTime: modifiedTime,
         );

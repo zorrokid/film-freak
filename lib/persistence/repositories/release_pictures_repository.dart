@@ -2,6 +2,7 @@ import 'package:film_freak/persistence/repositories/repository_base.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../entities/release_picture.dart';
+import '../../enums/picture_type.dart';
 import '../db_provider.dart';
 
 class ReleasePicturesRepository extends RepositoryBase<ReleasePicture> {
@@ -27,6 +28,19 @@ class ReleasePicturesRepository extends RepositoryBase<ReleasePicture> {
 
   Future<Iterable<ReleasePicture>> getByReleaseId(int releaseId) async {
     return super.getById(releaseId, "releaseId", ReleasePicture.fromMap);
+  }
+
+  Future<Iterable<ReleasePicture>> getByReleaseIds(
+      Iterable<int> releaseids, Iterable<PictureType> picTypes) async {
+    Database db = await databaseProvider.database;
+    final query = await db.query(tableName,
+        where: 'releaseId IN (?) AND pictureType IN (?)',
+        whereArgs: [
+          releaseids.join(','),
+          picTypes.map((e) => e.index).join(',')
+        ]);
+    final result = query.map<ReleasePicture>((e) => ReleasePicture.fromMap(e));
+    return result;
   }
 
   Future<int> deleteByReleaseId(int releaseId) async {

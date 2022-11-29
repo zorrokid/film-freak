@@ -1,5 +1,6 @@
-import 'package:film_freak/models/movie_releases_list_filter.dart';
-import 'package:film_freak/services/movie_release_service.dart';
+import 'package:film_freak/models/collection_item_query_specs.dart';
+import 'package:film_freak/models/collection_item_list_model.dart';
+import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/widgets/filter_list.dart';
 import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ import '../entities/movie_release.dart';
 class MovieReleasesList extends StatefulWidget {
   const MovieReleasesList({this.filter, super.key});
 
-  final MovieReleasesListFilter? filter;
+  final CollectionItemQuerySpecs? filter;
 
   @override
   State<StatefulWidget> createState() {
@@ -28,20 +29,11 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
     super.initState();
   }
 
-  Future<List<MovieRelease>> _getReleases() async {
-    Iterable<MovieRelease> releases =
-        await releaseService.getMovieReleases(widget.filter);
-    if (widget.filter != null) {
-      if (widget.filter!.barcode != null) {
-        releases = releases
-            .where((element) => element.barcode == widget.filter!.barcode);
-      }
-    }
-    return releases.toList();
-  }
+  Future<Iterable<CollectionItemListModel>> _getReleases() async =>
+      await releaseService.getListModels(widget.filter);
 
   List<MovieRelease> filterReleases(
-      List<MovieRelease> releases, MovieReleasesListFilter? filter) {
+      List<MovieRelease> releases, CollectionItemQuerySpecs? filter) {
     if (filter == null) return releases;
 
     if (filter.barcode != null) {
@@ -55,7 +47,7 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, cart, child) {
+    return Consumer<CollectionModel>(builder: (context, appState, child) {
       void addRelease() {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return const ReleaseForm();

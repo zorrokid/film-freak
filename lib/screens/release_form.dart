@@ -24,7 +24,7 @@ import '../persistence/collection_model.dart';
 import '../enums/condition.dart';
 import '../enums/media_type.dart';
 
-import '../services/movie_release_service.dart';
+import '../services/collection_item_service.dart';
 import 'package:path/path.dart' as p;
 
 import '../widgets/decorated_text_form_field.dart';

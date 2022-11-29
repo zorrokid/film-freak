@@ -2,11 +2,12 @@ import 'package:film_freak/widgets/release_list.dart';
 import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../entities/movie_release.dart';
+import '../models/collection_item_list_model.dart';
 import '../persistence/collection_model.dart';
 import 'error_display_widget.dart';
 
-typedef MovieReleaseFetchMethod = Future<List<MovieRelease>> Function();
+typedef MovieReleaseFetchMethod = Future<Iterable<CollectionItemListModel>>
+    Function();
 
 class FilterList extends StatefulWidget {
   const FilterList(
@@ -26,12 +27,13 @@ class FilterList extends StatefulWidget {
 }
 
 class _FilterListState extends State<FilterList> {
-  late Future<List<MovieRelease>> _futureMovieReleases;
+  late Future<Iterable<CollectionItemListModel>>
+      _futureCollectionItemListModels;
 
   @override
   void initState() {
     super.initState();
-    _futureMovieReleases = widget.fetchMethod();
+    _futureCollectionItemListModels = widget.fetchMethod();
   }
 
   @override
@@ -39,22 +41,22 @@ class _FilterListState extends State<FilterList> {
     Future<void> onDelete(int id) async {
       await widget.onDelete(id);
       setState(() {
-        _futureMovieReleases = widget.fetchMethod();
+        _futureCollectionItemListModels = widget.fetchMethod();
       });
     }
 
     Future<void> onEdit(int id) async {
       await widget.onEdit(id);
       setState(() {
-        _futureMovieReleases = widget.fetchMethod();
+        _futureCollectionItemListModels = widget.fetchMethod();
       });
     }
 
-    return Consumer<CollectionModel>(builder: (context, cart, child) {
+    return Consumer<CollectionModel>(builder: (context, appState, child) {
       return FutureBuilder(
-          future: _futureMovieReleases,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          future: _futureCollectionItemListModels,
+          builder: (BuildContext context,
+              AsyncSnapshot<Iterable<CollectionItemListModel>> snapshot) {
             if (snapshot.hasError) {
               return ErrorDisplayWidget(
                 snapshot.error.toString(),
@@ -63,11 +65,12 @@ class _FilterListState extends State<FilterList> {
             if (!snapshot.hasData) {
               return const Spinner();
             }
-            final movieReleases = snapshot.data as List<MovieRelease>;
+            final collectionItems = snapshot.data!.toList();
             return ReleaseList(
-              releases: movieReleases,
+              releases: collectionItems,
               onDelete: onDelete,
               onEdit: onEdit,
+              saveDir: appState.saveDir,
             );
           });
     });

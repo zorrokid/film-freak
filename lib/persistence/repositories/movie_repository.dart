@@ -22,4 +22,12 @@ class MovieRepository extends RepositoryBase<Movie> {
     final res = await getById(id, 'tmdbId', Movie.fromMap);
     return res.isNotEmpty ? res.first : null;
   }
+
+  Future<Iterable<Movie>> getByIds(Iterable<int> ids) async {
+    Database db = await databaseProvider.database;
+    final query = await db
+        .query(tableName, where: 'id IN (?)', whereArgs: [ids.join(',')]);
+    final result = query.map<Movie>((e) => Movie.fromMap(e));
+    return result;
+  }
 }
