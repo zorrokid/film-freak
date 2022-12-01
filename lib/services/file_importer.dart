@@ -18,7 +18,7 @@ class FileImporter {
       final items = fileContentAsJson.map((e) => MovieRelease.fromJson(e));
       final repository = ReleaseRepository(dbProvider);
       for (final item in items) {
-        repository.insertRelease(item);
+        repository.insert(item);
       }
     } catch (e) {
       return false;

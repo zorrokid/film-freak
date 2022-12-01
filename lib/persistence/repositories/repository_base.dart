@@ -32,4 +32,15 @@ class RepositoryBase<T extends Entity> {
     Database db = await databaseProvider.database;
     return await db.delete(tableName, where: '$columnName = $id');
   }
+
+  Future<int> insert(T entity) async {
+    Database db = await databaseProvider.database;
+    return await db.insert(tableName, entity.map);
+  }
+
+  Future<int> update(T entity) async {
+    Database db = await databaseProvider.database;
+    return await db
+        .update(tableName, entity.map, where: 'id=?', whereArgs: [entity.id]);
+  }
 }

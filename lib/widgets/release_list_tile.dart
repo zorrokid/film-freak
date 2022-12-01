@@ -1,36 +1,29 @@
 import 'dart:io';
 
 import 'package:film_freak/features/view_release/release_screen.dart';
-import 'package:film_freak/models/collection_item_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
 import '../enums/media_type.dart';
-import 'condition_icon.dart';
+import '../models/list_models/release_list_model.dart';
 
-typedef OnDeleteCallback = void Function(int id);
-typedef OnEditCallback = void Function(int id);
+typedef OnCreateCallback = void Function(int id);
 
 class ReleaseListTile extends StatelessWidget {
   const ReleaseListTile({
-    required this.collectionItem,
-    required this.onDelete,
-    required this.onEdit,
+    required this.item,
+    required this.onCreate,
     required this.saveDir,
     super.key,
   });
-  final CollectionItemListModel collectionItem;
-  final OnDeleteCallback onDelete;
-  final OnEditCallback onEdit;
+  final ReleaseListModel item;
+  final OnCreateCallback onCreate;
   final String saveDir;
 
   void menuItemSelected(String? value) {
     switch (value) {
-      case 'delete':
-        onDelete(collectionItem.id);
-        break;
-      case 'edit':
-        onEdit(collectionItem.id);
+      case 'create':
+        onCreate(item.id);
         break;
     }
   }
@@ -38,20 +31,16 @@ class ReleaseListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(collectionItem.name.isNotEmpty
-          ? collectionItem.name
-          : collectionItem.barcode),
+      title: Text(item.name.isNotEmpty ? item.name : item.barcode),
       subtitle: Row(
         children: [
-          Expanded(
-              child: Text(
-                  mediaTypeFormFieldValues[collectionItem.mediaType] ?? "")),
-          ConditionIcon(condition: collectionItem.condition),
+          Expanded(child: Text(mediaTypeFormFieldValues[item.mediaType] ?? "")),
+          // TODO MediaTypeIcon ? ,
         ],
       ),
-      leading: collectionItem.picFileName != null
+      leading: item.picFileName != null
           ? Image.file(
-              File(join(saveDir, collectionItem.picFileName)),
+              File(join(saveDir, item.picFileName)),
               height: 50,
             )
           : const Icon(Icons.image),
@@ -59,12 +48,8 @@ class ReleaseListTile extends StatelessWidget {
         itemBuilder: (context) {
           return [
             const PopupMenuItem(
-              value: 'delete',
-              child: Text('Delete'),
-            ),
-            const PopupMenuItem(
-              value: 'edit',
-              child: Text('Edit'),
+              value: 'create',
+              child: Text('Create collection item'),
             ),
           ];
         },
@@ -73,7 +58,7 @@ class ReleaseListTile extends StatelessWidget {
       onTap: () => {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {
-            return ReleaseScreen(id: collectionItem.id!);
+            return ReleaseScreen(id: item.id!);
           },
         ))
       },

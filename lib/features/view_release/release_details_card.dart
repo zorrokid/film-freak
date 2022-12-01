@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../entities/movie_release.dart';
 import '../../enums/case_type.dart';
-import '../../enums/condition.dart';
 import '../../enums/media_type.dart';
 import '../../widgets/labelled_text.dart';
 
@@ -41,14 +40,6 @@ class ReleaseDetailsCard extends StatelessWidget {
             LabelledText(
               label: 'Case type',
               value: caseTypeFormFieldValues[release.caseType]!,
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            LabelledText(
-              label: 'Condition',
-              value: conditionFormFieldValues[release.condition]!,
             ),
           ],
         ),

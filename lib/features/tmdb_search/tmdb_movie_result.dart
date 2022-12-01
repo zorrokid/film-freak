@@ -1,3 +1,5 @@
+import '../../entities/movie.dart';
+
 class TmdbMovieResult {
   TmdbMovieResult(
       {required this.id,
@@ -27,4 +29,12 @@ class TmdbMovieResult {
         posterPath:
             json['poster_path'] != null ? json['poster_path'] as String : '');
   }
+
+  Movie get toMovie => Movie(
+        tmdbId: id,
+        originalTitle: originalTitle,
+        title: title,
+        overView: overview,
+        releaseDate: DateTime.tryParse(releaseDate),
+      );
 }
