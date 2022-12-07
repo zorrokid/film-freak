@@ -1,8 +1,8 @@
-import 'package:film_freak/widgets/release_list.dart';
+import 'package:film_freak/widgets/collection_item_list.dart';
 import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/collection_item_list_model.dart';
+import '../models/list_models/collection_item_list_model.dart';
 import '../persistence/collection_model.dart';
 import 'error_display_widget.dart';
 
@@ -66,8 +66,8 @@ class _FilterListState extends State<FilterList> {
               return const Spinner();
             }
             final collectionItems = snapshot.data!.toList();
-            return ReleaseList(
-              releases: collectionItems,
+            return CollectionItemList(
+              collectionItems: collectionItems,
               onDelete: onDelete,
               onEdit: onEdit,
               saveDir: appState.saveDir,

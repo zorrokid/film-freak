@@ -1,6 +1,5 @@
 import 'package:film_freak/persistence/collection_model.dart';
 import 'package:film_freak/enums/case_type.dart';
-import 'package:film_freak/enums/condition.dart';
 import 'package:film_freak/enums/media_type.dart';
 import 'package:film_freak/entities/movie_release.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,12 +15,11 @@ void main() {
     });
 
     model.add(MovieRelease(
-        mediaType: MediaType.dvd,
-        name: 'Star Wars',
-        barcode: '',
-        caseType: CaseType.regularDvd,
-        condition: Condition.unknown,
-        notes: '',
-        hasSlipCover: false));
+      mediaType: MediaType.dvd,
+      name: 'Star Wars',
+      barcode: '',
+      caseType: CaseType.regularDvd,
+      notes: '',
+    ));
   });
 }

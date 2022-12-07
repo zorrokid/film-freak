@@ -1,17 +1,13 @@
-import 'package:film_freak/enums/case_type.dart';
-
-import '../enums/condition.dart';
-import '../enums/media_type.dart';
 import 'entity.dart';
+import '../enums/case_type.dart';
+import '../enums/media_type.dart';
 
 class MovieRelease extends Entity<MovieRelease> {
   String name;
   MediaType mediaType;
   String barcode;
   CaseType caseType;
-  Condition condition;
   String notes;
-  bool hasSlipCover;
   int? movieId;
 
   MovieRelease({
@@ -22,8 +18,6 @@ class MovieRelease extends Entity<MovieRelease> {
     required this.mediaType,
     required this.barcode,
     required this.caseType,
-    required this.condition,
-    required this.hasSlipCover,
     required this.notes,
     this.movieId,
   }) : super(
@@ -37,8 +31,6 @@ class MovieRelease extends Entity<MovieRelease> {
           name: '',
           barcode: '',
           caseType: CaseType.unknown,
-          condition: Condition.unknown,
-          hasSlipCover: false,
           mediaType: MediaType.unknown,
           notes: '',
         );
@@ -49,9 +41,7 @@ class MovieRelease extends Entity<MovieRelease> {
         'mediaType': mediaType.index,
         'barcode': barcode,
         'caseType': caseType.index,
-        'condition': condition.index,
         'notes': notes,
-        'hasSlipCover': hasSlipCover ? 1 : 0,
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
         'movieId': movieId,
@@ -66,10 +56,8 @@ class MovieRelease extends Entity<MovieRelease> {
       mediaType: MediaType.values[map['mediaType'] as int],
       barcode: map['barcode'] as String,
       caseType: CaseType.values[map['caseType'] as int],
-      condition: Condition.values[map['condition'] as int],
       notes: map['notes'] as String,
-      hasSlipCover: (map['hasSlipCover'] as int) == 1 ? true : false,
-      movieId: map['movieId'] as int,
+      movieId: map['movieId'] as int?,
     );
   }
 
@@ -92,9 +80,7 @@ class MovieRelease extends Entity<MovieRelease> {
       mediaType: MediaType.values[json['mediaType'] as int],
       barcode: json['barcode'] as String,
       caseType: CaseType.values[json['caseType'] as int],
-      condition: Condition.values[json['condition'] as int],
       notes: json['notes'] as String,
-      hasSlipCover: (json['hasSlipCover'] as int) == 1 ? true : false,
     );
   }
 }

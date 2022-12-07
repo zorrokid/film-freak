@@ -1,28 +1,27 @@
 import 'package:film_freak/models/collection_item_query_specs.dart';
-import 'package:film_freak/models/collection_item_list_model.dart';
+import 'package:film_freak/models/list_models/collection_item_list_model.dart';
 import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/widgets/filter_list.dart';
 import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../utils/dialog_utls.dart';
-import 'release_form.dart';
+import 'forms/release_form.dart';
 import '../persistence/collection_model.dart';
-import '../entities/movie_release.dart';
 
-class MovieReleasesList extends StatefulWidget {
-  const MovieReleasesList({this.filter, super.key});
+class CollectionList extends StatefulWidget {
+  const CollectionList({this.filter, super.key});
 
   final CollectionItemQuerySpecs? filter;
 
   @override
   State<StatefulWidget> createState() {
-    return _MovieReleasesListState();
+    return _CollectionListState();
   }
 }
 
-class _MovieReleasesListState extends State<MovieReleasesList> {
-  final releaseService = initializeReleaseService();
+class _CollectionListState extends State<CollectionList> {
+  final collectionItemService = initializeCollectionItemService();
 
   @override
   void initState() {
@@ -30,19 +29,20 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
   }
 
   Future<Iterable<CollectionItemListModel>> _getReleases() async =>
-      await releaseService.getListModels(widget.filter);
+      await collectionItemService.getListModels(widget.filter);
 
-  List<MovieRelease> filterReleases(
-      List<MovieRelease> releases, CollectionItemQuerySpecs? filter) {
-    if (filter == null) return releases;
+  List<CollectionItemListModel> filterReleases(
+      List<CollectionItemListModel> collectionItems,
+      CollectionItemQuerySpecs? filter) {
+    if (filter == null) return collectionItems;
 
     if (filter.barcode != null) {
-      return releases
+      return collectionItems
           .where((element) => element.barcode == filter.barcode)
           .toList();
     }
 
-    return releases;
+    return collectionItems;
   }
 
   @override
@@ -58,7 +58,7 @@ class _MovieReleasesListState extends State<MovieReleasesList> {
         final isOkToDelete = await okToDelete(context, 'Are you sure?',
             'Are you really sure you want to delete the item?');
         if (!isOkToDelete) return;
-        await releaseService.deleteRelease(id);
+        await collectionItemService.delete(id);
         // TODO: data from CollectionModel is not used here
         //cart.remove(id);
       }

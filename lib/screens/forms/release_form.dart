@@ -6,40 +6,42 @@ import 'package:film_freak/features/tmdb_search/tmdb_movie_result.dart';
 import 'package:film_freak/models/movie_release_view_model.dart';
 import 'package:film_freak/enums/picture_type.dart';
 import 'package:film_freak/entities/release_picture.dart';
-import 'package:film_freak/screens/barcode_scanner_view.dart';
+import 'package:film_freak/features/scan_barcode/barcode_scanner_view.dart';
 import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/screens/property_selection_view.dart';
-import 'package:film_freak/widgets/drop_down_form_field.dart';
+import 'package:film_freak/widgets/form/drop_down_form_field.dart';
 import 'package:film_freak/widgets/error_display_widget.dart';
 import 'package:film_freak/widgets/picture_type_selection.dart';
-import 'package:film_freak/widgets/release_pic_delete.dart';
+import 'package:film_freak/widgets/buttons/release_pic_delete.dart';
 import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/enums/case_type.dart';
 import 'package:film_freak/entities/movie_release.dart';
 
-import '../entities/movie.dart';
-import '../persistence/collection_model.dart';
-import '../enums/condition.dart';
-import '../enums/media_type.dart';
+import '../../entities/movie.dart';
+import '../../persistence/collection_model.dart';
+import '../../enums/media_type.dart';
 
-import '../services/collection_item_service.dart';
 import 'package:path/path.dart' as p;
 
-import '../widgets/decorated_text_form_field.dart';
-import '../widgets/preview_pic.dart';
-import '../widgets/release_pic_crop.dart';
-import '../widgets/release_pic_selection.dart';
-import '../widgets/release_properties.dart';
-import 'image_process_view.dart';
-import '../features/tmdb_search/tmdb_movie_search_screen.dart';
+import '../../services/release_service.dart';
+import '../../widgets/form/decorated_text_form_field.dart';
+import '../../widgets/preview_pic.dart';
+import '../../widgets/buttons/release_pic_crop.dart';
+import '../../widgets/buttons/release_pic_selection.dart';
+import '../../widgets/release_properties.dart';
+import '../image_process_view.dart';
+import '../../features/tmdb_search/tmdb_movie_search_screen.dart';
+import 'collection_item_form.dart';
 
 class ReleaseForm extends StatefulWidget {
-  const ReleaseForm({this.barcode, this.id, super.key});
+  const ReleaseForm(
+      {this.barcode, this.id, super.key, this.addCollectionItem = false});
 
   final String? barcode;
   final int? id;
+  final bool addCollectionItem;
 
   @override
   State<ReleaseForm> createState() {
@@ -63,8 +65,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
   late String? _barcode;
   MediaType _mediaType = MediaType.unknown;
   CaseType _caseType = CaseType.unknown;
-  Condition _condition = Condition.unknown;
-  bool? _hasSlipCover;
   List<ReleasePicture> _pictures = <ReleasePicture>[];
   final _picturesToDelete = <ReleasePicture>[];
   List<ReleaseProperty> _properties = <ReleaseProperty>[];
@@ -114,18 +114,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
   void onCaseTypeSelected(CaseType? selected) {
     setState(() {
       _caseType = selected ?? CaseType.unknown;
-    });
-  }
-
-  void onConditionSelected(Condition? selected) {
-    setState(() {
-      _condition = selected ?? Condition.unknown;
-    });
-  }
-
-  void hasSlipCoverChanged(bool? value) {
-    setState(() {
-      _hasSlipCover = value;
     });
   }
 
@@ -188,7 +176,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
     _pictures = model.releasePictures;
     _mediaType = model.release.mediaType;
     _caseType = model.release.caseType;
-    _condition = model.release.condition;
     _movie = model.movie;
 
     // do not setState!
@@ -203,8 +190,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
       mediaType: _mediaType,
       barcode: _barcodeController.text,
       caseType: _caseType,
-      condition: _condition,
-      hasSlipCover: _hasSlipCover ?? false,
       notes: _notesController.text,
     );
 
@@ -311,7 +296,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
       ),
     );
     if (movieResult == null) return;
-    final movie = _movieReleaseService.toMovie(movieResult);
+    final movie = movieResult.toMovie;
     setState(() {
       _movie = movie;
     });
@@ -348,7 +333,16 @@ class _ReleaseFormState extends State<ReleaseForm> {
         }
 
         if (mounted) {
-          Navigator.of(context).pop();
+          if (widget.addCollectionItem) {
+            await Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) {
+              return CollectionItemForm(
+                releaseId: id,
+              );
+            }));
+          } else {
+            Navigator.of(context).pop();
+          }
         }
       }
 
@@ -485,12 +479,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
                     values: caseTypeFormFieldValues,
                     onValueChange: onCaseTypeSelected,
                     labelText: 'Case type',
-                  ),
-                  DropDownFormField(
-                    initialValue: viewModel.release.condition,
-                    values: conditionFormFieldValues,
-                    onValueChange: onConditionSelected,
-                    labelText: 'Condition',
                   ),
                   Row(
                     children: [

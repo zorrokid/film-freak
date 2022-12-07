@@ -1,4 +1,4 @@
-import 'package:film_freak/screens/scan_view.dart';
+import 'package:film_freak/features/scan_barcode/scan_view.dart';
 import 'package:film_freak/widgets/confirm_dialog.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:flutter/material.dart';
@@ -62,8 +62,7 @@ class _MainDrawerState extends State<MainDrawer> {
             ),
             ListTile(
               title: const Text('Releases'),
-              onTap: () =>
-                  _navigateFromDrawer(context, const MovieReleasesList()),
+              onTap: () => _navigateFromDrawer(context, const CollectionList()),
             ),
             ListTile(
               title: const Text('Scan'),
