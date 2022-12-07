@@ -115,8 +115,8 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
       return Scaffold(
         appBar: AppBar(
             title: isEditMode()
-                ? const Text('Edit release')
-                : const Text('Add a new release')),
+                ? const Text('Edit collection item')
+                : const Text('Add a collection item')),
         body: FutureBuilder(
           future: _futureModel,
           builder:
