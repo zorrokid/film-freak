@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/list_models/collection_item_list_model.dart';
+import '../../screens/forms/collection_item_form.dart';
 import '../../widgets/release_filter_list.dart';
 import '../../persistence/collection_model.dart';
 import '../../services/collection_item_service.dart';
@@ -73,11 +74,11 @@ class _ScanViewState extends State<ScanView> {
     ));
   }
 
-  Future<void> _onCreate(int id) async {
+  Future<void> _onCreateCollectionItem(int releaseId) async {
     await Navigator.push(context, MaterialPageRoute(
       builder: (context) {
-        return ReleaseForm(
-          barcode: _barcode,
+        return CollectionItemForm(
+          releaseId: releaseId,
         );
       },
     ));
@@ -98,7 +99,7 @@ class _ScanViewState extends State<ScanView> {
               specs: CollectionItemQuerySpecs(barcode: _barcode),
               saveDir: appState.saveDir,
               service: _releaseService,
-              onCreate: _onCreate,
+              onCreate: _onCreateCollectionItem,
             )),
             Flexible(
                 child: CollectionItemFilterList(
