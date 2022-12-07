@@ -64,6 +64,7 @@ class CollectionItemService {
     final collectionItems = await collectionItemRepository.query(filter);
     final releaseIds = collectionItems.map((e) => e.releaseId!).toSet();
     final releases = await releaseRepository.getByIds(releaseIds);
+    assert(releases.length == releaseIds.length);
     final releaseMap = <int, MovieRelease>{};
     for (final release in releases) {
       releaseMap[release.id!] = release;
@@ -71,6 +72,7 @@ class CollectionItemService {
     final movieIds =
         releases.where((e) => e.movieId != null).map((e) => e.movieId!).toSet();
     final movies = await movieRepository.getByIds(movieIds);
+    assert(movies.length == movieIds.length);
     final movieMap = <int, Movie>{};
     for (final movie in movies) {
       movieMap[movie.id!] = movie;
