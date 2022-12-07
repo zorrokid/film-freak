@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:camera/camera.dart';
-import 'package:film_freak/screens/scan_view.dart';
+import 'package:film_freak/features/scan_barcode/scan_view.dart';
 import 'package:film_freak/init/logging.dart';
 import 'init/remote_config.dart';
 import 'init/state.dart';
