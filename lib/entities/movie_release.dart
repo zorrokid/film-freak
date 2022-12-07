@@ -57,7 +57,7 @@ class MovieRelease extends Entity<MovieRelease> {
       barcode: map['barcode'] as String,
       caseType: CaseType.values[map['caseType'] as int],
       notes: map['notes'] as String,
-      movieId: map['movieId'] as int,
+      movieId: map['movieId'] as int?,
     );
   }
 
