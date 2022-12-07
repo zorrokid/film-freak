@@ -54,6 +54,7 @@ class _ReleaseFilterListState extends State<ReleaseFilterList> {
           }
           final data = snapshot.data!.toList();
           return ListView.builder(
+            shrinkWrap: true,
             itemCount: data.length,
             itemBuilder: (context, index) {
               return ReleaseListTile(

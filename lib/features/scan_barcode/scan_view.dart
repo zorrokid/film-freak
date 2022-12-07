@@ -98,24 +98,27 @@ class _ScanViewState extends State<ScanView> {
         ),
         body: Column(
           children: [
-            ReleaseFilterList(
+            Flexible(
+                child: ReleaseFilterList(
               specs: CollectionItemQuerySpecs(barcode: _barcode),
               saveDir: appState.saveDir,
               service: _releaseService,
               onCreate: _onCreate,
-            ),
-            CollectionItemFilterList(
+            )),
+            Flexible(
+                child: CollectionItemFilterList(
               specs: CollectionItemQuerySpecs(barcode: _barcode),
               saveDir: appState.saveDir,
               service: _collectionItemService,
               onDelete: _onDelete,
               onEdit: _onEdit,
-            ),
-            FilterList(
+            )),
+            Flexible(
+                child: FilterList(
               fetchMethod: _getLatest,
               onDelete: _onDelete,
               onEdit: _onEdit,
-            )
+            ))
           ],
         ),
         floatingActionButton: FloatingActionButton(
