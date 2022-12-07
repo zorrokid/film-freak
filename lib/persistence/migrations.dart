@@ -45,14 +45,12 @@ final migrationScripts = <int, String>{
   19: 'ALTER TABLE releases ADD COLUMN movieId INTEGER',
   20: 'ALTER TABLE movies RENAME COLUMN updatedTime TO modifiedTime',
   21: '''CREATE TABLE collectionItems(
-          id INTEGER PRIMARY KEY
-          releaseId INTEGER NOT NULL
-          condition INTEGER
-          notes TEXT
-          createdTime DATETIME
-          modifiedTime DATETIME
+          id INTEGER PRIMARY KEY,
+          releaseId INTEGER NOT NULL,
+          condition INTEGER,
+          notes TEXT,
+          createdTime DATETIME,
+          modifiedTime DATETIME,
           hasSlipCover INTEGER
       )''',
-  22: 'ALTER TABLE releases DROP COLUMN condition',
-  23: 'ALTER TABLE releases DROP COLUMN hasSlipCover',
 };
