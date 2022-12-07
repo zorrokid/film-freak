@@ -2,16 +2,16 @@ import '../enums/condition.dart';
 import 'entity.dart';
 
 class CollectionItem extends Entity<CollectionItem> {
-  int? releaseId;
+  int releaseId;
   Condition condition;
   String notes;
   bool hasSlipCover;
 
   CollectionItem({
     int? id,
-    int? releaseId,
     DateTime? createdTime,
     DateTime? modifiedTime,
+    required this.releaseId,
     required this.condition,
     required this.hasSlipCover,
     required this.notes,

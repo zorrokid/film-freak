@@ -13,10 +13,10 @@ import '../../enums/condition.dart';
 import '../../services/collection_item_service.dart';
 
 class CollectionItemForm extends StatefulWidget {
-  const CollectionItemForm({this.id, this.releaseId, super.key});
+  const CollectionItemForm({required this.releaseId, this.id, super.key});
 
+  final int releaseId;
   final int? id;
-  final int? releaseId;
 
   @override
   State<CollectionItemForm> createState() {
@@ -31,14 +31,12 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
 
   // form state
   late Future<CollectionItem> _futureModel;
-  late int? _id;
   Condition _condition = Condition.unknown;
   bool? _hasSlipCover;
 
   @override
   void initState() {
     super.initState();
-    _id = widget.id;
     _futureModel = _loadData();
   }
 
@@ -60,16 +58,12 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
     });
   }
 
-  bool isEditMode() => _id != null;
+  bool isEditMode() => widget.id != null;
 
   Future<CollectionItem> _loadData() async {
-    if (widget.id == null && widget.releaseId == null) {
-      // TODO log error
-      throw Exception('Either id or releaseId must be set!');
-    }
-    final model = _id == null
-        ? CollectionItem.empty(widget.releaseId!)
-        : await _collectionItemService.get(_id!);
+    final model = widget.id != null
+        ? await _collectionItemService.get(widget.id!)
+        : CollectionItem.empty(widget.releaseId);
 
     _notesController.text = model.notes;
     _condition = model.condition;
@@ -79,16 +73,13 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
     return model;
   }
 
-  CollectionItem _buildModel() {
-    final collectionItem = CollectionItem(
-      id: _id,
-      releaseId: widget.releaseId,
-      condition: _condition,
-      hasSlipCover: _hasSlipCover ?? false,
-      notes: _notesController.text,
-    );
-    return collectionItem;
-  }
+  CollectionItem _buildModel() => CollectionItem(
+        id: widget.id,
+        releaseId: widget.releaseId,
+        condition: _condition,
+        hasSlipCover: _hasSlipCover ?? false,
+        notes: _notesController.text,
+      );
 
   @override
   Widget build(BuildContext context) {
