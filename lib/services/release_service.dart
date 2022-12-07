@@ -143,4 +143,8 @@ class ReleaseService {
       await releasePropertiesRepository.delete(propId.id!);
     }
   }
+
+  Future<bool> barcodeExists(String barcode) async {
+    return releaseRepository.barcodeExists(barcode);
+  }
 }

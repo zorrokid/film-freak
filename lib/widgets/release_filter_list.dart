@@ -1,11 +1,11 @@
 import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/collection_item_query_specs.dart';
-import '../../models/list_models/release_list_model.dart';
-import '../../widgets/error_display_widget.dart';
-import '../../widgets/release_list_tile.dart';
-import '../../widgets/spinner.dart';
+import '../models/collection_item_query_specs.dart';
+import '../models/list_models/release_list_model.dart';
+import 'error_display_widget.dart';
+import 'release_list_tile.dart';
+import 'spinner.dart';
 
 typedef OnCreateCallback = Future<void> Function(int id);
 

@@ -1,17 +1,17 @@
-import 'package:film_freak/features/scan_barcode/release_filter_list.dart';
-import 'package:film_freak/models/list_models/collection_item_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/list_models/collection_item_list_model.dart';
+import '../../widgets/release_filter_list.dart';
 import '../../persistence/collection_model.dart';
 import '../../services/collection_item_service.dart';
 import '../../services/release_service.dart';
 import '../../utils/dialog_utls.dart';
 import '../../screens/forms/release_form.dart';
 import '../../widgets/filter_list.dart';
-import 'barcode_scanner_view.dart';
 import '../../widgets/main_drawer.dart';
 import '../../models/collection_item_query_specs.dart';
+import 'barcode_scanner_view.dart';
 import 'collection_item_filter_list.dart';
 
 class ScanView extends StatefulWidget {
@@ -39,26 +39,21 @@ class _ScanViewState extends State<ScanView> {
 
     if (barcode == null) return;
 
+    var barcodeExists = await _releaseService.barcodeExists(barcode);
+
+    final route = MaterialPageRoute<String>(builder: (context) {
+      return ReleaseForm(
+        barcode: barcode,
+      );
+    });
+
+    if (mounted && !barcodeExists) {
+      await Navigator.push(context, route);
+    }
+
     setState(() {
       _barcode = barcode;
     });
-
-    //var barcodeExists = await _repository.barcodeExists(barcode);
-
-    // if (!mounted) return;
-
-    // final route = barcodeExists
-    //     ? MaterialPageRoute<String>(builder: (context) {
-    //         return MovieReleasesList(
-    //             filter: CollectionItemQuerySpecs(barcode: barcode));
-    //       })
-    //     : MaterialPageRoute<String>(builder: (context) {
-    //         return ReleaseForm(
-    //           barcode: barcode,
-    //         );
-    //       });
-
-    // await Navigator.push(context, route);
   }
 
   Future<void> _onDelete(int id) async {
