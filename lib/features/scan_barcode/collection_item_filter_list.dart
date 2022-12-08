@@ -1,6 +1,6 @@
-import 'package:film_freak/models/list_models/collection_item_list_model.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/list_models/collection_item_list_model.dart';
 import '../../models/collection_item_query_specs.dart';
 import '../../services/collection_item_service.dart';
 import '../../widgets/collection_item_list.dart';
@@ -41,24 +41,41 @@ class _CollectionItemFilterListState extends State<CollectionItemFilterList> {
     return await widget.service.getListModels(widget.specs);
   }
 
+  void reloadData() {
+    setState(() {
+      _futureListItems = _getCollectionItems();
+    });
+  }
+
+  Future<void> onDelete(int id) async {
+    await widget.onDelete(id);
+    reloadData();
+  }
+
+  Future<void> onEdit(int id) async {
+    await widget.onEdit(id);
+    reloadData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _futureListItems,
-        builder: (BuildContext context,
-            AsyncSnapshot<Iterable<CollectionItemListModel>> snapshot) {
-          if (snapshot.hasError) {
-            return ErrorDisplayWidget(snapshot.error.toString());
-          }
-          if (!snapshot.hasData) {
-            return const Spinner();
-          }
-          return CollectionItemList(
-            collectionItems: snapshot.data!.toList(),
-            onDelete: widget.onDelete,
-            onEdit: widget.onEdit,
-            saveDir: widget.saveDir,
-          );
-        });
+      future: _futureListItems,
+      builder: (BuildContext context,
+          AsyncSnapshot<Iterable<CollectionItemListModel>> snapshot) {
+        if (snapshot.hasError) {
+          return ErrorDisplayWidget(snapshot.error.toString());
+        }
+        if (!snapshot.hasData) {
+          return const Spinner();
+        }
+        return CollectionItemList(
+          collectionItems: snapshot.data!.toList(),
+          onDelete: onDelete,
+          onEdit: widget.onEdit,
+          saveDir: widget.saveDir,
+        );
+      },
+    );
   }
 }
