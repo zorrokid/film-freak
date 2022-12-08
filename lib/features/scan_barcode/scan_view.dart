@@ -9,7 +9,6 @@ import '../../services/collection_item_service.dart';
 import '../../services/release_service.dart';
 import '../../utils/dialog_utls.dart';
 import '../../screens/forms/release_form.dart';
-import '../../widgets/filter_list.dart';
 import '../../widgets/main_drawer.dart';
 import '../../models/collection_item_query_specs.dart';
 import 'barcode_scanner_view.dart';
@@ -28,9 +27,6 @@ class _ScanViewState extends State<ScanView> {
   final _collectionItemService = initializeCollectionItemService();
   final _releaseService = initializeReleaseService();
   String? _barcode;
-
-  Future<Iterable<CollectionItemListModel>> _getLatest() async =>
-      await _collectionItemService.getLatest(10);
 
   Future<void> barcodeScan() async {
     final barcode = await Navigator.push<String>(context,
@@ -95,26 +91,39 @@ class _ScanViewState extends State<ScanView> {
         body: Column(
           children: [
             Flexible(
-                child: ReleaseFilterList(
-              specs: CollectionItemQuerySpecs(barcode: _barcode),
-              saveDir: appState.saveDir,
-              service: _releaseService,
-              onCreate: _onCreateCollectionItem,
-            )),
+              child: Card(
+                child: Column(
+                  children: [
+                    const Text('Releases'),
+                    ReleaseFilterList(
+                      specs: CollectionItemQuerySpecs(barcode: _barcode),
+                      saveDir: appState.saveDir,
+                      service: _releaseService,
+                      onCreate: _onCreateCollectionItem,
+                    ),
+                  ],
+                ),
+              ),
+            ),
             Flexible(
-                child: CollectionItemFilterList(
-              specs: CollectionItemQuerySpecs(barcode: _barcode),
-              saveDir: appState.saveDir,
-              service: _collectionItemService,
-              onDelete: _onDelete,
-              onEdit: _onEdit,
-            )),
-            Flexible(
-                child: FilterList(
-              fetchMethod: _getLatest,
-              onDelete: _onDelete,
-              onEdit: _onEdit,
-            ))
+              child: Card(
+                child: Column(
+                  children: [
+                    const Text('Collection items'),
+                    CollectionItemFilterList(
+                      specs: _barcode != null
+                          ? CollectionItemQuerySpecs(barcode: _barcode)
+                          : const CollectionItemQuerySpecs(
+                              top: 10, orderBy: OrderByEnum.latest),
+                      saveDir: appState.saveDir,
+                      service: _collectionItemService,
+                      onDelete: _onDelete,
+                      onEdit: _onEdit,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(

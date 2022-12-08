@@ -98,10 +98,4 @@ class CollectionItemService {
 
     return collectionItemListModels;
   }
-
-  Future<Iterable<CollectionItemListModel>> getLatest(int top) async {
-    final filter =
-        CollectionItemQuerySpecs(top: top, orderBy: OrderByEnum.latest);
-    return getListModels(filter);
-  }
 }

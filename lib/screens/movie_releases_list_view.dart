@@ -1,10 +1,10 @@
 import 'package:film_freak/models/collection_item_query_specs.dart';
 import 'package:film_freak/models/list_models/collection_item_list_model.dart';
 import 'package:film_freak/services/collection_item_service.dart';
-import 'package:film_freak/widgets/filter_list.dart';
 import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../features/scan_barcode/collection_item_filter_list.dart';
 import '../utils/dialog_utls.dart';
 import 'forms/release_form.dart';
 import '../persistence/collection_model.dart';
@@ -27,9 +27,6 @@ class _CollectionListState extends State<CollectionList> {
   void initState() {
     super.initState();
   }
-
-  Future<Iterable<CollectionItemListModel>> _getReleases() async =>
-      await collectionItemService.getListModels(widget.filter);
 
   List<CollectionItemListModel> filterReleases(
       List<CollectionItemListModel> collectionItems,
@@ -78,10 +75,12 @@ class _CollectionListState extends State<CollectionList> {
         appBar: AppBar(
           title: const Text('Results'),
         ),
-        body: FilterList(
-          fetchMethod: _getReleases,
+        body: CollectionItemFilterList(
+          specs: widget.filter,
+          saveDir: appState.saveDir,
           onDelete: onDelete,
           onEdit: onEdit,
+          service: collectionItemService,
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: addRelease,
