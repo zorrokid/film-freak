@@ -1,4 +1,4 @@
-import 'package:film_freak/models/collection_item_query_specs.dart';
+import 'package:film_freak/persistence/query_specs/collection_item_query_specs.dart';
 import 'package:film_freak/models/list_models/collection_item_list_model.dart';
 import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/widgets/main_drawer.dart';

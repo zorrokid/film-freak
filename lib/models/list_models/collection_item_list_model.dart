@@ -12,7 +12,7 @@ class CollectionItemListModel extends ListModelBase {
     required String barcode,
     required CaseType caseType,
     required this.condition,
-    String? movieName,
+    required List<String> productionNames,
     String? picFileName,
   }) : super(
           barcode: barcode,
@@ -20,7 +20,7 @@ class CollectionItemListModel extends ListModelBase {
           id: id,
           mediaTypes: mediaTypes,
           name: name,
-          movieName: movieName,
+          productionNames: productionNames,
           picFileName: picFileName,
         );
 }

@@ -4,10 +4,10 @@ import 'package:film_freak/persistence/repositories/query_helper.dart';
 import 'package:film_freak/persistence/repositories/repository_base.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../models/collection_item_query_specs.dart';
+import '../query_specs/release_query_specs.dart';
 
-class ReleaseRepository extends RepositoryBase<Release> {
-  ReleaseRepository(DatabaseProvider databaseProvider)
+class ReleasesRepository extends RepositoryBase<Release> {
+  ReleasesRepository(DatabaseProvider databaseProvider)
       : super(databaseProvider, 'releases');
 
   Future<int> queryRowCount() async {
@@ -18,7 +18,7 @@ class ReleaseRepository extends RepositoryBase<Release> {
   }
 
   // TODO: generalize to base class?
-  Future<Iterable<Release>> query(CollectionItemQuerySpecs? filter) async {
+  Future<Iterable<Release>> query(ReleaseQuerySpecs? filter) async {
     Database db = await databaseProvider.database;
 
     final queryArgs = QueryHelper.filterToQueryArgs(filter);

@@ -1,8 +1,8 @@
 import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 
-import '../models/collection_item_query_specs.dart';
 import '../models/list_models/release_list_model.dart';
+import '../persistence/query_specs/release_query_specs.dart';
 import 'error_display_widget.dart';
 import 'release_list_tile.dart';
 import 'spinner.dart';
@@ -18,7 +18,7 @@ class ReleaseFilterList extends StatefulWidget {
     required this.onCreate,
   });
   final ReleaseService service;
-  final CollectionItemQuerySpecs? specs;
+  final ReleaseQuerySpecs? specs;
   final String saveDir;
   final OnCreateCallback onCreate;
 

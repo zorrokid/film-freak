@@ -7,7 +7,7 @@ class ListModelBase {
   List<MediaType> mediaTypes;
   String barcode;
   CaseType caseType;
-  String? movieName;
+  List<String> productionNames;
   String? picFileName;
 
   ListModelBase({
@@ -16,7 +16,7 @@ class ListModelBase {
     required this.mediaTypes,
     required this.barcode,
     required this.caseType,
-    this.movieName,
+    required this.productionNames,
     this.picFileName,
   });
 }

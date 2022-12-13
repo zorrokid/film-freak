@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/list_models/collection_item_list_model.dart';
+import '../../persistence/query_specs/query_specs_enums.dart';
+import '../../persistence/query_specs/release_query_specs.dart';
 import '../../screens/forms/collection_item_form.dart';
 import '../../widgets/release_filter_list.dart';
 import '../../persistence/app_state.dart';
@@ -10,7 +11,7 @@ import '../../services/release_service.dart';
 import '../../utils/dialog_utls.dart';
 import '../../screens/forms/release_form.dart';
 import '../../widgets/main_drawer.dart';
-import '../../models/collection_item_query_specs.dart';
+import '../../persistence/query_specs/collection_item_query_specs.dart';
 import 'barcode_scanner_view.dart';
 import 'collection_item_filter_list.dart';
 
@@ -96,7 +97,7 @@ class _ScanViewState extends State<ScanView> {
                   children: [
                     const Text('Releases'),
                     ReleaseFilterList(
-                      specs: CollectionItemQuerySpecs(barcode: _barcode),
+                      specs: ReleaseQuerySpecs(barcode: _barcode),
                       saveDir: appState.saveDir,
                       service: _releaseService,
                       onCreate: _onCreateCollectionItem,

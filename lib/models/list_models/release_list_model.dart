@@ -1,5 +1,4 @@
-import 'package:film_freak/models/list_models/list_model_base.dart';
-
+import 'list_model_base.dart';
 import '../../enums/case_type.dart';
 import '../../enums/media_type.dart';
 
@@ -10,7 +9,7 @@ class ReleaseListModel extends ListModelBase {
     required List<MediaType> mediaTypes,
     required String barcode,
     required CaseType caseType,
-    String? movieName,
+    required List<String> productionNames,
     String? picFileName,
   }) : super(
           barcode: barcode,
@@ -18,7 +17,7 @@ class ReleaseListModel extends ListModelBase {
           id: id,
           mediaTypes: mediaTypes,
           name: name,
-          movieName: movieName,
+          productionNames: productionNames,
           picFileName: picFileName,
         );
 }

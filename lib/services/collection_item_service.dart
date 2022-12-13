@@ -1,7 +1,7 @@
 import 'package:film_freak/enums/media_type.dart';
 import 'package:film_freak/enums/picture_type.dart';
 import 'package:film_freak/models/list_models/collection_item_list_model.dart';
-import 'package:film_freak/models/collection_item_query_specs.dart';
+import 'package:film_freak/persistence/query_specs/collection_item_query_specs.dart';
 import 'package:film_freak/persistence/repositories/productions_repository.dart';
 import 'package:logging/logging.dart';
 
@@ -9,16 +9,16 @@ import '../entities/collection_item.dart';
 import '../entities/production.dart';
 import '../entities/release.dart';
 import '../persistence/db_provider.dart';
-import '../persistence/repositories/collection_item_repository.dart';
+import '../persistence/repositories/collection_items_repository.dart';
 import '../persistence/repositories/release_pictures_repository.dart';
 import '../persistence/repositories/release_properties_repository.dart';
-import '../persistence/repositories/release_repository.dart';
+import '../persistence/repositories/releases_repository.dart';
 
 CollectionItemService initializeCollectionItemService() {
   final dbProvider = DatabaseProvider.instance;
   return CollectionItemService(
-    collectionItemRepository: CollectionItemRepository(dbProvider),
-    releaseRepository: ReleaseRepository(dbProvider),
+    collectionItemRepository: CollectionItemsRepository(dbProvider),
+    releaseRepository: ReleasesRepository(dbProvider),
     releasePicturesRepository: ReleasePicturesRepository(dbProvider),
     releasePropertiesRepository: ReleasePropertiesRepository(dbProvider),
     movieRepository: ProductionsRepository(dbProvider),
@@ -35,8 +35,8 @@ class CollectionItemService {
   });
 
   final log = Logger('CollectionItemService');
-  final CollectionItemRepository collectionItemRepository;
-  final ReleaseRepository releaseRepository;
+  final CollectionItemsRepository collectionItemRepository;
+  final ReleasesRepository releaseRepository;
   final ReleasePicturesRepository releasePicturesRepository;
   final ReleasePropertiesRepository releasePropertiesRepository;
   final ProductionsRepository movieRepository;
@@ -61,7 +61,7 @@ class CollectionItemService {
   }
 
   Future<Iterable<CollectionItemListModel>> getListModels(
-      CollectionItemQuerySpecs? filter) async {
+      CollectionItemQuerySpecs filter) async {
     final collectionItems = await collectionItemRepository.query(filter);
     final releaseIds = collectionItems.map((e) => e.releaseId!).toSet();
     final releases = await releaseRepository.getByIds(releaseIds);
@@ -93,7 +93,7 @@ class CollectionItemService {
               id: e.id!,
               mediaTypes: mediaTypes,
               name: releaseMap[e.releaseId]!.name,
-              movieName: releaseMap[e.releaseId]!.productionId != null
+              productionNames: releaseMap[e.releaseId]!.productionId != null
                   ? movieMap[releaseMap[e.releaseId]!.productionId]!.title
                   : null,
               picFileName: pics.any((p) => p.releaseId == e.id)

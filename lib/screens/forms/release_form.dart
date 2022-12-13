@@ -1,9 +1,10 @@
 import 'dart:io';
 
+import 'package:film_freak/entities/release_media.dart';
 import 'package:film_freak/entities/release_property.dart';
 import 'package:film_freak/extensions/string_extensions.dart';
 import 'package:film_freak/features/tmdb_search/tmdb_movie_result.dart';
-import 'package:film_freak/models/movie_release_view_model.dart';
+import 'package:film_freak/models/release_view_model.dart';
 import 'package:film_freak/enums/picture_type.dart';
 import 'package:film_freak/entities/release_picture.dart';
 import 'package:film_freak/features/scan_barcode/barcode_scanner_view.dart';
@@ -20,6 +21,7 @@ import 'package:film_freak/enums/case_type.dart';
 import 'package:film_freak/entities/release.dart';
 
 import '../../entities/production.dart';
+import '../../entities/release_comment.dart';
 import '../../persistence/app_state.dart';
 import '../../enums/media_type.dart';
 
@@ -60,15 +62,15 @@ class _ReleaseFormState extends State<ReleaseForm> {
   int _selectedPicIndex = 0;
 
   // form state
-  late Future<MovieReleaseViewModel> _futureModel;
+  late Future<ReleaseViewModel> _futureModel;
   late int? _id;
   late String? _barcode;
-  MediaType _mediaType = MediaType.unknown;
   CaseType _caseType = CaseType.unknown;
   List<ReleasePicture> _pictures = <ReleasePicture>[];
-  final _picturesToDelete = <ReleasePicture>[];
+  final List<ReleasePicture> _picturesToDelete = <ReleasePicture>[];
+  List<Production> _productions = <Production>[];
+  List<ReleaseMedia> _medias = <ReleaseMedia>[];
   List<ReleaseProperty> _properties = <ReleaseProperty>[];
-  Production? _movie;
 
   @override
   void initState() {
@@ -105,11 +107,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
     super.dispose();
   }
 
-  void onMediaTypeSelected(MediaType? selected) {
-    setState(() {
-      _mediaType = selected ?? MediaType.unknown;
-    });
-  }
+  // void onMediaTypeSelected(MediaType? selected) {
+  //   setState(() {
+  //     _mediaTypes = selected ?? MediaType.unknown;
+  //   });
+  // }
 
   void onCaseTypeSelected(CaseType? selected) {
     setState(() {
@@ -163,25 +165,26 @@ class _ReleaseFormState extends State<ReleaseForm> {
     });
   }
 
-  Future<MovieReleaseViewModel> _loadData() async {
+  Future<ReleaseViewModel> _loadData() async {
     final model = _id == null
         ? _movieReleaseService.initializeModel(_barcode)
         : await _movieReleaseService.getReleaseData(_id!);
 
-    _pictures = model.releasePictures;
-    _properties = model.releaseProperties;
+    _pictures = model.pictures;
+    _properties = model.properties;
     _barcodeController.text = model.release.barcode;
     _nameController.text = model.release.name;
-    _pictures = model.releasePictures;
+    _pictures = model.pictures;
     _caseType = model.release.caseType;
-    _movie = model.movie;
+    _productions = model.productions;
+    _medias = model.medias;
 
     // do not setState!
 
     return model;
   }
 
-  MovieReleaseViewModel _buildModel() {
+  ReleaseViewModel _buildModel() {
     final release = Release(
       id: _id,
       name: _nameController.text,
@@ -189,11 +192,13 @@ class _ReleaseFormState extends State<ReleaseForm> {
       caseType: _caseType,
     );
 
-    return MovieReleaseViewModel(
+    return ReleaseViewModel(
       release: release,
-      releasePictures: _pictures,
-      releaseProperties: _properties,
-      movie: _movie,
+      pictures: _pictures,
+      properties: _properties,
+      productions: _productions,
+      medias: _medias,
+      comments: <ReleaseComment>[],
     );
   }
 
@@ -292,9 +297,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
       ),
     );
     if (movieResult == null) return;
-    final movie = movieResult.toProduction;
+    final production = movieResult.toProduction;
     setState(() {
-      _movie = movie;
+      _productions = <Production>[production];
     });
   }
 
@@ -349,8 +354,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 : const Text('Add a new release')),
         body: FutureBuilder(
           future: _futureModel,
-          builder: (BuildContext context,
-              AsyncSnapshot<MovieReleaseViewModel> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<ReleaseViewModel> snapshot) {
             if (snapshot.hasError) {
               return ErrorDisplayWidget(snapshot.error.toString());
             }
@@ -358,7 +363,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
               return const Spinner();
             }
 
-            final MovieReleaseViewModel viewModel = snapshot.data!;
+            final ReleaseViewModel viewModel = snapshot.data!;
 
             return Form(
               key: _formKey,
@@ -436,10 +441,13 @@ class _ReleaseFormState extends State<ReleaseForm> {
                   Row(
                     children: [
                       const Expanded(
-                        child: Text('Movie: '),
+                        child: Text('Production(s): '),
                       ),
-                      _movie != null
-                          ? Text(_movie!.title)
+                      _productions.isNotEmpty
+                          ? Text(_productions
+                              .map((e) => e.title)
+                              .toList()
+                              .join(", "))
                           : const Text('Not selected'),
                     ],
                   ),

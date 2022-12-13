@@ -3,9 +3,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../entities/production.dart';
 import '../../widgets/labelled_text.dart';
 
-class MovieCard extends StatelessWidget {
-  const MovieCard({super.key, required this.movie});
-  final Production movie;
+class ProductionCard extends StatelessWidget {
+  const ProductionCard({super.key, required this.production});
+  final Production production;
 
   Future<void> openTmdbLink(int tmdbId) async {
     final url = Uri(
@@ -24,34 +24,34 @@ class MovieCard extends StatelessWidget {
           Row(children: [
             LabelledText(
               label: 'Title',
-              value: movie.title,
+              value: production.title,
             ),
           ]),
           Row(children: [
             LabelledText(
               label: 'Original Title',
-              value: movie.originalTitle,
+              value: production.originalTitle,
             ),
           ]),
           Row(children: [
             LabelledText(
               label: 'Overview',
-              value: movie.overView ?? '',
+              value: production.overView ?? '',
             ),
           ]),
-          if (movie.releaseDate != null)
+          if (production.releaseDate != null)
             Row(children: [
               LabelledText(
                 label: 'Release Date',
-                value: movie.releaseDate.toString(),
+                value: production.releaseDate.toString(),
               ),
             ]),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              if (movie.tmdbId != null)
+              if (production.tmdbId != null)
                 TextButton(
-                  onPressed: () => openTmdbLink(movie.tmdbId!),
+                  onPressed: () => openTmdbLink(production.tmdbId!),
                   child: const Text("TMDB"),
                 ),
             ],

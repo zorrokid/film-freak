@@ -2,7 +2,7 @@ import 'package:film_freak/features/view_release/pictures_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/movie_release_view_model.dart';
+import '../../models/release_view_model.dart';
 import '../../screens/forms/release_form.dart';
 import '../../services/release_service.dart';
 import '../../widgets/error_display_widget.dart';
@@ -10,7 +10,7 @@ import '../../widgets/release_properties.dart';
 import '../../widgets/spinner.dart';
 import '../../persistence/app_state.dart';
 import 'release_details_card.dart';
-import 'movie_card.dart';
+import 'production_card.dart';
 
 class ReleaseScreen extends StatefulWidget {
   const ReleaseScreen({required this.id, super.key});
@@ -27,7 +27,7 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
   final _movieReleaseService = initializeReleaseService();
 
   // form state
-  late Future<MovieReleaseViewModel> _futureModel;
+  late Future<ReleaseViewModel> _futureModel;
   late int? _id;
 
   @override
@@ -37,7 +37,7 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
     _futureModel = _loadData();
   }
 
-  Future<MovieReleaseViewModel> _loadData() async =>
+  Future<ReleaseViewModel> _loadData() async =>
       await _movieReleaseService.getReleaseData(_id!);
 
   @override
@@ -45,8 +45,8 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
     return Consumer<AppState>(builder: (context, appState, child) {
       return FutureBuilder(
           future: _futureModel,
-          builder: (BuildContext context,
-              AsyncSnapshot<MovieReleaseViewModel> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<ReleaseViewModel> snapshot) {
             if (snapshot.hasError) {
               return ErrorDisplayWidget(snapshot.error.toString());
             }
@@ -54,7 +54,7 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
               return const Spinner();
             }
 
-            final MovieReleaseViewModel viewModel = snapshot.data!;
+            final ReleaseViewModel viewModel = snapshot.data!;
 
             Future<void> edit() async {
               await Navigator.push(
@@ -81,17 +81,22 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
                     children: [
                       Expanded(
                         child: PicturesCard(
-                          pictures: viewModel.releasePictures,
+                          pictures: viewModel.pictures,
                           saveDir: appState.saveDir,
                         ),
                       ),
                     ],
                   ),
-                  if (viewModel.movie != null)
-                    MovieCard(movie: viewModel.movie!),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: viewModel.productions.length,
+                      itemBuilder: (context, index) {
+                        return ProductionCard(
+                            production: viewModel.productions[index]);
+                      }),
                   ReleaseDetailsCard(release: viewModel.release),
                   ReleaseProperties(
-                    releaseProperties: viewModel.releaseProperties,
+                    releaseProperties: viewModel.properties,
                   ),
                 ],
               ),

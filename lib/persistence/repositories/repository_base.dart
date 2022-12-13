@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../entities/entity.dart';
 import '../db_provider.dart';
 
-class RepositoryBase<T extends Entity> {
+abstract class RepositoryBase<T extends Entity> {
   final DatabaseProvider databaseProvider;
   final String tableName;
   RepositoryBase(this.databaseProvider, this.tableName);
