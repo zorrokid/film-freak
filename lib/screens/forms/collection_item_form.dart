@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../enums/collection_status.dart';
 import '../../widgets/error_display_widget.dart';
 import '../../widgets/spinner.dart';
 import '../../widgets/form/drop_down_form_field.dart';
-import '../../widgets/form/decorated_text_form_field.dart';
 
 import '../../entities/collection_item.dart';
 import '../../persistence/collection_model.dart';
@@ -32,7 +32,7 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
   // form state
   late Future<CollectionItem> _futureModel;
   Condition _condition = Condition.unknown;
-  bool? _hasSlipCover;
+  CollectionStatus _status = CollectionStatus.unknown;
 
   @override
   void initState() {
@@ -52,9 +52,9 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
     });
   }
 
-  void hasSlipCoverChanged(bool? value) {
+  void onStatusSelected(CollectionStatus? selected) {
     setState(() {
-      _hasSlipCover = value;
+      _status = selected ?? CollectionStatus.unknown;
     });
   }
 
@@ -65,8 +65,8 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
         ? await _collectionItemService.get(widget.id!)
         : CollectionItem.empty(widget.releaseId);
 
-    _notesController.text = model.notes;
     _condition = model.condition;
+    _status = model.status;
 
     // do not setState!
 
@@ -77,8 +77,7 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
         id: widget.id,
         releaseId: widget.releaseId,
         condition: _condition,
-        hasSlipCover: _hasSlipCover ?? false,
-        notes: _notesController.text,
+        status: _status,
       );
 
   @override
@@ -131,17 +130,11 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
                     onValueChange: onConditionSelected,
                     labelText: 'Condition',
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: DecoratedTextFormField(
-                          controller: _notesController,
-                          label: 'Notes',
-                          required: false,
-                          maxLines: 3,
-                        ),
-                      ),
-                    ],
+                  DropDownFormField(
+                    initialValue: viewModel.status,
+                    values: collectionStatusFieldValues,
+                    onValueChange: onStatusSelected,
+                    labelText: 'Status',
                   ),
                 ],
               ),

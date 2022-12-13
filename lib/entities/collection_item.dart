@@ -1,11 +1,11 @@
+import '../enums/collection_status.dart';
 import '../enums/condition.dart';
 import 'entity.dart';
 
 class CollectionItem extends Entity<CollectionItem> {
   int releaseId;
   Condition condition;
-  String notes;
-  bool hasSlipCover;
+  CollectionStatus status;
 
   CollectionItem({
     int? id,
@@ -13,8 +13,7 @@ class CollectionItem extends Entity<CollectionItem> {
     DateTime? modifiedTime,
     required this.releaseId,
     required this.condition,
-    required this.hasSlipCover,
-    required this.notes,
+    required this.status,
   }) : super(
           id: id,
           createdTime: createdTime,
@@ -25,8 +24,7 @@ class CollectionItem extends Entity<CollectionItem> {
       : this(
           releaseId: releaseId,
           condition: Condition.unknown,
-          hasSlipCover: false,
-          notes: '',
+          status: CollectionStatus.unknown,
         );
 
   @override
@@ -34,8 +32,7 @@ class CollectionItem extends Entity<CollectionItem> {
         'id': id,
         'releaseId': releaseId,
         'condition': condition.index,
-        'notes': notes,
-        'hasSlipCover': hasSlipCover ? 1 : 0,
+        'status': status.index,
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
@@ -47,8 +44,7 @@ class CollectionItem extends Entity<CollectionItem> {
       createdTime: DateTime.parse(map['createdTime'] as String),
       modifiedTime: DateTime.parse(map['modifiedTime'] as String),
       condition: Condition.values[map['condition'] as int],
-      notes: map['notes'] as String,
-      hasSlipCover: (map['hasSlipCover'] as int) == 1 ? true : false,
+      status: CollectionStatus.values[map['status'] as int],
     );
   }
 }

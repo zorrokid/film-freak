@@ -1,16 +1,20 @@
+import 'package:film_freak/enums/production_type.dart';
+
 import 'entity.dart';
 
-class Movie extends Entity<Movie> {
+class Production extends Entity<Production> {
+  ProductionType productionType;
   int? tmdbId;
   String title;
   String originalTitle;
   String? overView;
   DateTime? releaseDate;
 
-  Movie({
+  Production({
     int? id,
     DateTime? createdTime,
     DateTime? modifiedTime,
+    required this.productionType,
     required this.title,
     required this.originalTitle,
     this.tmdbId,
@@ -25,6 +29,7 @@ class Movie extends Entity<Movie> {
   @override
   Map<String, dynamic> get map => {
         'id': id,
+        'productionType': productionType.index,
         'tmdbId': tmdbId,
         'title': title,
         'originalTitle': originalTitle,
@@ -33,9 +38,10 @@ class Movie extends Entity<Movie> {
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
 
-  static Movie fromMap(Map<String, Object?> map) {
-    return Movie(
+  static Production fromMap(Map<String, Object?> map) {
+    return Production(
       id: map['id'] as int,
+      productionType: ProductionType.values[map['productionType'] as int],
       createdTime: DateTime.parse(map['createdTime'] as String),
       modifiedTime: DateTime.parse(map['modifiedTime'] as String),
       tmdbId: map['tmdbId'] as int,

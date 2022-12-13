@@ -13,14 +13,29 @@ abstract class Entity<T> {
   Map<String, dynamic> get map;
 }
 
-abstract class ChildEntity<T> extends Entity<T> {
+abstract class ReleaseChildEntity<T> extends Entity<T> {
   int? releaseId;
 
-  ChildEntity({
+  ReleaseChildEntity({
     int? id,
     DateTime? createdTime,
     DateTime? modifiedTime,
     this.releaseId,
+  }) : super(
+          id: id,
+          createdTime: createdTime,
+          modifiedTime: modifiedTime,
+        );
+}
+
+abstract class CollectionItemChildEntity<T> extends Entity<T> {
+  int? collectionItemId;
+
+  CollectionItemChildEntity({
+    int? id,
+    DateTime? createdTime,
+    DateTime? modifiedTime,
+    this.collectionItemId,
   }) : super(
           id: id,
           createdTime: createdTime,

@@ -7,7 +7,7 @@ class ReleaseListModel extends ListModelBase {
   ReleaseListModel({
     required int id,
     required String name,
-    required MediaType mediaType,
+    required List<MediaType> mediaTypes,
     required String barcode,
     required CaseType caseType,
     String? movieName,
@@ -16,7 +16,7 @@ class ReleaseListModel extends ListModelBase {
           barcode: barcode,
           caseType: caseType,
           id: id,
-          mediaType: mediaType,
+          mediaTypes: mediaTypes,
           name: name,
           movieName: movieName,
           picFileName: picFileName,

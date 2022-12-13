@@ -1,14 +1,14 @@
 import 'package:film_freak/persistence/repositories/repository_base.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../entities/movie.dart';
+import '../../entities/production.dart';
 import '../db_provider.dart';
 
-class MovieRepository extends RepositoryBase<Movie> {
+class MovieRepository extends RepositoryBase<Production> {
   MovieRepository(DatabaseProvider databaseProvider)
       : super(databaseProvider, 'movies');
 
-  Future<int> upsert(Movie movie) async {
+  Future<int> upsert(Production movie) async {
     Database db = await databaseProvider.database;
     int? id = movie.id;
     if (id != null) {
@@ -18,16 +18,16 @@ class MovieRepository extends RepositoryBase<Movie> {
     return await db.insert(tableName, movie.map);
   }
 
-  Future<Movie?> getByTmdbId(int id) async {
-    final res = await getById(id, 'tmdbId', Movie.fromMap);
+  Future<Production?> getByTmdbId(int id) async {
+    final res = await getById(id, 'tmdbId', Production.fromMap);
     return res.isNotEmpty ? res.first : null;
   }
 
-  Future<Iterable<Movie>> getByIds(Iterable<int> ids) async {
+  Future<Iterable<Production>> getByIds(Iterable<int> ids) async {
     Database db = await databaseProvider.database;
     final query = await db
         .query(tableName, where: 'id IN (?)', whereArgs: [ids.join(',')]);
-    final result = query.map<Movie>((e) => Movie.fromMap(e));
+    final result = query.map<Production>((e) => Production.fromMap(e));
     return result;
   }
 }

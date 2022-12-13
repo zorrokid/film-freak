@@ -1,4 +1,6 @@
-import '../../entities/movie.dart';
+import 'package:film_freak/enums/production_type.dart';
+
+import '../../entities/production.dart';
 
 class TmdbMovieResult {
   TmdbMovieResult(
@@ -30,11 +32,11 @@ class TmdbMovieResult {
             json['poster_path'] != null ? json['poster_path'] as String : '');
   }
 
-  Movie get toMovie => Movie(
-        tmdbId: id,
-        originalTitle: originalTitle,
-        title: title,
-        overView: overview,
-        releaseDate: DateTime.tryParse(releaseDate),
-      );
+  Production get toProduction => Production(
+      tmdbId: id,
+      originalTitle: originalTitle,
+      title: title,
+      overView: overview,
+      releaseDate: DateTime.tryParse(releaseDate),
+      productionType: ProductionType.movie);
 }

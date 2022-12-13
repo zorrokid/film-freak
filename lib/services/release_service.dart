@@ -2,8 +2,9 @@ import 'package:film_freak/models/list_models/release_list_model.dart';
 import 'package:film_freak/persistence/repositories/release_repository.dart';
 import 'package:logging/logging.dart';
 
-import '../entities/movie.dart';
-import '../entities/movie_release.dart';
+import '../entities/production.dart';
+import '../entities/release.dart';
+import '../enums/media_type.dart';
 import '../enums/picture_type.dart';
 import '../models/collection_item_query_specs.dart';
 import '../models/movie_release_view_model.dart';
@@ -37,23 +38,22 @@ class ReleaseService {
   final MovieRepository movieRepository;
 
   MovieReleaseViewModel initializeModel(String? barcode) {
-    final release = MovieRelease.empty();
+    final release = Release.empty();
     release.barcode = barcode ?? '';
     return MovieReleaseViewModel(
         release: release, releasePictures: [], releaseProperties: []);
   }
 
   Future<MovieReleaseViewModel> getReleaseData(int releaseId) async {
-    final release =
-        await releaseRepository.get(releaseId, MovieRelease.fromMap);
+    final release = await releaseRepository.get(releaseId, Release.fromMap);
     final releasePictures =
         await releasePicturesRepository.getByReleaseId(releaseId);
     final releaseProperties =
         await releasePropertiesRepository.getByReleaseId(releaseId);
 
-    Movie? movie;
+    Production? movie;
     if (release.movieId != null) {
-      movie = await movieRepository.get(release.movieId!, Movie.fromMap);
+      movie = await movieRepository.get(release.movieId!, Production.fromMap);
     }
     return MovieReleaseViewModel(
       release: release,
@@ -103,11 +103,13 @@ class ReleaseService {
     final pics = await releasePicturesRepository
         .getByReleaseIds(releaseIds, [PictureType.coverFront]);
 
+    final List<MediaType> mediaTypes = <MediaType>[];
+
     final collectionItems = releases.map((e) => ReleaseListModel(
           barcode: e.barcode,
           caseType: e.caseType,
           id: e.id!,
-          mediaType: e.mediaType,
+          mediaTypes: mediaTypes,
           name: e.name,
           movieName: e.movieId != null
               ? movies.singleWhere((m) => m.id == e.movieId).title

@@ -1,3 +1,4 @@
+import 'package:film_freak/enums/media_type.dart';
 import 'package:film_freak/enums/picture_type.dart';
 import 'package:film_freak/models/list_models/collection_item_list_model.dart';
 import 'package:film_freak/models/collection_item_query_specs.dart';
@@ -5,8 +6,8 @@ import 'package:film_freak/persistence/repositories/movie_repository.dart';
 import 'package:logging/logging.dart';
 
 import '../entities/collection_item.dart';
-import '../entities/movie.dart';
-import '../entities/movie_release.dart';
+import '../entities/production.dart';
+import '../entities/release.dart';
 import '../persistence/db_provider.dart';
 import '../persistence/repositories/collection_item_repository.dart';
 import '../persistence/repositories/release_pictures_repository.dart';
@@ -65,7 +66,7 @@ class CollectionItemService {
     final releaseIds = collectionItems.map((e) => e.releaseId!).toSet();
     final releases = await releaseRepository.getByIds(releaseIds);
     assert(releases.length == releaseIds.length);
-    final releaseMap = <int, MovieRelease>{};
+    final releaseMap = <int, Release>{};
     for (final release in releases) {
       releaseMap[release.id!] = release;
     }
@@ -73,12 +74,14 @@ class CollectionItemService {
         releases.where((e) => e.movieId != null).map((e) => e.movieId!).toSet();
     final movies = await movieRepository.getByIds(movieIds);
     assert(movies.length == movieIds.length);
-    final movieMap = <int, Movie>{};
+    final movieMap = <int, Production>{};
     for (final movie in movies) {
       movieMap[movie.id!] = movie;
     }
     final pics = await releasePicturesRepository
         .getByReleaseIds(releaseIds, [PictureType.coverFront]);
+
+    final List<MediaType> mediaTypes = <MediaType>[];
 
     final collectionItemListModels =
         collectionItems.map((e) => CollectionItemListModel(
@@ -86,7 +89,7 @@ class CollectionItemService {
               caseType: releaseMap[e.releaseId]!.caseType,
               condition: e.condition,
               id: e.id!,
-              mediaType: releaseMap[e.releaseId]!.mediaType,
+              mediaTypes: mediaTypes,
               name: releaseMap[e.releaseId]!.name,
               movieName: releaseMap[e.releaseId]!.movieId != null
                   ? movieMap[releaseMap[e.releaseId]!.movieId]!.title

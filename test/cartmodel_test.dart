@@ -1,7 +1,6 @@
 import 'package:film_freak/persistence/collection_model.dart';
 import 'package:film_freak/enums/case_type.dart';
-import 'package:film_freak/enums/media_type.dart';
-import 'package:film_freak/entities/movie_release.dart';
+import 'package:film_freak/entities/release.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -14,8 +13,7 @@ void main() {
       expect(model.totalMovieReleases, 1);
     });
 
-    model.add(MovieRelease(
-      mediaType: MediaType.dvd,
+    model.add(Release(
       name: 'Star Wars',
       barcode: '',
       caseType: CaseType.regularDvd,

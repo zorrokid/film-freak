@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../entities/movie.dart';
+import '../../entities/production.dart';
 import '../../widgets/labelled_text.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard({super.key, required this.movie});
-  final Movie movie;
+  final Production movie;
 
   Future<void> openTmdbLink(int tmdbId) async {
     final url = Uri(

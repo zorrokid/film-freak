@@ -2,7 +2,7 @@ import 'package:film_freak/enums/picture_type.dart';
 
 import 'entity.dart';
 
-class ReleasePicture extends ChildEntity<ReleasePicture> {
+class ReleasePicture extends ReleaseChildEntity<ReleasePicture> {
   // when creating a new release id is set after entity is saved to db:
   String filename;
   PictureType pictureType;

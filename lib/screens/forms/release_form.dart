@@ -17,9 +17,9 @@ import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/enums/case_type.dart';
-import 'package:film_freak/entities/movie_release.dart';
+import 'package:film_freak/entities/release.dart';
 
-import '../../entities/movie.dart';
+import '../../entities/production.dart';
 import '../../persistence/collection_model.dart';
 import '../../enums/media_type.dart';
 
@@ -68,7 +68,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   List<ReleasePicture> _pictures = <ReleasePicture>[];
   final _picturesToDelete = <ReleasePicture>[];
   List<ReleaseProperty> _properties = <ReleaseProperty>[];
-  Movie? _movie;
+  Production? _movie;
 
   @override
   void initState() {
@@ -174,7 +174,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
     _nameController.text = model.release.name;
     _notesController.text = model.release.notes;
     _pictures = model.releasePictures;
-    _mediaType = model.release.mediaType;
     _caseType = model.release.caseType;
     _movie = model.movie;
 
@@ -184,10 +183,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
   }
 
   MovieReleaseViewModel _buildModel() {
-    final release = MovieRelease(
+    final release = Release(
       id: _id,
       name: _nameController.text,
-      mediaType: _mediaType,
       barcode: _barcodeController.text,
       caseType: _caseType,
       notes: _notesController.text,
@@ -296,7 +294,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
       ),
     );
     if (movieResult == null) return;
-    final movie = movieResult.toMovie;
+    final movie = movieResult.toProduction;
     setState(() {
       _movie = movie;
     });
@@ -468,12 +466,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       ),
                     ],
                   ),
-                  DropDownFormField(
-                    initialValue: viewModel.release.mediaType,
-                    values: mediaTypeFormFieldValues,
-                    onValueChange: onMediaTypeSelected,
-                    labelText: 'Media type',
-                  ),
+                  // TODO: add media type selection on separate screen
                   DropDownFormField(
                     initialValue: viewModel.release.caseType,
                     values: caseTypeFormFieldValues,

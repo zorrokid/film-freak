@@ -20,15 +20,7 @@ class CollectionItemDetailsCard extends StatelessWidget {
             ),
           ],
         ),
-        if (release.notes.isNotEmpty)
-          Row(
-            children: [
-              LabelledText(
-                label: 'Notes',
-                value: release.notes,
-              ),
-            ],
-          ),
+        // TODO: show comments & properties
       ]),
     );
   }
