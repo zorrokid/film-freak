@@ -9,7 +9,7 @@ import '../enums/picture_type.dart';
 import '../models/collection_item_query_specs.dart';
 import '../models/movie_release_view_model.dart';
 import '../persistence/db_provider.dart';
-import '../persistence/repositories/movie_repository.dart';
+import '../persistence/repositories/productions_repository.dart';
 import '../persistence/repositories/release_pictures_repository.dart';
 import '../persistence/repositories/release_properties_repository.dart';
 
@@ -19,7 +19,7 @@ ReleaseService initializeReleaseService() {
     releaseRepository: ReleaseRepository(dbProvider),
     releasePicturesRepository: ReleasePicturesRepository(dbProvider),
     releasePropertiesRepository: ReleasePropertiesRepository(dbProvider),
-    movieRepository: MovieRepository(dbProvider),
+    productions: ProductionsRepository(dbProvider),
   );
 }
 
@@ -28,14 +28,14 @@ class ReleaseService {
     required this.releaseRepository,
     required this.releasePicturesRepository,
     required this.releasePropertiesRepository,
-    required this.movieRepository,
+    required this.productions,
   });
 
   final log = Logger('ReleaseService');
   final ReleaseRepository releaseRepository;
   final ReleasePicturesRepository releasePicturesRepository;
   final ReleasePropertiesRepository releasePropertiesRepository;
-  final MovieRepository movieRepository;
+  final ProductionsRepository productions;
 
   MovieReleaseViewModel initializeModel(String? barcode) {
     final release = Release.empty();
@@ -53,7 +53,7 @@ class ReleaseService {
 
     Production? movie;
     if (release.movieId != null) {
-      movie = await movieRepository.get(release.movieId!, Production.fromMap);
+      movie = await productions.get(release.movieId!, Production.fromMap);
     }
     return MovieReleaseViewModel(
       release: release,
@@ -70,12 +70,12 @@ class ReleaseService {
       final movie = viewModel.movie!;
       // check if movie entry with tmdb id already exists and assign id if it does
       if (movie.id == null && movie.tmdbId != null) {
-        final existsingMovie = await movieRepository.getByTmdbId(movie.tmdbId!);
+        final existsingMovie = await productions.getByTmdbId(movie.tmdbId!);
         if (existsingMovie != null) {
           movie.id = existsingMovie.id;
         }
       }
-      final movieId = await movieRepository.upsert(viewModel.movie!);
+      final movieId = await productions.upsert(viewModel.movie!);
       viewModel.release.movieId = movieId;
     }
 
@@ -98,7 +98,7 @@ class ReleaseService {
     final releases = await releaseRepository.query(filter);
     final movieIds =
         releases.where((e) => e.movieId != null).map((e) => e.movieId!).toSet();
-    final movies = await movieRepository.getByIds(movieIds);
+    final movies = await productions.getByIds(movieIds);
     final releaseIds = releases.map((e) => e.id!).toSet();
     final pics = await releasePicturesRepository
         .getByReleaseIds(releaseIds, [PictureType.coverFront]);

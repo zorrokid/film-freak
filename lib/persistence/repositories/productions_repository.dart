@@ -4,18 +4,19 @@ import 'package:sqflite/sqflite.dart';
 import '../../entities/production.dart';
 import '../db_provider.dart';
 
-class MovieRepository extends RepositoryBase<Production> {
-  MovieRepository(DatabaseProvider databaseProvider)
-      : super(databaseProvider, 'movies');
+class ProductionsRepository extends RepositoryBase<Production> {
+  ProductionsRepository(DatabaseProvider databaseProvider)
+      : super(databaseProvider, 'productions');
 
-  Future<int> upsert(Production movie) async {
+  Future<int> upsert(Production production) async {
     Database db = await databaseProvider.database;
-    int? id = movie.id;
+    int? id = production.id;
     if (id != null) {
-      await db.update(tableName, movie.map, where: 'id=?', whereArgs: [id]);
+      await db
+          .update(tableName, production.map, where: 'id=?', whereArgs: [id]);
       return id;
     }
-    return await db.insert(tableName, movie.map);
+    return await db.insert(tableName, production.map);
   }
 
   Future<Production?> getByTmdbId(int id) async {

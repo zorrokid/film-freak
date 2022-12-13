@@ -2,7 +2,7 @@ import 'package:film_freak/enums/media_type.dart';
 import 'package:film_freak/enums/picture_type.dart';
 import 'package:film_freak/models/list_models/collection_item_list_model.dart';
 import 'package:film_freak/models/collection_item_query_specs.dart';
-import 'package:film_freak/persistence/repositories/movie_repository.dart';
+import 'package:film_freak/persistence/repositories/productions_repository.dart';
 import 'package:logging/logging.dart';
 
 import '../entities/collection_item.dart';
@@ -21,7 +21,7 @@ CollectionItemService initializeCollectionItemService() {
     releaseRepository: ReleaseRepository(dbProvider),
     releasePicturesRepository: ReleasePicturesRepository(dbProvider),
     releasePropertiesRepository: ReleasePropertiesRepository(dbProvider),
-    movieRepository: MovieRepository(dbProvider),
+    movieRepository: ProductionsRepository(dbProvider),
   );
 }
 
@@ -39,7 +39,7 @@ class CollectionItemService {
   final ReleaseRepository releaseRepository;
   final ReleasePicturesRepository releasePicturesRepository;
   final ReleasePropertiesRepository releasePropertiesRepository;
-  final MovieRepository movieRepository;
+  final ProductionsRepository movieRepository;
 
   Future<CollectionItem> get(int id) async {
     return await collectionItemRepository.get(id, CollectionItem.fromMap);

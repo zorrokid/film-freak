@@ -45,19 +45,19 @@ final migrationScripts = <int, String>{
           propertyType INTEGER,
           createdTime DATETIME,
           modifiedTime DATETIME)''',
-  6: '''CREATE TABLE releaseComments(
+  7: '''CREATE TABLE releaseComments(
           id INTEGER PRIMARY KEY,
           releaseId INTEGER,
           comment TEXT,
           createdTime DATETIME,
           modifiedTime DATETIME)''',
-  7: '''CREATE TABLE collectionItemComments(
+  8: '''CREATE TABLE collectionItemComments(
           id INTEGER PRIMARY KEY,
           collectionItemId INTEGER,
           comment TEXT,
           createdTime DATETIME,
           modifiedTime DATETIME)''',
-  5: '''CREATE TABLE releaseMedias(
+  9: '''CREATE TABLE releaseMedias(
           id INTEGER PRIMARY KEY, 
           releaseId INTEGER,
           mediaType INTEGER,
