@@ -17,7 +17,6 @@ void main() {
       name: 'Star Wars',
       barcode: '',
       caseType: CaseType.regularDvd,
-      notes: '',
     ));
   });
 }

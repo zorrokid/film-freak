@@ -34,6 +34,7 @@ class Production extends Entity<Production> {
         'title': title,
         'originalTitle': originalTitle,
         'overView': overView,
+        'releaseDate': (modifiedTime ?? DateTime.now()).toIso8601String(),
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
@@ -42,6 +43,7 @@ class Production extends Entity<Production> {
     return Production(
       id: map['id'] as int,
       productionType: ProductionType.values[map['productionType'] as int],
+      releaseDate: DateTime.parse(map['releaseDate'] as String),
       createdTime: DateTime.parse(map['createdTime'] as String),
       modifiedTime: DateTime.parse(map['modifiedTime'] as String),
       tmdbId: map['tmdbId'] as int,

@@ -1,13 +1,10 @@
 import 'entity.dart';
 import '../enums/case_type.dart';
-import '../enums/media_type.dart';
 
 class Release extends Entity<Release> {
   String name;
   String barcode;
   CaseType caseType;
-  String notes;
-  int? movieId;
 
   Release({
     int? id,
@@ -16,8 +13,6 @@ class Release extends Entity<Release> {
     required this.name,
     required this.barcode,
     required this.caseType,
-    required this.notes,
-    this.movieId,
   }) : super(
           id: id,
           createdTime: createdTime,
@@ -29,7 +24,6 @@ class Release extends Entity<Release> {
           name: '',
           barcode: '',
           caseType: CaseType.unknown,
-          notes: '',
         );
 
   @override
@@ -37,10 +31,8 @@ class Release extends Entity<Release> {
         'name': name,
         'barcode': barcode,
         'caseType': caseType.index,
-        'notes': notes,
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
-        'movieId': movieId,
       };
 
   static Release fromMap(Map<String, Object?> map) {
@@ -51,8 +43,6 @@ class Release extends Entity<Release> {
       name: map['name'] as String,
       barcode: map['barcode'] as String,
       caseType: CaseType.values[map['caseType'] as int],
-      notes: map['notes'] as String,
-      movieId: map['movieId'] as int?,
     );
   }
 
@@ -74,7 +64,6 @@ class Release extends Entity<Release> {
       name: json['name'] as String,
       barcode: json['barcode'] as String,
       caseType: CaseType.values[json['caseType'] as int],
-      notes: json['notes'] as String,
     );
   }
 }

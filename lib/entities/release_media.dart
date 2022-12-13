@@ -1,18 +1,19 @@
-import '../enums/collection_status.dart';
-import '../enums/condition.dart';
+import 'package:film_freak/enums/condition.dart';
+
+import '../enums/media_type.dart';
 import 'entity.dart';
 
-class CollectionItem extends ReleaseChildEntity<CollectionItem> {
+class ReleaseMedia extends ReleaseChildEntity<ReleaseMedia> {
+  // when creating a new release id is set after entity is saved to db:
+  MediaType mediaType;
   Condition condition;
-  CollectionStatus status;
-
-  CollectionItem({
+  ReleaseMedia({
+    int? releaseId,
     int? id,
     DateTime? createdTime,
     DateTime? modifiedTime,
-    required int releaseId,
-    required this.condition,
-    required this.status,
+    required this.mediaType,
+    Condition? condition,
   }) : super(
           id: id,
           releaseId: releaseId,
@@ -20,31 +21,24 @@ class CollectionItem extends ReleaseChildEntity<CollectionItem> {
           modifiedTime: modifiedTime,
         );
 
-  CollectionItem.empty(int releaseId)
-      : this(
-          releaseId: releaseId,
-          condition: Condition.unknown,
-          status: CollectionStatus.unknown,
-        );
-
   @override
   Map<String, dynamic> get map => {
         'id': id,
         'releaseId': releaseId,
+        'mediaType': mediaType.index,
         'condition': condition.index,
-        'status': status.index,
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
 
-  static CollectionItem fromMap(Map<String, Object?> map) {
-    return CollectionItem(
-      id: map['id'] as int,
+  static ReleaseMedia fromMap(Map<String, dynamic> map) {
+    return ReleaseMedia(
       releaseId: map['releaseId'] as int,
+      id: map['id'] as int,
+      mediaType: MediaType.values[map['mediaType'] as int],
+      condition: Condition.values[map['condition'] as int],
       createdTime: DateTime.parse(map['createdTime'] as String),
       modifiedTime: DateTime.parse(map['modifiedTime'] as String),
-      condition: Condition.values[map['condition'] as int],
-      status: CollectionStatus.values[map['status'] as int],
     );
   }
 }

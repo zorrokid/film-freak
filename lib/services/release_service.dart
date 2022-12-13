@@ -52,8 +52,8 @@ class ReleaseService {
         await releasePropertiesRepository.getByReleaseId(releaseId);
 
     Production? movie;
-    if (release.movieId != null) {
-      movie = await productions.get(release.movieId!, Production.fromMap);
+    if (release.productionId != null) {
+      movie = await productions.get(release.productionId!, Production.fromMap);
     }
     return MovieReleaseViewModel(
       release: release,
@@ -76,7 +76,7 @@ class ReleaseService {
         }
       }
       final movieId = await productions.upsert(viewModel.movie!);
-      viewModel.release.movieId = movieId;
+      viewModel.release.productionId = movieId;
     }
 
     if (viewModel.release.id != null) {
@@ -96,8 +96,10 @@ class ReleaseService {
   Future<Iterable<ReleaseListModel>> getListModels(
       CollectionItemQuerySpecs? filter) async {
     final releases = await releaseRepository.query(filter);
-    final movieIds =
-        releases.where((e) => e.movieId != null).map((e) => e.movieId!).toSet();
+    final movieIds = releases
+        .where((e) => e.productionId != null)
+        .map((e) => e.productionId!)
+        .toSet();
     final movies = await productions.getByIds(movieIds);
     final releaseIds = releases.map((e) => e.id!).toSet();
     final pics = await releasePicturesRepository
@@ -111,8 +113,8 @@ class ReleaseService {
           id: e.id!,
           mediaTypes: mediaTypes,
           name: e.name,
-          movieName: e.movieId != null
-              ? movies.singleWhere((m) => m.id == e.movieId).title
+          movieName: e.productionId != null
+              ? movies.singleWhere((m) => m.id == e.productionId).title
               : null,
           picFileName: pics.any((p) => p.releaseId == e.id)
               ? pics.firstWhere((p) => p.releaseId == e.id).filename

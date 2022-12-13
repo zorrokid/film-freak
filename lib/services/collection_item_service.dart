@@ -70,8 +70,10 @@ class CollectionItemService {
     for (final release in releases) {
       releaseMap[release.id!] = release;
     }
-    final movieIds =
-        releases.where((e) => e.movieId != null).map((e) => e.movieId!).toSet();
+    final movieIds = releases
+        .where((e) => e.productionId != null)
+        .map((e) => e.productionId!)
+        .toSet();
     final movies = await movieRepository.getByIds(movieIds);
     assert(movies.length == movieIds.length);
     final movieMap = <int, Production>{};
@@ -91,8 +93,8 @@ class CollectionItemService {
               id: e.id!,
               mediaTypes: mediaTypes,
               name: releaseMap[e.releaseId]!.name,
-              movieName: releaseMap[e.releaseId]!.movieId != null
-                  ? movieMap[releaseMap[e.releaseId]!.movieId]!.title
+              movieName: releaseMap[e.releaseId]!.productionId != null
+                  ? movieMap[releaseMap[e.releaseId]!.productionId]!.title
                   : null,
               picFileName: pics.any((p) => p.releaseId == e.id)
                   ? pics.firstWhere((p) => p.releaseId == e.id).filename

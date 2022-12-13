@@ -16,7 +16,7 @@ final migrationScripts = <int, String>{
           overview STRING,
           releaseDate DATETIME,
           createdTime DATETIME,
-          updatedTime DATETIME)''',
+          modifiedTime DATETIME)''',
   3: '''CREATE TABLE releaseProductions(
           releaseId INTEGER,
           productionId INTEGER)''',
@@ -24,6 +24,7 @@ final migrationScripts = <int, String>{
           id INTEGER PRIMARY KEY,
           releaseId INTEGER NOT NULL,
           condition INTEGER,
+          status INTEGER,
           createdTime DATETIME,
           modifiedTime DATETIME)''',
   5: '''CREATE TABLE releasePictures(
@@ -61,6 +62,7 @@ final migrationScripts = <int, String>{
           id INTEGER PRIMARY KEY, 
           releaseId INTEGER,
           mediaType INTEGER,
+          condition INTEGER,
           createdTime DATETIME,
           modifiedTime DATETIME)''',
 };
