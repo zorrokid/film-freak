@@ -70,16 +70,17 @@ class CollectionItemService {
     for (final release in releases) {
       releaseMap[release.id!] = release;
     }
-    final movieIds = releases
-        .where((e) => e.productionId != null)
-        .map((e) => e.productionId!)
-        .toSet();
-    final movies = await movieRepository.getByIds(movieIds);
-    assert(movies.length == movieIds.length);
-    final movieMap = <int, Production>{};
-    for (final movie in movies) {
-      movieMap[movie.id!] = movie;
-    }
+    // TODO
+    // final movieIds = releases
+    //     .where((e) => e.productionId != null)
+    //     .map((e) => e.productionId!)
+    //     .toSet();
+    // final movies = await movieRepository.getByIds(movieIds);
+    // assert(movies.length == movieIds.length);
+    // final movieMap = <int, Production>{};
+    // for (final movie in movies) {
+    //   movieMap[movie.id!] = movie;
+    // }
     final pics = await releasePicturesRepository
         .getByReleaseIds(releaseIds, [PictureType.coverFront]);
 
@@ -93,9 +94,11 @@ class CollectionItemService {
               id: e.id!,
               mediaTypes: mediaTypes,
               name: releaseMap[e.releaseId]!.name,
-              productionNames: releaseMap[e.releaseId]!.productionId != null
+              // TODO
+              productionNames: [] /*releaseMap[e.releaseId]!.productionId != null
                   ? movieMap[releaseMap[e.releaseId]!.productionId]!.title
-                  : null,
+                  : null*/
+              ,
               picFileName: pics.any((p) => p.releaseId == e.id)
                   ? pics.firstWhere((p) => p.releaseId == e.id).filename
                   : null,

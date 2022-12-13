@@ -42,7 +42,13 @@ class ReleaseService {
   ReleaseViewModel initializeModel(String? barcode) {
     final release = Release.empty();
     release.barcode = barcode ?? '';
-    return ReleaseViewModel(release: release, pictures: [], properties: []);
+    return ReleaseViewModel(
+        release: release,
+        pictures: [],
+        properties: [],
+        productions: [],
+        comments: [],
+        medias: []);
   }
 
   Future<ReleaseViewModel> getReleaseData(int releaseId) async {
@@ -52,33 +58,39 @@ class ReleaseService {
     final releaseProperties = await releasePropertiesRepository.getByReleaseId(
         releaseId, ReleaseProperty.fromMap);
 
-    Production? movie;
-    if (release.productionId != null) {
-      movie = await productions.get(release.productionId!, Production.fromMap);
-    }
+    // get productions
+    // get medias
+    // get comments
+    // Production? movie;
+    // if (release.productionId != null) {
+    //   movie = await productions.get(release.productionId!, Production.fromMap);
+    // }
     return ReleaseViewModel(
       release: release,
       pictures: releasePictures.toList(),
       properties: releaseProperties.toList(),
-      production: movie,
+      productions: [],
+      comments: [],
+      medias: [],
     );
   }
 
   Future<int> upsert(ReleaseViewModel viewModel) async {
     int id;
 
-    if (viewModel.production != null) {
-      final movie = viewModel.production!;
-      // check if movie entry with tmdb id already exists and assign id if it does
-      if (movie.id == null && movie.tmdbId != null) {
-        final existsingMovie = await productions.getByTmdbId(movie.tmdbId!);
-        if (existsingMovie != null) {
-          movie.id = existsingMovie.id;
-        }
-      }
-      final movieId = await productions.upsert(viewModel.production!);
-      viewModel.release.productionId = movieId;
-    }
+    // TODO: add productions, medias, comments
+    // if (viewModel.production != null) {
+    //   final movie = viewModel.production!;
+    //   // check if movie entry with tmdb id already exists and assign id if it does
+    //   if (movie.id == null && movie.tmdbId != null) {
+    //     final existsingMovie = await productions.getByTmdbId(movie.tmdbId!);
+    //     if (existsingMovie != null) {
+    //       movie.id = existsingMovie.id;
+    //     }
+    //   }
+    //   final movieId = await productions.upsert(viewModel.production!);
+    //   viewModel.release.productionId = movieId;
+    // }
 
     if (viewModel.release.id != null) {
       id = viewModel.release.id!;
@@ -97,11 +109,12 @@ class ReleaseService {
   Future<Iterable<ReleaseListModel>> getListModels(
       ReleaseQuerySpecs? filter) async {
     final releases = await releaseRepository.query(filter);
-    final productionIds = releases
-        .where((e) => e.productionId != null)
-        .map((e) => e.productionId!)
-        .toSet();
-    final movies = await productions.getByIds(productionIds);
+    // TODO
+    // final productionIds = releases
+    //     .where((e) => e.productionId != null)
+    //     .map((e) => e.productionId!)
+    //     .toSet();
+    // final movies = await productions.getByIds(productionIds);
     final releaseIds = releases.map((e) => e.id!).toSet();
     final pics = await releasePicturesRepository
         .getByReleaseIds(releaseIds, [PictureType.coverFront]);
@@ -114,9 +127,11 @@ class ReleaseService {
           id: e.id!,
           mediaTypes: mediaTypes,
           name: e.name,
-          productionNames: e.productionId != null
+          // TODO
+          productionNames: [] /*e.productionId != null
               ? movies.singleWhere((m) => m.id == e.productionId).title
-              : null,
+              : null*/
+          ,
           picFileName: pics.any((p) => p.releaseId == e.id)
               ? pics.firstWhere((p) => p.releaseId == e.id).filename
               : null,
