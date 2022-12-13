@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../features/scan_barcode/collection_item_filter_list.dart';
 import '../utils/dialog_utls.dart';
 import 'forms/release_form.dart';
-import '../persistence/collection_model.dart';
+import '../persistence/app_state.dart';
 
 class CollectionList extends StatefulWidget {
   const CollectionList({this.filter, super.key});
@@ -44,7 +44,7 @@ class _CollectionListState extends State<CollectionList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, appState, child) {
+    return Consumer<AppState>(builder: (context, appState, child) {
       void addRelease() {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return const ReleaseForm();

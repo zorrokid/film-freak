@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../models/list_models/collection_item_list_model.dart';
 import '../../screens/forms/collection_item_form.dart';
 import '../../widgets/release_filter_list.dart';
-import '../../persistence/collection_model.dart';
+import '../../persistence/app_state.dart';
 import '../../services/collection_item_service.dart';
 import '../../services/release_service.dart';
 import '../../utils/dialog_utls.dart';
@@ -82,7 +82,7 @@ class _ScanViewState extends State<ScanView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, appState, child) {
+    return Consumer<AppState>(builder: (context, appState, child) {
       return Scaffold(
         drawer: const MainDrawer(),
         appBar: AppBar(

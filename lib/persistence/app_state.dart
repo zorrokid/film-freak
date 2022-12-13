@@ -3,8 +3,8 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:film_freak/entities/release.dart';
 
-class CollectionModel extends ChangeNotifier {
-  CollectionModel({required this.saveDir});
+class AppState extends ChangeNotifier {
+  AppState({required this.saveDir});
   final List<Release> _movieReleases = [];
   String saveDir;
 

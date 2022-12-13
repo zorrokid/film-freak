@@ -6,14 +6,14 @@ import 'entity.dart';
 class ReleaseMedia extends ReleaseChildEntity<ReleaseMedia> {
   // when creating a new release id is set after entity is saved to db:
   MediaType mediaType;
-  Condition condition;
+  Condition? condition;
   ReleaseMedia({
     int? releaseId,
     int? id,
     DateTime? createdTime,
     DateTime? modifiedTime,
     required this.mediaType,
-    Condition? condition,
+    this.condition,
   }) : super(
           id: id,
           releaseId: releaseId,
@@ -26,7 +26,7 @@ class ReleaseMedia extends ReleaseChildEntity<ReleaseMedia> {
         'id': id,
         'releaseId': releaseId,
         'mediaType': mediaType.index,
-        'condition': condition.index,
+        'condition': condition?.index ?? Condition.unknown,
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };

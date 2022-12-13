@@ -7,7 +7,7 @@ import '../../widgets/spinner.dart';
 import '../../widgets/form/drop_down_form_field.dart';
 
 import '../../entities/collection_item.dart';
-import '../../persistence/collection_model.dart';
+import '../../persistence/app_state.dart';
 import '../../enums/condition.dart';
 
 import '../../services/collection_item_service.dart';
@@ -82,7 +82,7 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, appState, child) {
+    return Consumer<AppState>(builder: (context, appState, child) {
       Future<void> submit() async {
         if (!_formKey.currentState!.validate()) return;
         final viewModel = _buildModel();

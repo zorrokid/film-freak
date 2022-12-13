@@ -20,7 +20,7 @@ import 'package:film_freak/enums/case_type.dart';
 import 'package:film_freak/entities/release.dart';
 
 import '../../entities/production.dart';
-import '../../persistence/collection_model.dart';
+import '../../persistence/app_state.dart';
 import '../../enums/media_type.dart';
 
 import 'package:path/path.dart' as p;
@@ -172,7 +172,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
     _properties = model.releaseProperties;
     _barcodeController.text = model.release.barcode;
     _nameController.text = model.release.name;
-    _notesController.text = model.release.notes;
     _pictures = model.releasePictures;
     _caseType = model.release.caseType;
     _movie = model.movie;
@@ -188,7 +187,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
       name: _nameController.text,
       barcode: _barcodeController.text,
       caseType: _caseType,
-      notes: _notesController.text,
     );
 
     return MovieReleaseViewModel(
@@ -302,7 +300,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, appState, child) {
+    return Consumer<AppState>(builder: (context, appState, child) {
       Future<void> submit() async {
         if (!_formKey.currentState!.validate()) return;
         final viewModel = _buildModel();

@@ -8,7 +8,7 @@ import '../../services/release_service.dart';
 import '../../widgets/error_display_widget.dart';
 import '../../widgets/release_properties.dart';
 import '../../widgets/spinner.dart';
-import '../../persistence/collection_model.dart';
+import '../../persistence/app_state.dart';
 import 'release_details_card.dart';
 import 'movie_card.dart';
 
@@ -42,7 +42,7 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, appState, child) {
+    return Consumer<AppState>(builder: (context, appState, child) {
       return FutureBuilder(
           future: _futureModel,
           builder: (BuildContext context,
