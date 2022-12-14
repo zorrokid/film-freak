@@ -82,7 +82,7 @@ class CollectionItemService {
     //   movieMap[movie.id!] = movie;
     // }
     final pics = await releasePicturesRepository
-        .getByReleaseIds(releaseIds, [PictureType.coverFront]);
+        .getByReleaseIds(releaseIds); //, [PictureType.coverFront]);
 
     final List<MediaType> mediaTypes = <MediaType>[];
 

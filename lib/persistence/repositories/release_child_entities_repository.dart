@@ -36,6 +36,14 @@ abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
     return super.getById(releaseId, "releaseId", mapper);
   }
 
+  Future<Iterable<T>> getByReleaseIds(Iterable<int> releaseids) async {
+    Database db = await databaseProvider.database;
+    final query = await db.query(tableName,
+        where: 'releaseId IN (?)', whereArgs: [releaseids.join(',')]);
+    final result = query.map<T>((e) => mapper(e));
+    return result;
+  }
+
   Future<int> deleteByReleaseId(int releaseId) async {
     return super.deleteByIdColumn(releaseId, 'releaseId');
   }

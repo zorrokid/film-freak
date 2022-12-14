@@ -1,3 +1,6 @@
+import 'dart:html';
+
+import 'package:film_freak/entities/release_picture.dart';
 import 'package:film_freak/models/list_models/release_list_model.dart';
 import 'package:film_freak/persistence/repositories/release_comments_repository.dart';
 import 'package:film_freak/persistence/repositories/release_medias_repository.dart';
@@ -5,7 +8,9 @@ import 'package:film_freak/persistence/repositories/release_productions_reposito
 import 'package:film_freak/persistence/repositories/releases_repository.dart';
 import 'package:logging/logging.dart';
 
+import '../entities/production.dart';
 import '../entities/release.dart';
+import '../entities/release_media.dart';
 import '../enums/media_type.dart';
 import '../enums/picture_type.dart';
 import '../models/release_view_model.dart';
@@ -86,19 +91,21 @@ class ReleaseService {
   Future<int> upsert(ReleaseViewModel viewModel) async {
     int id;
 
-    // TODO: add productions, medias, comments
-    // if (viewModel.production != null) {
-    //   final movie = viewModel.production!;
-    //   // check if movie entry with tmdb id already exists and assign id if it does
-    //   if (movie.id == null && movie.tmdbId != null) {
-    //     final existsingMovie = await productions.getByTmdbId(movie.tmdbId!);
-    //     if (existsingMovie != null) {
-    //       movie.id = existsingMovie.id;
-    //     }
-    //   }
-    //   final movieId = await productions.upsert(viewModel.production!);
-    //   viewModel.release.productionId = movieId;
-    // }
+    if (viewModel.productions.isNotEmpty) {
+      for (final production in viewModel.productions) {
+        // check if movie entry with tmdb id already exists and assign id if it does
+        if (production.id == null && production.tmdbId != null) {
+          final existingProduction =
+              await productionsRepository.getByTmdbId(production.tmdbId!);
+          if (existingProduction != null) {
+            production.id = existingProduction.id;
+          }
+        }
+
+        final productionId = await productionsRepository.upsert(production);
+        production.id = productionId;
+      }
+    }
 
     if (viewModel.release.id != null) {
       id = viewModel.release.id!;
@@ -117,32 +124,24 @@ class ReleaseService {
   Future<Iterable<ReleaseListModel>> getListModels(
       ReleaseQuerySpecs? filter) async {
     final releases = await releaseRepository.query(filter);
-    // TODO
-    // final productionIds = releases
-    //     .where((e) => e.productionId != null)
-    //     .map((e) => e.productionId!)
-    //     .toSet();
-    // final movies = await productions.getByIds(productionIds);
     final releaseIds = releases.map((e) => e.id!).toSet();
-    final pics = await releasePicturesRepository
-        .getByReleaseIds(releaseIds, [PictureType.coverFront]);
 
-    final List<MediaType> mediaTypes = <MediaType>[];
+    final productionsByRelease = await getProductionsByReleaseMap(releaseIds);
+    final mediaTypesByRelease = await getMediaTypesByReleaseMap(releaseIds);
+    final picsByRelease = await getPicsByReleaseMap(releaseIds);
 
     final collectionItems = releases.map((e) => ReleaseListModel(
           barcode: e.barcode,
           caseType: e.caseType,
           id: e.id!,
-          mediaTypes: mediaTypes,
+          mediaTypes: mediaTypesByRelease[e.id]?.toList() ?? [],
           name: e.name,
-          // TODO
-          productionNames: [] /*e.productionId != null
-              ? movies.singleWhere((m) => m.id == e.productionId).title
-              : null*/
-          ,
-          picFileName: pics.any((p) => p.releaseId == e.id)
+          productionNames:
+              productionsByRelease[e.id]?.map((e) => e.title).toList() ?? [],
+          picFileName:
+              '', /*pics.any((p) => p.releaseId == e.id)
               ? pics.firstWhere((p) => p.releaseId == e.id).filename
-              : null,
+              : null,*/
         ));
 
     return collectionItems;
@@ -150,5 +149,54 @@ class ReleaseService {
 
   Future<bool> barcodeExists(String barcode) async {
     return releaseRepository.barcodeExists(barcode);
+  }
+
+  Future<Map<int, List<ReleasePicture>>> getPicsByReleaseMap(
+      Iterable<int> releaseIds) async {
+    final pics = await releasePicturesRepository
+        .getByReleaseIds(releaseIds); // , [PictureType.coverFront]
+    final picsByReleaseMap = <int, List<ReleasePicture>>{};
+    for (final pic in pics) {
+      if (picsByReleaseMap[pic.releaseId] == null) {
+        picsByReleaseMap[pic.releaseId!] = <ReleasePicture>[];
+      }
+      picsByReleaseMap[pic.releaseId!]!.add(pic);
+    }
+    return picsByReleaseMap;
+  }
+
+  Future<Map<int, Set<MediaType>>> getMediaTypesByReleaseMap(
+      Iterable<int> releaseIds) async {
+    final releaseMedias =
+        await releaseMediasRepository.getByReleaseIds(releaseIds);
+    final mediaTypesByRelease = <int, Set<MediaType>>{};
+    for (final releaseMedia in releaseMedias) {
+      if (mediaTypesByRelease[releaseMedia.releaseId] == null) {
+        mediaTypesByRelease[releaseMedia.releaseId!] = <MediaType>{};
+      }
+      mediaTypesByRelease[releaseMedia.releaseId!]!.add(releaseMedia.mediaType);
+    }
+    return mediaTypesByRelease;
+  }
+
+  Future<Map<int, List<Production>>> getProductionsByReleaseMap(
+      Iterable<int> releaseIds) async {
+    final releaseProductions =
+        await releaseProductionsRepository.getByReleaseIds(releaseIds);
+    final productionIds = releaseProductions.map((e) => e.productionId).toSet();
+    final productions = await productionsRepository.getByIds(productionIds);
+
+    final productionsByRelease = <int, List<Production>>{};
+
+    for (final releaseProduction in releaseProductions) {
+      if (productionsByRelease[releaseProduction.releaseId] == null) {
+        productionsByRelease[releaseProduction.releaseId!] = <Production>[];
+      }
+      final production = productions
+          .where((element) => element.id == releaseProduction.id)
+          .first;
+      productionsByRelease[releaseProduction.releaseId]!.add(production);
+    }
+    return productionsByRelease;
   }
 }

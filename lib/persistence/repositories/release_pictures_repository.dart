@@ -11,7 +11,7 @@ class ReleasePicturesRepository
       : super(databaseProvider, 'releasePictures',
             mapper: ReleasePicture.fromMap);
 
-  Future<Iterable<ReleasePicture>> getByReleaseIds(
+  Future<Iterable<ReleasePicture>> getByReleaseIdsAndPicType(
       Iterable<int> releaseids, Iterable<PictureType> picTypes) async {
     Database db = await databaseProvider.database;
     final query = await db.query(tableName,
