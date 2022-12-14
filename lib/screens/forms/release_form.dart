@@ -23,7 +23,6 @@ import 'package:film_freak/entities/release.dart';
 import '../../entities/production.dart';
 import '../../entities/release_comment.dart';
 import '../../persistence/app_state.dart';
-import '../../enums/media_type.dart';
 
 import 'package:path/path.dart' as p;
 
@@ -170,14 +169,14 @@ class _ReleaseFormState extends State<ReleaseForm> {
         ? _movieReleaseService.initializeModel(_barcode)
         : await _movieReleaseService.getReleaseData(_id!);
 
-    _pictures = model.pictures;
-    _properties = model.properties;
+    _pictures = model.pictures.toList();
+    _properties = model.properties.toList();
     _barcodeController.text = model.release.barcode;
     _nameController.text = model.release.name;
-    _pictures = model.pictures;
+    _pictures = model.pictures.toList();
     _caseType = model.release.caseType;
-    _productions = model.productions;
-    _medias = model.medias;
+    _productions = model.productions.toList();
+    _medias = model.medias.toList();
 
     // do not setState!
 

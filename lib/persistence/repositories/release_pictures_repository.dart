@@ -8,7 +8,8 @@ import 'release_child_entities_repository.dart';
 class ReleasePicturesRepository
     extends ReleaseChildEntitiesRepository<ReleasePicture> {
   ReleasePicturesRepository(DatabaseProvider databaseProvider)
-      : super(databaseProvider, 'releasePictures');
+      : super(databaseProvider, 'releasePictures',
+            mapper: ReleasePicture.fromMap);
 
   Future<Iterable<ReleasePicture>> getByReleaseIds(
       Iterable<int> releaseids, Iterable<PictureType> picTypes) async {

@@ -6,11 +6,16 @@ import 'repository_base.dart';
 
 abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
     extends RepositoryBase<T> {
+  Function mapper;
   ReleaseChildEntitiesRepository(
-      DatabaseProvider databaseProvider, String databaseName)
+      DatabaseProvider databaseProvider, String databaseName,
+      {required this.mapper})
       : super(databaseProvider, databaseName);
 
-  Future<List<int>> upsert(int releaseId, List<T> releaseChilds) async {
+  Future<List<int>> upsert(int releaseId, Iterable<T> releaseChilds) async {
+    _deleteObsoletedChilds(releaseId, releaseChilds);
+
+    // ensure parent relation is set
     for (final releaseChild in releaseChilds) {
       releaseChild.releaseId = releaseId;
     }
@@ -27,11 +32,22 @@ abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
     return ids;
   }
 
-  Future<Iterable<T>> getByReleaseId(int releaseId, Function mapper) async {
+  Future<Iterable<T>> getByReleaseId(int releaseId) async {
     return super.getById(releaseId, "releaseId", mapper);
   }
 
   Future<int> deleteByReleaseId(int releaseId) async {
     return super.deleteByIdColumn(releaseId, 'releaseId');
+  }
+
+  Future<void> _deleteObsoletedChilds(
+      int releaseId, Iterable<T> releaseChilds) async {
+    final originalChildsInDb = await getByReleaseId(releaseId);
+    final modifiedChildIds = releaseChilds.map((e) => e.id);
+    final childIdsToBeDeleted =
+        originalChildsInDb.where((e) => !modifiedChildIds.contains(e.id));
+    for (final child in childIdsToBeDeleted) {
+      await super.delete(child.id!);
+    }
   }
 }

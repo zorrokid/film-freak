@@ -81,7 +81,7 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
                     children: [
                       Expanded(
                         child: PicturesCard(
-                          pictures: viewModel.pictures,
+                          pictures: viewModel.pictures.toList(),
                           saveDir: appState.saveDir,
                         ),
                       ),
@@ -92,11 +92,11 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
                       itemCount: viewModel.productions.length,
                       itemBuilder: (context, index) {
                         return ProductionCard(
-                            production: viewModel.productions[index]);
+                            production: viewModel.productions.toList()[index]);
                       }),
                   ReleaseDetailsCard(release: viewModel.release),
                   ReleaseProperties(
-                    releaseProperties: viewModel.properties,
+                    releaseProperties: viewModel.properties.toList(),
                   ),
                 ],
               ),

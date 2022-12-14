@@ -8,11 +8,11 @@ import '../entities/release_property.dart';
 
 class ReleaseViewModel {
   final Release release;
-  final List<ReleasePicture> pictures;
-  final List<ReleaseProperty> properties;
-  final List<Production> productions;
-  final List<ReleaseMedia> medias;
-  final List<ReleaseComment> comments;
+  final Iterable<ReleasePicture> pictures;
+  final Iterable<ReleaseProperty> properties;
+  final Iterable<Production> productions;
+  final Iterable<ReleaseMedia> medias;
+  final Iterable<ReleaseComment> comments;
   const ReleaseViewModel({
     required this.release,
     required this.pictures,

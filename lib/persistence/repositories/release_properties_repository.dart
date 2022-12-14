@@ -5,5 +5,6 @@ import 'release_child_entities_repository.dart';
 class ReleasePropertiesRepository
     extends ReleaseChildEntitiesRepository<ReleaseProperty> {
   ReleasePropertiesRepository(DatabaseProvider databaseProvider)
-      : super(databaseProvider, 'releaseProperties');
+      : super(databaseProvider, 'releaseProperties',
+            mapper: ReleaseProperty.fromMap);
 }

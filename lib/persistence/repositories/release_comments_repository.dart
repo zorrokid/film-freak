@@ -5,5 +5,6 @@ import 'release_child_entities_repository.dart';
 class ReleaseCommentsRepository
     extends ReleaseChildEntitiesRepository<ReleaseComment> {
   ReleaseCommentsRepository(DatabaseProvider databaseProvider)
-      : super(databaseProvider, 'releaseComments');
+      : super(databaseProvider, 'releaseComments',
+            mapper: ReleaseComment.fromMap);
 }

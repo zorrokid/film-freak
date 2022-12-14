@@ -1,10 +1,10 @@
-import 'package:film_freak/entities/release_picture.dart';
-import 'package:film_freak/entities/release_property.dart';
 import 'package:film_freak/models/list_models/release_list_model.dart';
+import 'package:film_freak/persistence/repositories/release_comments_repository.dart';
+import 'package:film_freak/persistence/repositories/release_medias_repository.dart';
+import 'package:film_freak/persistence/repositories/release_productions_repository.dart';
 import 'package:film_freak/persistence/repositories/releases_repository.dart';
 import 'package:logging/logging.dart';
 
-import '../entities/production.dart';
 import '../entities/release.dart';
 import '../enums/media_type.dart';
 import '../enums/picture_type.dart';
@@ -21,7 +21,10 @@ ReleaseService initializeReleaseService() {
     releaseRepository: ReleasesRepository(dbProvider),
     releasePicturesRepository: ReleasePicturesRepository(dbProvider),
     releasePropertiesRepository: ReleasePropertiesRepository(dbProvider),
-    productions: ProductionsRepository(dbProvider),
+    productionsRepository: ProductionsRepository(dbProvider),
+    releaseMediasRepository: ReleaseMediasRepository(dbProvider),
+    releaseProductionsRepository: ReleaseProductionsRepository(dbProvider),
+    releaseCommentsRepository: ReleaseCommentsRepository(dbProvider),
   );
 }
 
@@ -30,14 +33,20 @@ class ReleaseService {
     required this.releaseRepository,
     required this.releasePicturesRepository,
     required this.releasePropertiesRepository,
-    required this.productions,
+    required this.productionsRepository,
+    required this.releaseProductionsRepository,
+    required this.releaseMediasRepository,
+    required this.releaseCommentsRepository,
   });
 
   final log = Logger('ReleaseService');
   final ReleasesRepository releaseRepository;
   final ReleasePicturesRepository releasePicturesRepository;
   final ReleasePropertiesRepository releasePropertiesRepository;
-  final ProductionsRepository productions;
+  final ProductionsRepository productionsRepository;
+  final ReleaseProductionsRepository releaseProductionsRepository;
+  final ReleaseMediasRepository releaseMediasRepository;
+  final ReleaseCommentsRepository releaseCommentsRepository;
 
   ReleaseViewModel initializeModel(String? barcode) {
     final release = Release.empty();
@@ -53,25 +62,24 @@ class ReleaseService {
 
   Future<ReleaseViewModel> getReleaseData(int releaseId) async {
     final release = await releaseRepository.get(releaseId, Release.fromMap);
-    final releasePictures = await releasePicturesRepository.getByReleaseId(
-        releaseId, ReleasePicture.fromMap);
-    final releaseProperties = await releasePropertiesRepository.getByReleaseId(
-        releaseId, ReleaseProperty.fromMap);
+    final releasePictures =
+        await releasePicturesRepository.getByReleaseId(releaseId);
+    final releaseProperties =
+        await releasePropertiesRepository.getByReleaseId(releaseId);
+    final releaseProductions =
+        await releaseProductionsRepository.getByReleaseId(releaseId);
+    final productions = await productionsRepository
+        .getByIds(releaseProductions.map((e) => e.productionId));
+    final medias = await releaseMediasRepository.getByReleaseId(releaseId);
+    final comments = await releaseCommentsRepository.getByReleaseId(releaseId);
 
-    // get productions
-    // get medias
-    // get comments
-    // Production? movie;
-    // if (release.productionId != null) {
-    //   movie = await productions.get(release.productionId!, Production.fromMap);
-    // }
     return ReleaseViewModel(
       release: release,
-      pictures: releasePictures.toList(),
-      properties: releaseProperties.toList(),
-      productions: [],
-      comments: [],
-      medias: [],
+      pictures: releasePictures,
+      properties: releaseProperties,
+      productions: productions,
+      comments: comments,
+      medias: medias,
     );
   }
 
@@ -94,14 +102,14 @@ class ReleaseService {
 
     if (viewModel.release.id != null) {
       id = viewModel.release.id!;
-      await _deleteObsoletedPics(viewModel);
-      await _deleteObsoletedProperties(viewModel);
       await releaseRepository.update(viewModel.release);
     } else {
       id = await releaseRepository.insert(viewModel.release);
     }
     await releasePicturesRepository.upsert(id, viewModel.pictures);
     await releasePropertiesRepository.upsert(id, viewModel.properties);
+    await releaseCommentsRepository.upsert(id, viewModel.comments);
+    await releaseMediasRepository.upsert(id, viewModel.medias);
 
     return id;
   }
@@ -138,30 +146,6 @@ class ReleaseService {
         ));
 
     return collectionItems;
-  }
-
-  Future<void> _deleteObsoletedPics(ReleaseViewModel model) async {
-    final id = model.release.id!;
-    final originalPicsInDb = await releasePicturesRepository.getByReleaseId(
-        id, ReleasePicture.fromMap);
-    final modifiedPicsIds = model.pictures.map((e) => e.id);
-    final picIdsToBeDeleted =
-        originalPicsInDb.where((e) => !modifiedPicsIds.contains(e.id));
-    for (final pic in picIdsToBeDeleted) {
-      await releasePicturesRepository.delete(pic.id!);
-    }
-  }
-
-  Future<void> _deleteObsoletedProperties(ReleaseViewModel model) async {
-    final id = model.release.id!;
-    final originalPropsInDb = await releasePropertiesRepository.getByReleaseId(
-        id, ReleaseProperty.fromMap);
-    final modifiedPropTypes = model.properties.map((e) => e.propertyType);
-    final propsToBeDeleted = originalPropsInDb
-        .where((e) => !modifiedPropTypes.contains(e.propertyType));
-    for (final propId in propsToBeDeleted) {
-      await releasePropertiesRepository.delete(propId.id!);
-    }
   }
 
   Future<bool> barcodeExists(String barcode) async {
