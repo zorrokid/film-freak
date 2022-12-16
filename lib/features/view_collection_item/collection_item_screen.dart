@@ -1,30 +1,31 @@
+import 'package:film_freak/services/collection_item_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../persistence/app_state.dart';
-import '../../models/release_view_model.dart';
-import '../../widgets/release_data_cards.dart';
-import '../../services/release_service.dart';
+import '../../models/collection_item_view_model.dart';
+import '../../screens/forms/collection_item_form.dart';
 import '../../widgets/error_display_widget.dart';
+import '../../widgets/release_data_cards.dart';
 import '../../widgets/spinner.dart';
-import '../../screens/forms/release_form.dart';
+import '../../persistence/app_state.dart';
+import 'collection_item_details_card.dart';
 
-class ReleaseScreen extends StatefulWidget {
-  const ReleaseScreen({required this.id, super.key});
+class CollectionItemScreen extends StatefulWidget {
+  const CollectionItemScreen({required this.id, super.key});
 
   final int id;
 
   @override
-  State<ReleaseScreen> createState() {
-    return _ReleaseScreenState();
+  State<CollectionItemScreen> createState() {
+    return _CollectionItemScreenState();
   }
 }
 
-class _ReleaseScreenState extends State<ReleaseScreen> {
-  final _movieReleaseService = initializeReleaseService();
+class _CollectionItemScreenState extends State<CollectionItemScreen> {
+  final _collectionItemService = initializeCollectionItemService();
 
   // form state
-  late Future<ReleaseViewModel> _futureModel;
+  late Future<CollectionItemViewModel> _futureModel;
   late int? _id;
 
   @override
@@ -34,16 +35,16 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
     _futureModel = _loadData();
   }
 
-  Future<ReleaseViewModel> _loadData() async =>
-      await _movieReleaseService.getModel(_id!);
+  Future<CollectionItemViewModel> _loadData() async =>
+      await _collectionItemService.getModel(_id!);
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AppState>(builder: (context, appState, child) {
       return FutureBuilder(
           future: _futureModel,
-          builder:
-              (BuildContext context, AsyncSnapshot<ReleaseViewModel> snapshot) {
+          builder: (BuildContext context,
+              AsyncSnapshot<CollectionItemViewModel> snapshot) {
             if (snapshot.hasError) {
               return ErrorDisplayWidget(snapshot.error.toString());
             }
@@ -51,14 +52,15 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
               return const Spinner();
             }
 
-            final ReleaseViewModel viewModel = snapshot.data!;
+            final CollectionItemViewModel viewModel = snapshot.data!;
 
             Future<void> edit() async {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ReleaseForm(
-                    id: viewModel.release.id,
+                  builder: (context) => CollectionItemForm(
+                    id: viewModel.collectionItem.id,
+                    releaseId: viewModel.collectionItem.releaseId!,
                   ),
                 ),
               );
@@ -69,15 +71,16 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
             }
 
             return Scaffold(
-              appBar: AppBar(title: Text(viewModel.release.name)),
+              appBar: AppBar(title: Text(viewModel.releaseModel.release.name)),
               body: ListView(
                 padding: const EdgeInsets.only(
                     bottom: kFloatingActionButtonMargin + 48),
                 children: [
                   ReleaseDataCards(
                     saveDir: appState.saveDir,
-                    viewModel: viewModel,
-                  )
+                    viewModel: viewModel.releaseModel,
+                  ),
+                  CollectionItemDetailsCard(collectionItemViewModel: viewModel)
                 ],
               ),
               floatingActionButton: FloatingActionButton(

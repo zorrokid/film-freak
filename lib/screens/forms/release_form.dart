@@ -167,7 +167,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   Future<ReleaseViewModel> _loadData() async {
     final model = _id == null
         ? _movieReleaseService.initializeModel(_barcode)
-        : await _movieReleaseService.getReleaseData(_id!);
+        : await _movieReleaseService.getModel(_id!);
 
     _pictures = model.pictures.toList();
     _properties = model.properties.toList();

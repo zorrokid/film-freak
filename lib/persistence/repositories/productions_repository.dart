@@ -6,7 +6,11 @@ import '../db_provider.dart';
 
 class ProductionsRepository extends RepositoryBase<Production> {
   ProductionsRepository(DatabaseProvider databaseProvider)
-      : super(databaseProvider, 'productions');
+      : super(
+          databaseProvider,
+          'productions',
+          Production.fromMap,
+        );
 
   Future<int> upsert(Production production) async {
     Database db = await databaseProvider.database;
@@ -20,7 +24,7 @@ class ProductionsRepository extends RepositoryBase<Production> {
   }
 
   Future<Production?> getByTmdbId(int id) async {
-    final res = await getById(id, 'tmdbId', Production.fromMap);
+    final res = await getById(id, 'tmdbId');
     return res.isNotEmpty ? res.first : null;
   }
 

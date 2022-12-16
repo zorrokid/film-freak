@@ -6,11 +6,15 @@ import 'repository_base.dart';
 
 abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
     extends RepositoryBase<T> {
-  Function mapper;
   ReleaseChildEntitiesRepository(
-      DatabaseProvider databaseProvider, String databaseName,
-      {required this.mapper})
-      : super(databaseProvider, databaseName);
+    DatabaseProvider databaseProvider,
+    String tableName,
+    Function mapper,
+  ) : super(
+          databaseProvider,
+          tableName,
+          mapper,
+        );
 
   Future<List<int>> upsert(int releaseId, Iterable<T> releaseChilds) async {
     _deleteObsoletedChilds(releaseId, releaseChilds);
@@ -33,7 +37,7 @@ abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
   }
 
   Future<Iterable<T>> getByReleaseId(int releaseId) async {
-    return super.getById(releaseId, "releaseId", mapper);
+    return super.getById(releaseId, "releaseId");
   }
 
   Future<Iterable<T>> getByReleaseIds(Iterable<int> releaseids) async {

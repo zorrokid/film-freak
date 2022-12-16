@@ -6,9 +6,15 @@ import '../db_provider.dart';
 abstract class RepositoryBase<T extends Entity> {
   final DatabaseProvider databaseProvider;
   final String tableName;
-  RepositoryBase(this.databaseProvider, this.tableName);
+  final Function mapper;
 
-  Future<Iterable<T>> getById(int id, String column, Function mapper) async {
+  RepositoryBase(
+    this.databaseProvider,
+    this.tableName,
+    this.mapper,
+  );
+
+  Future<Iterable<T>> getById(int id, String column) async {
     Database db = await databaseProvider.database;
     final query =
         await db.query(tableName, where: '$column=?', whereArgs: [id]);
@@ -16,7 +22,7 @@ abstract class RepositoryBase<T extends Entity> {
     return result;
   }
 
-  Future<T> get(int id, Function mapper) async {
+  Future<T> get(int id) async {
     Database db = await databaseProvider.database;
     final query = await db.query(tableName, where: 'id=?', whereArgs: [id]);
     final result = query.map<T>((e) => mapper(e));

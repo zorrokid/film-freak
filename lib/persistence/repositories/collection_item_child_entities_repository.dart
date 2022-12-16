@@ -7,8 +7,8 @@ import 'repository_base.dart';
 abstract class CollectionItemChildEntitiesRepository<
     T extends CollectionItemChildEntity> extends RepositoryBase<T> {
   CollectionItemChildEntitiesRepository(
-      DatabaseProvider databaseProvider, String databaseName)
-      : super(databaseProvider, databaseName);
+      DatabaseProvider databaseProvider, String databaseName, Function mapper)
+      : super(databaseProvider, databaseName, mapper);
 
   Future<List<int>> upsert(int collectionItemId, List<T> childs) async {
     for (final child in childs) {
@@ -27,9 +27,8 @@ abstract class CollectionItemChildEntitiesRepository<
     return ids;
   }
 
-  Future<Iterable<T>> getByCollectionItemId(
-      int collectionItemId, Function mapper) async {
-    return super.getById(collectionItemId, "collectionItemId", mapper);
+  Future<Iterable<T>> getByCollectionItemId(int collectionItemId) async {
+    return super.getById(collectionItemId, "collectionItemId");
   }
 
   Future<int> deleteByCollectionItemId(int collectionItemId) async {

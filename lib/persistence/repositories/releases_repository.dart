@@ -8,7 +8,11 @@ import '../query_specs/release_query_specs.dart';
 
 class ReleasesRepository extends RepositoryBase<Release> {
   ReleasesRepository(DatabaseProvider databaseProvider)
-      : super(databaseProvider, 'releases');
+      : super(
+          databaseProvider,
+          'releases',
+          Release.fromMap,
+        );
 
   Future<int> queryRowCount() async {
     Database db = await databaseProvider.database;

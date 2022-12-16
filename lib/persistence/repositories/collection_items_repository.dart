@@ -9,8 +9,11 @@ import '../query_specs/collection_item_query_specs.dart';
 class CollectionItemsRepository
     extends ReleaseChildEntitiesRepository<CollectionItem> {
   CollectionItemsRepository(DatabaseProvider databaseProvider)
-      : super(databaseProvider, 'collectionItems',
-            mapper: CollectionItem.fromMap);
+      : super(
+          databaseProvider,
+          'collectionItems',
+          CollectionItem.fromMap,
+        );
 
   // TODO: generalize to base class?
   Future<Iterable<CollectionItem>> query(

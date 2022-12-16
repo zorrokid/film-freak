@@ -38,7 +38,9 @@ class _CollectionItemFilterListState extends State<CollectionItemFilterList> {
 
   Future<Iterable<CollectionItemListModel>> _getCollectionItems() async {
     if (widget.specs == null) return [];
-    return await widget.service.getListModels(widget.specs!);
+    // TODO
+    //return await widget.service.getListModels(widget.specs!);
+    return [];
   }
 
   void reloadData() {

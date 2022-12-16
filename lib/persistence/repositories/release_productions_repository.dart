@@ -5,6 +5,9 @@ import 'package:film_freak/persistence/repositories/release_child_entities_repos
 class ReleaseProductionsRepository
     extends ReleaseChildEntitiesRepository<ReleaseProduction> {
   ReleaseProductionsRepository(DatabaseProvider databaseProvider)
-      : super(databaseProvider, 'releaseProductions',
-            mapper: ReleaseProduction.fromMap);
+      : super(
+          databaseProvider,
+          'releaseProductions',
+          ReleaseProduction.fromMap,
+        );
 }

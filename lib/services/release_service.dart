@@ -62,8 +62,8 @@ class ReleaseService {
         medias: []);
   }
 
-  Future<ReleaseViewModel> getReleaseData(int releaseId) async {
-    final release = await releaseRepository.get(releaseId, Release.fromMap);
+  Future<ReleaseViewModel> getModel(int releaseId) async {
+    final release = await releaseRepository.get(releaseId);
     final releasePictures =
         await releasePicturesRepository.getByReleaseId(releaseId);
     final releaseProperties =

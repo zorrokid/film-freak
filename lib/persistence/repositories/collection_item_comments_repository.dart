@@ -5,5 +5,9 @@ import 'collection_item_child_entities_repository.dart';
 class CollectionItemCommentsRepository
     extends CollectionItemChildEntitiesRepository<CollectionItemComment> {
   CollectionItemCommentsRepository(DatabaseProvider databaseProvider)
-      : super(databaseProvider, 'collectionItemComments');
+      : super(
+          databaseProvider,
+          'collectionItemComments',
+          CollectionItemComment.fromMap,
+        );
 }
