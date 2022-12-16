@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
 import '../../services/barcode_scan_results_service.dart';
+import '../view_collection_item/collection_item_screen.dart';
 import '../view_release/release_screen.dart';
 import 'barcode_scan_results.dart';
 
@@ -31,16 +32,13 @@ class BarcodeScanResultListTile extends StatelessWidget {
       case BarcodeScanResultType.collectionItem:
         return MaterialPageRoute(
           builder: (context) {
-            return ReleaseScreen(id: barcodeScanResult.releaseId);
+            return CollectionItemScreen(id: barcodeScanResult.releaseId);
           },
         );
       case BarcodeScanResultType.release: // release is default
       default:
         return MaterialPageRoute(
           builder: (context) {
-            // TODO:
-            // return CollectionItemScreen(id: barcodeScanResult.releaseId);
-            // go to release screen until we have collection item screen
             return ReleaseScreen(id: barcodeScanResult.releaseId);
           },
         );
