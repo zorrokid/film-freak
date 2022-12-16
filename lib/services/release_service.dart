@@ -1,21 +1,18 @@
-import 'dart:html';
-
-import 'package:film_freak/entities/release_picture.dart';
-import 'package:film_freak/models/list_models/release_list_model.dart';
-import 'package:film_freak/persistence/repositories/release_comments_repository.dart';
-import 'package:film_freak/persistence/repositories/release_medias_repository.dart';
-import 'package:film_freak/persistence/repositories/release_productions_repository.dart';
-import 'package:film_freak/persistence/repositories/releases_repository.dart';
 import 'package:logging/logging.dart';
 
+import '../entities/release_picture.dart';
 import '../entities/production.dart';
 import '../entities/release.dart';
-import '../entities/release_media.dart';
 import '../enums/media_type.dart';
 import '../enums/picture_type.dart';
+import '../models/list_models/release_list_model.dart';
 import '../models/release_view_model.dart';
 import '../persistence/db_provider.dart';
 import '../persistence/query_specs/release_query_specs.dart';
+import '../persistence/repositories/release_comments_repository.dart';
+import '../persistence/repositories/release_medias_repository.dart';
+import '../persistence/repositories/release_productions_repository.dart';
+import '../persistence/repositories/releases_repository.dart';
 import '../persistence/repositories/productions_repository.dart';
 import '../persistence/repositories/release_pictures_repository.dart';
 import '../persistence/repositories/release_properties_repository.dart';
@@ -130,25 +127,26 @@ class ReleaseService {
     final mediaTypesByRelease = await getMediaTypesByReleaseMap(releaseIds);
     final picsByRelease = await getPicsByReleaseMap(releaseIds);
 
-    final collectionItems = releases.map((e) => ReleaseListModel(
-          barcode: e.barcode,
-          caseType: e.caseType,
-          id: e.id!,
-          mediaTypes: mediaTypesByRelease[e.id]?.toList() ?? [],
-          name: e.name,
-          productionNames:
-              productionsByRelease[e.id]?.map((e) => e.title).toList() ?? [],
-          picFileName:
-              '', /*pics.any((p) => p.releaseId == e.id)
-              ? pics.firstWhere((p) => p.releaseId == e.id).filename
-              : null,*/
-        ));
+    final collectionItems = releases.map(
+      (e) => ReleaseListModel(
+        barcode: e.barcode,
+        caseType: e.caseType,
+        id: e.id!,
+        mediaTypes: mediaTypesByRelease[e.id]?.toList() ?? [],
+        name: e.name,
+        productionNames:
+            productionsByRelease[e.id]?.map((e) => e.title).toList() ?? [],
+        picFileName: picsByRelease[e.id]
+                    ?.any((e) => e.pictureType == PictureType.coverFront) ??
+                false
+            ? picsByRelease[e.id]!
+                .firstWhere((e) => e.pictureType == PictureType.coverFront)
+                .filename
+            : null,
+      ),
+    );
 
     return collectionItems;
-  }
-
-  Future<bool> barcodeExists(String barcode) async {
-    return releaseRepository.barcodeExists(barcode);
   }
 
   Future<Map<int, List<ReleasePicture>>> getPicsByReleaseMap(

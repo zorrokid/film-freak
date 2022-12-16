@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../persistence/query_specs/query_specs_enums.dart';
-import '../../persistence/query_specs/release_query_specs.dart';
 import '../../screens/forms/collection_item_form.dart';
-import '../../widgets/release_filter_list.dart';
+import '../../services/barcode_scan_results_service.dart';
 import '../../persistence/app_state.dart';
 import '../../services/collection_item_service.dart';
-import '../../services/release_service.dart';
 import '../../utils/dialog_utls.dart';
 import '../../screens/forms/release_form.dart';
+import '../../widgets/error_display_widget.dart';
 import '../../widgets/main_drawer.dart';
-import '../../persistence/query_specs/collection_item_query_specs.dart';
+import '../../widgets/spinner.dart';
+import 'barcode_scan_results.dart';
 import 'barcode_scanner_view.dart';
-import 'collection_item_filter_list.dart';
 
 class ScanView extends StatefulWidget {
   const ScanView({super.key});
@@ -26,8 +24,18 @@ class ScanView extends StatefulWidget {
 
 class _ScanViewState extends State<ScanView> {
   final _collectionItemService = initializeCollectionItemService();
-  final _releaseService = initializeReleaseService();
-  String? _barcode;
+  final _barcodeScanResultsService = initializeBarcodeScanResultsService();
+  late Future<List<BarcodeScanResult>> _futureBarcodeScanResults;
+
+  Future<List<BarcodeScanResult>> _getResults(String barcode) async {
+    return (await _barcodeScanResultsService.getResults(barcode)).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _futureBarcodeScanResults = _getResults('');
+  }
 
   Future<void> barcodeScan() async {
     final barcode = await Navigator.push<String>(context,
@@ -37,8 +45,9 @@ class _ScanViewState extends State<ScanView> {
 
     if (barcode == null) return;
 
-    var barcodeExists = await _releaseService.barcodeExists(barcode);
+    var barcodeExists = await _barcodeScanResultsService.barcodeExists(barcode);
 
+    // when barcode doesn't exist, create a new release with collection item
     final route = MaterialPageRoute<String>(builder: (context) {
       return ReleaseForm(
         barcode: barcode,
@@ -49,8 +58,9 @@ class _ScanViewState extends State<ScanView> {
       await Navigator.push(context, route);
     }
 
+    // otherwise fetch results to view
     setState(() {
-      _barcode = barcode;
+      _futureBarcodeScanResults = _getResults(barcode);
     });
   }
 
@@ -87,45 +97,24 @@ class _ScanViewState extends State<ScanView> {
       return Scaffold(
         drawer: const MainDrawer(),
         appBar: AppBar(
-          title: const Text('Scan & view recent'),
+          title: const Text('Barcode scan results'),
         ),
-        body: Column(
-          children: [
-            Flexible(
-              child: Card(
-                child: Column(
-                  children: [
-                    const Text('Releases'),
-                    ReleaseFilterList(
-                      specs: ReleaseQuerySpecs(barcode: _barcode),
-                      saveDir: appState.saveDir,
-                      service: _releaseService,
-                      onCreate: _onCreateCollectionItem,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Flexible(
-              child: Card(
-                child: Column(
-                  children: [
-                    const Text('Collection items'),
-                    CollectionItemFilterList(
-                      specs: _barcode != null
-                          ? CollectionItemQuerySpecs(barcode: _barcode)
-                          : const CollectionItemQuerySpecs(
-                              top: 10, orderBy: OrderByEnum.latest),
-                      saveDir: appState.saveDir,
-                      service: _collectionItemService,
-                      onDelete: _onDelete,
-                      onEdit: _onEdit,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+        body: FutureBuilder(
+          future: _futureBarcodeScanResults,
+          builder: (BuildContext context,
+              AsyncSnapshot<List<BarcodeScanResult>> snapshot) {
+            if (snapshot.hasError) {
+              return ErrorDisplayWidget(snapshot.error.toString());
+            }
+            if (!snapshot.hasData) {
+              return const Spinner();
+            }
+            return BarcodeScanResults(
+              barcodeScanResults: snapshot.data!,
+              saveDir: appState.saveDir,
+              onCreate: _onCreateCollectionItem,
+            );
+          },
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: barcodeScan,

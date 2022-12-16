@@ -1,14 +1,11 @@
-import 'package:film_freak/enums/media_type.dart';
-import 'package:film_freak/enums/picture_type.dart';
-import 'package:film_freak/models/list_models/collection_item_list_model.dart';
-import 'package:film_freak/persistence/query_specs/collection_item_query_specs.dart';
-import 'package:film_freak/persistence/repositories/productions_repository.dart';
 import 'package:logging/logging.dart';
-
+import '../enums/media_type.dart';
 import '../entities/collection_item.dart';
-import '../entities/production.dart';
 import '../entities/release.dart';
+import '../models/list_models/collection_item_list_model.dart';
 import '../persistence/db_provider.dart';
+import '../persistence/query_specs/collection_item_query_specs.dart';
+import '../persistence/repositories/productions_repository.dart';
 import '../persistence/repositories/collection_items_repository.dart';
 import '../persistence/repositories/release_pictures_repository.dart';
 import '../persistence/repositories/release_properties_repository.dart';
@@ -45,12 +42,12 @@ class CollectionItemService {
     return await collectionItemRepository.get(id, CollectionItem.fromMap);
   }
 
-  Future<int> upsert(CollectionItem viewModel) async {
-    int? id = viewModel.id;
+  Future<int> upsert(CollectionItem collectionItem) async {
+    int? id = collectionItem.id;
     if (id != null) {
-      await collectionItemRepository.update(viewModel);
+      await collectionItemRepository.update(collectionItem);
     } else {
-      id = await collectionItemRepository.insert(viewModel);
+      id = await collectionItemRepository.insert(collectionItem);
     }
     return id;
   }
