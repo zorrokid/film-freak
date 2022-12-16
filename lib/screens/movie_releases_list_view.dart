@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../features/scan_barcode/collection_item_filter_list.dart';
 import '../utils/dialog_utls.dart';
-import 'forms/release_form.dart';
+import '../features/add_or_edit_release/release_form.dart';
 import '../persistence/app_state.dart';
 
 class CollectionList extends StatefulWidget {

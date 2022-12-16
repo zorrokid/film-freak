@@ -1,3 +1,4 @@
+import 'package:film_freak/entities/release_production.dart';
 import 'package:logging/logging.dart';
 
 import '../entities/release_picture.dart';
@@ -88,6 +89,13 @@ class ReleaseService {
   Future<int> upsert(ReleaseViewModel viewModel) async {
     int id;
 
+    if (viewModel.release.id != null) {
+      id = viewModel.release.id!;
+      await releaseRepository.update(viewModel.release);
+    } else {
+      id = await releaseRepository.insert(viewModel.release);
+    }
+
     if (viewModel.productions.isNotEmpty) {
       for (final production in viewModel.productions) {
         // check if movie entry with tmdb id already exists and assign id if it does
@@ -102,14 +110,13 @@ class ReleaseService {
         final productionId = await productionsRepository.upsert(production);
         production.id = productionId;
       }
+
+      await releaseProductionsRepository.upsert(
+          id,
+          viewModel.productions.map(
+              (e) => ReleaseProduction(releaseId: id, productionId: e.id!)));
     }
 
-    if (viewModel.release.id != null) {
-      id = viewModel.release.id!;
-      await releaseRepository.update(viewModel.release);
-    } else {
-      id = await releaseRepository.insert(viewModel.release);
-    }
     await releasePicturesRepository.upsert(id, viewModel.pictures);
     await releasePropertiesRepository.upsert(id, viewModel.properties);
     await releaseCommentsRepository.upsert(id, viewModel.comments);

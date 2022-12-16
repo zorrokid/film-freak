@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:film_freak/entities/release_media.dart';
 import 'package:film_freak/entities/release_property.dart';
 import 'package:film_freak/extensions/string_extensions.dart';
+import 'package:film_freak/features/add_or_edit_release/productions_list.dart';
 import 'package:film_freak/features/tmdb_search/tmdb_movie_result.dart';
 import 'package:film_freak/models/release_view_model.dart';
 import 'package:film_freak/enums/picture_type.dart';
@@ -32,9 +33,9 @@ import '../../widgets/preview_pic.dart';
 import '../../widgets/buttons/release_pic_crop.dart';
 import '../../widgets/buttons/release_pic_selection.dart';
 import '../../widgets/release_properties.dart';
-import '../image_process_view.dart';
-import '../../features/tmdb_search/tmdb_movie_search_screen.dart';
-import 'collection_item_form.dart';
+import '../../screens/image_process_view.dart';
+import '../tmdb_search/tmdb_movie_search_screen.dart';
+import '../../screens/forms/collection_item_form.dart';
 
 class ReleaseForm extends StatefulWidget {
   const ReleaseForm(
@@ -298,7 +299,13 @@ class _ReleaseFormState extends State<ReleaseForm> {
     if (movieResult == null) return;
     final production = movieResult.toProduction;
     setState(() {
-      _productions = <Production>[production];
+      _productions.add(production);
+    });
+  }
+
+  void _onProductionRemove(int tmdbId) {
+    setState(() {
+      _productions.removeWhere((element) => element.tmdbId == tmdbId);
     });
   }
 
@@ -334,12 +341,16 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
         if (mounted) {
           if (widget.addCollectionItem) {
-            await Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) {
-              return CollectionItemForm(
-                releaseId: id,
-              );
-            }));
+            await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return CollectionItemForm(
+                    releaseId: id,
+                  );
+                },
+              ),
+            );
           } else {
             Navigator.of(context).pop();
           }
@@ -437,18 +448,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       )
                     ],
                   ),
-                  Row(
-                    children: [
-                      const Expanded(
-                        child: Text('Production(s): '),
-                      ),
-                      _productions.isNotEmpty
-                          ? Text(_productions
-                              .map((e) => e.title)
-                              .toList()
-                              .join(", "))
-                          : const Text('Not selected'),
-                    ],
+                  ProductionsList(
+                    productions: _productions,
+                    onDelete: _onProductionRemove,
                   ),
                   Row(
                     children: [

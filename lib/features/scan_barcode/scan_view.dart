@@ -6,7 +6,7 @@ import '../../services/barcode_scan_results_service.dart';
 import '../../persistence/app_state.dart';
 import '../../services/collection_item_service.dart';
 import '../../utils/dialog_utls.dart';
-import '../../screens/forms/release_form.dart';
+import '../add_or_edit_release/release_form.dart';
 import '../../widgets/error_display_widget.dart';
 import '../../widgets/main_drawer.dart';
 import '../../widgets/spinner.dart';

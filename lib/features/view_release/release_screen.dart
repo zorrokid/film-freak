@@ -7,7 +7,7 @@ import '../../widgets/release_data_cards.dart';
 import '../../services/release_service.dart';
 import '../../widgets/error_display_widget.dart';
 import '../../widgets/spinner.dart';
-import '../../screens/forms/release_form.dart';
+import '../add_or_edit_release/release_form.dart';
 
 class ReleaseScreen extends StatefulWidget {
   const ReleaseScreen({required this.id, super.key});

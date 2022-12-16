@@ -49,7 +49,7 @@ class Production extends Entity<Production> {
       tmdbId: map['tmdbId'] as int,
       title: map['title'] as String,
       originalTitle: map['originalTitle'] as String,
-      overView: map['overView'] as String,
+      overView: map['overView'] as String?,
     );
   }
 }
