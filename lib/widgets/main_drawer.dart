@@ -4,7 +4,7 @@ import 'package:film_freak/persistence/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../persistence/collection_model.dart';
+import '../persistence/app_state.dart';
 import '../screens/about_view.dart';
 import '../screens/import_view.dart';
 import '../screens/movie_releases_list_view.dart';
@@ -21,7 +21,7 @@ class MainDrawer extends StatefulWidget {
 
 class _MainDrawerState extends State<MainDrawer> {
   Future<void> _showDeleteConfirmDialog(
-      BuildContext context, CollectionModel cart) async {
+      BuildContext context, AppState cart) async {
     var okToDelete = await showDialog<bool>(
             context: context,
             builder: (BuildContext context) {
@@ -51,7 +51,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, cart, child) {
+    return Consumer<AppState>(builder: (context, cart, child) {
       return Drawer(
         child: ListView(
           padding: EdgeInsets.zero,

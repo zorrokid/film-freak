@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:film_freak/entities/release_media.dart';
 import 'package:film_freak/entities/release_property.dart';
 import 'package:film_freak/extensions/string_extensions.dart';
+import 'package:film_freak/features/add_or_edit_release/productions_list.dart';
 import 'package:film_freak/features/tmdb_search/tmdb_movie_result.dart';
-import 'package:film_freak/models/movie_release_view_model.dart';
+import 'package:film_freak/models/release_view_model.dart';
 import 'package:film_freak/enums/picture_type.dart';
 import 'package:film_freak/entities/release_picture.dart';
 import 'package:film_freak/features/scan_barcode/barcode_scanner_view.dart';
@@ -17,11 +19,11 @@ import 'package:film_freak/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:film_freak/enums/case_type.dart';
-import 'package:film_freak/entities/movie_release.dart';
+import 'package:film_freak/entities/release.dart';
 
-import '../../entities/movie.dart';
-import '../../persistence/collection_model.dart';
-import '../../enums/media_type.dart';
+import '../../entities/production.dart';
+import '../../entities/release_comment.dart';
+import '../../persistence/app_state.dart';
 
 import 'package:path/path.dart' as p;
 
@@ -31,9 +33,9 @@ import '../../widgets/preview_pic.dart';
 import '../../widgets/buttons/release_pic_crop.dart';
 import '../../widgets/buttons/release_pic_selection.dart';
 import '../../widgets/release_properties.dart';
-import '../image_process_view.dart';
-import '../../features/tmdb_search/tmdb_movie_search_screen.dart';
-import 'collection_item_form.dart';
+import '../../screens/image_process_view.dart';
+import '../tmdb_search/tmdb_movie_search_screen.dart';
+import '../../screens/forms/collection_item_form.dart';
 
 class ReleaseForm extends StatefulWidget {
   const ReleaseForm(
@@ -60,15 +62,15 @@ class _ReleaseFormState extends State<ReleaseForm> {
   int _selectedPicIndex = 0;
 
   // form state
-  late Future<MovieReleaseViewModel> _futureModel;
+  late Future<ReleaseViewModel> _futureModel;
   late int? _id;
   late String? _barcode;
-  MediaType _mediaType = MediaType.unknown;
   CaseType _caseType = CaseType.unknown;
   List<ReleasePicture> _pictures = <ReleasePicture>[];
-  final _picturesToDelete = <ReleasePicture>[];
+  final List<ReleasePicture> _picturesToDelete = <ReleasePicture>[];
+  List<Production> _productions = <Production>[];
+  List<ReleaseMedia> _medias = <ReleaseMedia>[];
   List<ReleaseProperty> _properties = <ReleaseProperty>[];
-  Movie? _movie;
 
   @override
   void initState() {
@@ -105,11 +107,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
     super.dispose();
   }
 
-  void onMediaTypeSelected(MediaType? selected) {
-    setState(() {
-      _mediaType = selected ?? MediaType.unknown;
-    });
-  }
+  // void onMediaTypeSelected(MediaType? selected) {
+  //   setState(() {
+  //     _mediaTypes = selected ?? MediaType.unknown;
+  //   });
+  // }
 
   void onCaseTypeSelected(CaseType? selected) {
     setState(() {
@@ -163,41 +165,40 @@ class _ReleaseFormState extends State<ReleaseForm> {
     });
   }
 
-  Future<MovieReleaseViewModel> _loadData() async {
+  Future<ReleaseViewModel> _loadData() async {
     final model = _id == null
         ? _movieReleaseService.initializeModel(_barcode)
-        : await _movieReleaseService.getReleaseData(_id!);
+        : await _movieReleaseService.getModel(_id!);
 
-    _pictures = model.releasePictures;
-    _properties = model.releaseProperties;
+    _pictures = model.pictures.toList();
+    _properties = model.properties.toList();
     _barcodeController.text = model.release.barcode;
     _nameController.text = model.release.name;
-    _notesController.text = model.release.notes;
-    _pictures = model.releasePictures;
-    _mediaType = model.release.mediaType;
+    _pictures = model.pictures.toList();
     _caseType = model.release.caseType;
-    _movie = model.movie;
+    _productions = model.productions.toList();
+    _medias = model.medias.toList();
 
     // do not setState!
 
     return model;
   }
 
-  MovieReleaseViewModel _buildModel() {
-    final release = MovieRelease(
+  ReleaseViewModel _buildModel() {
+    final release = Release(
       id: _id,
       name: _nameController.text,
-      mediaType: _mediaType,
       barcode: _barcodeController.text,
       caseType: _caseType,
-      notes: _notesController.text,
     );
 
-    return MovieReleaseViewModel(
+    return ReleaseViewModel(
       release: release,
-      releasePictures: _pictures,
-      releaseProperties: _properties,
-      movie: _movie,
+      pictures: _pictures,
+      properties: _properties,
+      productions: _productions,
+      medias: _medias,
+      comments: <ReleaseComment>[],
     );
   }
 
@@ -296,15 +297,21 @@ class _ReleaseFormState extends State<ReleaseForm> {
       ),
     );
     if (movieResult == null) return;
-    final movie = movieResult.toMovie;
+    final production = movieResult.toProduction;
     setState(() {
-      _movie = movie;
+      _productions.add(production);
+    });
+  }
+
+  void _onProductionRemove(int tmdbId) {
+    setState(() {
+      _productions.removeWhere((element) => element.tmdbId == tmdbId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, appState, child) {
+    return Consumer<AppState>(builder: (context, appState, child) {
       Future<void> submit() async {
         if (!_formKey.currentState!.validate()) return;
         final viewModel = _buildModel();
@@ -334,12 +341,16 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
         if (mounted) {
           if (widget.addCollectionItem) {
-            await Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) {
-              return CollectionItemForm(
-                releaseId: id,
-              );
-            }));
+            await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return CollectionItemForm(
+                    releaseId: id,
+                  );
+                },
+              ),
+            );
           } else {
             Navigator.of(context).pop();
           }
@@ -353,8 +364,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 : const Text('Add a new release')),
         body: FutureBuilder(
           future: _futureModel,
-          builder: (BuildContext context,
-              AsyncSnapshot<MovieReleaseViewModel> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<ReleaseViewModel> snapshot) {
             if (snapshot.hasError) {
               return ErrorDisplayWidget(snapshot.error.toString());
             }
@@ -362,7 +373,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
               return const Spinner();
             }
 
-            final MovieReleaseViewModel viewModel = snapshot.data!;
+            final ReleaseViewModel viewModel = snapshot.data!;
 
             return Form(
               key: _formKey,
@@ -437,15 +448,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       )
                     ],
                   ),
-                  Row(
-                    children: [
-                      const Expanded(
-                        child: Text('Movie: '),
-                      ),
-                      _movie != null
-                          ? Text(_movie!.title)
-                          : const Text('Not selected'),
-                    ],
+                  ProductionsList(
+                    productions: _productions,
+                    onDelete: _onProductionRemove,
                   ),
                   Row(
                     children: [
@@ -468,12 +473,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       ),
                     ],
                   ),
-                  DropDownFormField(
-                    initialValue: viewModel.release.mediaType,
-                    values: mediaTypeFormFieldValues,
-                    onValueChange: onMediaTypeSelected,
-                    labelText: 'Media type',
-                  ),
+                  // TODO: add media type selection on separate screen
                   DropDownFormField(
                     initialValue: viewModel.release.caseType,
                     values: caseTypeFormFieldValues,

@@ -1,18 +1,16 @@
 import 'package:film_freak/entities/entity.dart';
 
-import '../enums/release_property_type.dart';
-
-class ReleaseProperty extends ReleaseChildEntity<ReleaseProperty> {
-  ReleasePropertyType propertyType;
-
-  ReleaseProperty({
-    int? releaseId,
+class ReleaseComment extends ReleaseChildEntity<ReleaseComment> {
+  final String comment;
+  ReleaseComment({
     int? id,
+    required int releaseId,
+    required this.comment,
     DateTime? createdTime,
     DateTime? modifiedTime,
-    required this.propertyType,
   }) : super(
           id: id,
+          releaseId: releaseId,
           createdTime: createdTime,
           modifiedTime: modifiedTime,
         );
@@ -21,18 +19,18 @@ class ReleaseProperty extends ReleaseChildEntity<ReleaseProperty> {
   Map<String, dynamic> get map => {
         'id': id,
         'releaseId': releaseId,
-        'propertyType': propertyType.index,
+        'comment': comment,
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
 
-  static ReleaseProperty fromMap(Map<String, Object?> map) {
-    return ReleaseProperty(
-      releaseId: map['releaseId'] as int,
+  static ReleaseComment fromMap(Map<String, dynamic> map) {
+    return ReleaseComment(
       id: map['id'] as int,
+      releaseId: map['releaseId'] as int,
+      comment: map['comment'] as String,
       createdTime: DateTime.parse(map['createdTime'] as String),
       modifiedTime: DateTime.parse(map['modifiedTime'] as String),
-      propertyType: ReleasePropertyType.values[map['propertyType'] as int],
     );
   }
 }

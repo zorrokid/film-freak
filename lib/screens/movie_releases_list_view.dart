@@ -1,4 +1,4 @@
-import 'package:film_freak/models/collection_item_query_specs.dart';
+import 'package:film_freak/persistence/query_specs/collection_item_query_specs.dart';
 import 'package:film_freak/models/list_models/collection_item_list_model.dart';
 import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/widgets/main_drawer.dart';
@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../features/scan_barcode/collection_item_filter_list.dart';
 import '../utils/dialog_utls.dart';
-import 'forms/release_form.dart';
-import '../persistence/collection_model.dart';
+import '../features/add_or_edit_release/release_form.dart';
+import '../persistence/app_state.dart';
 
 class CollectionList extends StatefulWidget {
   const CollectionList({this.filter, super.key});
@@ -44,7 +44,7 @@ class _CollectionListState extends State<CollectionList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionModel>(builder: (context, appState, child) {
+    return Consumer<AppState>(builder: (context, appState, child) {
       void addRelease() {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return const ReleaseForm();

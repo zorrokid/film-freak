@@ -1,24 +1,24 @@
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
-import 'package:film_freak/entities/movie_release.dart';
+import 'package:film_freak/entities/release.dart';
 
-class CollectionModel extends ChangeNotifier {
-  CollectionModel({required this.saveDir});
-  final List<MovieRelease> _movieReleases = [];
+class AppState extends ChangeNotifier {
+  AppState({required this.saveDir});
+  final List<Release> _movieReleases = [];
   String saveDir;
 
-  UnmodifiableListView<MovieRelease> get movieReleases =>
+  UnmodifiableListView<Release> get movieReleases =>
       UnmodifiableListView(_movieReleases);
 
-  UnmodifiableListView<MovieRelease> get recentReleases =>
+  UnmodifiableListView<Release> get recentReleases =>
       UnmodifiableListView(_recent);
 
   int get totalMovieReleases => movieReleases.length;
 
-  final Queue<MovieRelease> _recent = Queue<MovieRelease>();
+  final Queue<Release> _recent = Queue<Release>();
 
-  void add(MovieRelease movieRelease) {
+  void add(Release movieRelease) {
     _movieReleases.add(movieRelease);
     if (_recent.length == 10) {
       _recent.removeFirst();
@@ -27,7 +27,7 @@ class CollectionModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void reset(Iterable<MovieRelease> movieReleases, bool notify) {
+  void reset(Iterable<Release> movieReleases, bool notify) {
     _movieReleases.clear();
     _movieReleases.addAll(movieReleases);
     if (notify) {
@@ -35,7 +35,7 @@ class CollectionModel extends ChangeNotifier {
     }
   }
 
-  void update(MovieRelease movieRelease) {
+  void update(Release movieRelease) {
     _movieReleases.removeWhere((element) => element.id == movieRelease.id);
     _recent.removeWhere((element) => element.id == movieRelease.id);
     add(movieRelease);
@@ -53,7 +53,7 @@ class CollectionModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setInitialState(List<MovieRelease> releases) {
+  void setInitialState(List<Release> releases) {
     _movieReleases.addAll(releases);
   }
 }

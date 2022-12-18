@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/list_models/collection_item_list_model.dart';
-import '../../models/collection_item_query_specs.dart';
+import '../../persistence/query_specs/collection_item_query_specs.dart';
 import '../../services/collection_item_service.dart';
 import '../../widgets/collection_item_list.dart';
 import '../../widgets/error_display_widget.dart';
@@ -38,7 +38,9 @@ class _CollectionItemFilterListState extends State<CollectionItemFilterList> {
 
   Future<Iterable<CollectionItemListModel>> _getCollectionItems() async {
     if (widget.specs == null) return [];
-    return await widget.service.getListModels(widget.specs);
+    // TODO
+    //return await widget.service.getListModels(widget.specs!);
+    return [];
   }
 
   void reloadData() {

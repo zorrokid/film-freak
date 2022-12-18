@@ -1,21 +1,17 @@
-import 'package:film_freak/entities/movie_release.dart';
-import 'package:film_freak/entities/release_picture.dart';
-
 import '../entities/collection_item.dart';
-import '../entities/movie.dart';
-import '../entities/release_property.dart';
+import '../entities/collection_item_comment.dart';
+import '../entities/collection_item_property.dart';
+import 'release_view_model.dart';
 
 class CollectionItemViewModel {
   final CollectionItem collectionItem;
-  final MovieRelease release;
-  final List<ReleasePicture> releasePictures;
-  final List<ReleaseProperty> releaseProperties;
-  final Movie? movie;
+  final ReleaseViewModel releaseModel;
+  final List<CollectionItemComment> comments;
+  final List<CollectionItemProperty> properties;
   const CollectionItemViewModel({
     required this.collectionItem,
-    required this.release,
-    required this.releasePictures,
-    required this.releaseProperties,
-    this.movie,
+    required this.releaseModel,
+    required this.comments,
+    required this.properties,
   });
 }

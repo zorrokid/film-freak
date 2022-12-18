@@ -32,12 +32,12 @@ class ReleaseListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(item.name.isNotEmpty ? item.name : item.barcode),
-      subtitle: Row(
-        children: [
-          Expanded(child: Text(mediaTypeFormFieldValues[item.mediaType] ?? "")),
-          // TODO MediaTypeIcon ? ,
-        ],
-      ),
+      // TODO: show media types
+      // subtitle: Row(
+      //   children: [
+      //     Expanded(child: Text(mediaTypeFormFieldValues[item.mediaType] ?? "")),
+      //   ],
+      // ),
       leading: item.picFileName != null
           ? Image.file(
               File(join(saveDir, item.picFileName)),

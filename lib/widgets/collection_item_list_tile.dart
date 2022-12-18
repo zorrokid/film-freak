@@ -5,7 +5,6 @@ import 'package:film_freak/models/list_models/collection_item_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
-import '../enums/media_type.dart';
 import 'condition_icon.dart';
 
 typedef OnDeleteCallback = void Function(int id);
@@ -43,9 +42,10 @@ class CollectionItemListTile extends StatelessWidget {
           : collectionItem.barcode),
       subtitle: Row(
         children: [
-          Expanded(
-              child: Text(
-                  mediaTypeFormFieldValues[collectionItem.mediaType] ?? "")),
+          // TODO: show media types
+          // Expanded(
+          //     child: Text(
+          //         mediaTypeFormFieldValues[collectionItem.mediaType] ?? "")),
           ConditionIcon(condition: collectionItem.condition),
         ],
       ),

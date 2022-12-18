@@ -4,19 +4,19 @@ import '../../enums/media_type.dart';
 class ListModelBase {
   int id;
   String name;
-  MediaType mediaType;
+  List<MediaType> mediaTypes;
   String barcode;
   CaseType caseType;
-  String? movieName;
+  List<String> productionNames;
   String? picFileName;
 
   ListModelBase({
     required this.id,
     required this.name,
-    required this.mediaType,
+    required this.mediaTypes,
     required this.barcode,
     required this.caseType,
-    this.movieName,
+    required this.productionNames,
     this.picFileName,
   });
 }

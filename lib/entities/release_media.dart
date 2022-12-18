@@ -1,19 +1,19 @@
-import 'package:film_freak/enums/picture_type.dart';
+import 'package:film_freak/enums/condition.dart';
 
+import '../enums/media_type.dart';
 import 'entity.dart';
 
-class ReleasePicture extends ReleaseChildEntity<ReleasePicture> {
+class ReleaseMedia extends ReleaseChildEntity<ReleaseMedia> {
   // when creating a new release id is set after entity is saved to db:
-  String filename;
-  PictureType pictureType;
-
-  ReleasePicture({
+  MediaType mediaType;
+  Condition? condition;
+  ReleaseMedia({
     int? releaseId,
     int? id,
     DateTime? createdTime,
     DateTime? modifiedTime,
-    required this.filename,
-    required this.pictureType,
+    required this.mediaType,
+    this.condition,
   }) : super(
           id: id,
           releaseId: releaseId,
@@ -25,20 +25,20 @@ class ReleasePicture extends ReleaseChildEntity<ReleasePicture> {
   Map<String, dynamic> get map => {
         'id': id,
         'releaseId': releaseId,
-        'filename': filename,
-        'pictureType': pictureType.index,
+        'mediaType': mediaType.index,
+        'condition': condition?.index ?? Condition.unknown,
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
 
-  static ReleasePicture fromMap(Map<String, dynamic> map) {
-    return ReleasePicture(
+  static ReleaseMedia fromMap(Map<String, dynamic> map) {
+    return ReleaseMedia(
       releaseId: map['releaseId'] as int,
       id: map['id'] as int,
+      mediaType: MediaType.values[map['mediaType'] as int],
+      condition: Condition.values[map['condition'] as int],
       createdTime: DateTime.parse(map['createdTime'] as String),
       modifiedTime: DateTime.parse(map['modifiedTime'] as String),
-      filename: map['filename'],
-      pictureType: PictureType.values[map['pictureType'] as int],
     );
   }
 }

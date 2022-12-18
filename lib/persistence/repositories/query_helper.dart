@@ -1,9 +1,10 @@
 import 'package:tuple/tuple.dart';
 
-import '../../models/collection_item_query_specs.dart';
+import '../query_specs/query_specs_base.dart';
+import '../query_specs/query_specs_enums.dart';
 
 class QueryHelper {
-  static String? getOrderBy(CollectionItemQuerySpecs? filter) {
+  static String? getOrderBy(QuerySpecsBase? filter) {
     if (filter == null || filter.orderBy == null) return null;
     final orderByClauses = <String>[];
     if (filter.orderBy == OrderByEnum.latest) {
@@ -16,7 +17,7 @@ class QueryHelper {
   }
 
   static Tuple2<String?, List<Object?>?> filterToQueryArgs(
-      CollectionItemQuerySpecs? filter) {
+      QuerySpecsBase? filter) {
     if (filter == null) return const Tuple2(null, null);
 
     final whereArgs = <Object?>[];

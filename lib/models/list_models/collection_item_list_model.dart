@@ -8,19 +8,19 @@ class CollectionItemListModel extends ListModelBase {
   CollectionItemListModel({
     required int id,
     required String name,
-    required MediaType mediaType,
+    required List<MediaType> mediaTypes,
     required String barcode,
     required CaseType caseType,
     required this.condition,
-    String? movieName,
+    required List<String> productionNames,
     String? picFileName,
   }) : super(
           barcode: barcode,
           caseType: caseType,
           id: id,
-          mediaType: mediaType,
+          mediaTypes: mediaTypes,
           name: name,
-          movieName: movieName,
+          productionNames: productionNames,
           picFileName: picFileName,
         );
 }

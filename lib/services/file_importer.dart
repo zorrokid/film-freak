@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:film_freak/persistence/repositories/release_repository.dart';
+import 'package:film_freak/persistence/repositories/releases_repository.dart';
 
-import '../entities/movie_release.dart';
+import '../entities/release.dart';
 import '../persistence/db_provider.dart';
 
 class FileImporter {
@@ -15,8 +15,8 @@ class FileImporter {
     final fileContentAsString = await file.readAsString();
     try {
       final fileContentAsJson = json.decode(fileContentAsString) as List;
-      final items = fileContentAsJson.map((e) => MovieRelease.fromJson(e));
-      final repository = ReleaseRepository(dbProvider);
+      final items = fileContentAsJson.map((e) => Release.fromJson(e));
+      final repository = ReleasesRepository(dbProvider);
       for (final item in items) {
         repository.insert(item);
       }

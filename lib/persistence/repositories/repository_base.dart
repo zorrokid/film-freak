@@ -3,12 +3,18 @@ import 'package:sqflite/sqflite.dart';
 import '../../entities/entity.dart';
 import '../db_provider.dart';
 
-class RepositoryBase<T extends Entity> {
+abstract class RepositoryBase<T extends Entity> {
   final DatabaseProvider databaseProvider;
   final String tableName;
-  RepositoryBase(this.databaseProvider, this.tableName);
+  final Function mapper;
 
-  Future<Iterable<T>> getById(int id, String column, Function mapper) async {
+  RepositoryBase(
+    this.databaseProvider,
+    this.tableName,
+    this.mapper,
+  );
+
+  Future<Iterable<T>> getById(int id, String column) async {
     Database db = await databaseProvider.database;
     final query =
         await db.query(tableName, where: '$column=?', whereArgs: [id]);
@@ -16,7 +22,7 @@ class RepositoryBase<T extends Entity> {
     return result;
   }
 
-  Future<T> get(int id, Function mapper) async {
+  Future<T> get(int id) async {
     Database db = await databaseProvider.database;
     final query = await db.query(tableName, where: 'id=?', whereArgs: [id]);
     final result = query.map<T>((e) => mapper(e));
@@ -42,5 +48,23 @@ class RepositoryBase<T extends Entity> {
     Database db = await databaseProvider.database;
     return await db
         .update(tableName, entity.map, where: 'id=?', whereArgs: [entity.id]);
+  }
+
+  Future<int> upsert(T entity) async {
+    Database db = await databaseProvider.database;
+    int? id = entity.id;
+    if (id != null) {
+      await db.update(tableName, entity.map, where: 'id=?', whereArgs: [id]);
+      return id;
+    }
+    return await db.insert(tableName, entity.map);
+  }
+
+  Future<Iterable<T>> getByIds(Iterable<int> ids) async {
+    Database db = await databaseProvider.database;
+    String idsArg = ids.join(',');
+    final query = await db.query(tableName, where: 'id IN ($idsArg)');
+    final result = query.map<T>((e) => mapper(e));
+    return result;
   }
 }
