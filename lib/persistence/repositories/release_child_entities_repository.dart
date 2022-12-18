@@ -16,19 +16,20 @@ abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
           mapper,
         );
 
-  Future<List<int>> upsert(int releaseId, Iterable<T> releaseChilds) async {
-    _deleteObsoletedChilds(releaseId, releaseChilds);
-
-    // ensure parent relation is set
+  Future<List<int>> upsertChildren(
+      int releaseId, Iterable<T> releaseChilds) async {
+    // ensure parent relation is set before doing anything else
     for (final releaseChild in releaseChilds) {
       releaseChild.releaseId = releaseId;
     }
+    // TODO: this is not working correctly:
+    // deleteObsoletedChilds(releaseId, releaseChilds);
     final ids = <int>[];
     Database db = await databaseProvider.database;
     for (var child in releaseChilds) {
       if (child.id != null) {
-        ids.add(
-            await db.update(tableName, child.map, where: 'id = ${child.id}'));
+        ids.add(await db.update(tableName, child.map,
+            where: 'id = ?', whereArgs: [child.id]));
       } else {
         ids.add(await db.insert(tableName, child.map));
       }
@@ -52,9 +53,12 @@ abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
     return super.deleteByIdColumn(releaseId, 'releaseId');
   }
 
-  Future<void> _deleteObsoletedChilds(
-      int releaseId, Iterable<T> releaseChilds) async {
+  Future<void> deleteObsoletedChilds(
+    int releaseId,
+    Iterable<T> releaseChilds,
+  ) async {
     final originalChildsInDb = await getByReleaseId(releaseId);
+    // Note new childs don't have an id before insert
     final modifiedChildIds = releaseChilds.map((e) => e.id);
     final childIdsToBeDeleted =
         originalChildsInDb.where((e) => !modifiedChildIds.contains(e.id));

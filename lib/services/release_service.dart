@@ -87,42 +87,78 @@ class ReleaseService {
   }
 
   Future<int> upsert(ReleaseViewModel viewModel) async {
-    int id;
+    int releaseId = await _upsertRelease(viewModel.release);
+    await _upsertProductions(releaseId, viewModel.productions);
+    await _linkProductions(releaseId, viewModel.productions);
+    await releasePicturesRepository.upsertChildren(
+        releaseId, viewModel.pictures);
+    await releasePropertiesRepository.upsertChildren(
+        releaseId, viewModel.properties);
+    await releaseCommentsRepository.upsertChildren(
+        releaseId, viewModel.comments);
+    await releaseMediasRepository.upsertChildren(releaseId, viewModel.medias);
+    return releaseId;
+  }
 
-    if (viewModel.release.id != null) {
-      id = viewModel.release.id!;
-      await releaseRepository.update(viewModel.release);
+  Future<int> _upsertRelease(Release release) async {
+    int releaseId;
+    if (release.id != null) {
+      releaseId = release.id!;
+      await releaseRepository.update(release);
     } else {
-      id = await releaseRepository.insert(viewModel.release);
+      releaseId = await releaseRepository.insert(release);
     }
 
-    if (viewModel.productions.isNotEmpty) {
-      for (final production in viewModel.productions) {
-        // check if movie entry with tmdb id already exists and assign id if it does
-        if (production.id == null && production.tmdbId != null) {
-          final existingProduction =
-              await productionsRepository.getByTmdbId(production.tmdbId!);
-          if (existingProduction != null) {
-            production.id = existingProduction.id;
-          }
-        }
+    return releaseId;
+  }
 
-        final productionId = await productionsRepository.upsert(production);
-        production.id = productionId;
+  Future<void> _upsertProductions(
+      int releaseId, Iterable<Production> productions) async {
+    if (productions.isEmpty) return;
+
+    for (final production in productions) {
+      // check if production entry with tmdb id already exists and assign id if it does
+      if (production.id == null && production.tmdbId != null) {
+        final existingProduction =
+            await productionsRepository.getByTmdbId(production.tmdbId!);
+        if (existingProduction != null) {
+          production.id = existingProduction.id;
+        }
       }
 
-      await releaseProductionsRepository.upsert(
-          id,
-          viewModel.productions.map(
-              (e) => ReleaseProduction(releaseId: id, productionId: e.id!)));
+      final productionId = await productionsRepository.upsert(production);
+      production.id = productionId;
+    }
+  }
+
+  Future<void> _linkProductions(
+      int releaseId, Iterable<Production> productions) async {
+    if (productions.isEmpty) return;
+
+    assert(productions.any((element) => element.id == null) == false);
+
+    final releaseProductions = productions.map(
+        (e) => ReleaseProduction(releaseId: releaseId, productionId: e.id!));
+
+    final existingReleaseProductions =
+        await releaseProductionsRepository.getByReleaseId(releaseId);
+
+    final productionReleaseProductionIdMap = <int, int>{};
+    for (final existingProd in existingReleaseProductions) {
+      productionReleaseProductionIdMap[existingProd.productionId] =
+          existingProd.id!;
     }
 
-    await releasePicturesRepository.upsert(id, viewModel.pictures);
-    await releasePropertiesRepository.upsert(id, viewModel.properties);
-    await releaseCommentsRepository.upsert(id, viewModel.comments);
-    await releaseMediasRepository.upsert(id, viewModel.medias);
+    for (final releaseProduction in releaseProductions) {
+      if (productionReleaseProductionIdMap
+          .containsKey(releaseProduction.productionId)) {
+        releaseProduction.id =
+            productionReleaseProductionIdMap[releaseProduction.productionId];
+      }
+    }
 
-    return id;
+    await releaseProductionsRepository.upsertChildren(
+        releaseId, releaseProductions);
   }
 
   Future<Iterable<ReleaseListModel>> getListModels(

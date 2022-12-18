@@ -10,7 +10,7 @@ abstract class CollectionItemChildEntitiesRepository<
       DatabaseProvider databaseProvider, String databaseName, Function mapper)
       : super(databaseProvider, databaseName, mapper);
 
-  Future<List<int>> upsert(int collectionItemId, List<T> childs) async {
+  Future<List<int>> upsertChildren(int collectionItemId, List<T> childs) async {
     for (final child in childs) {
       child.collectionItemId = collectionItemId;
     }

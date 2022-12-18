@@ -18,8 +18,11 @@ final migrationScripts = <int, String>{
           createdTime DATETIME,
           modifiedTime DATETIME)''',
   3: '''CREATE TABLE releaseProductions(
+          id INTEGER PRIMARY KEY,
           releaseId INTEGER,
-          productionId INTEGER)''',
+          productionId INTEGER,
+          createdTime DATETIME,
+          modifiedTime DATETIME)''',
   4: '''CREATE TABLE collectionItems(
           id INTEGER PRIMARY KEY,
           releaseId INTEGER NOT NULL,
