@@ -77,7 +77,7 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
                   ReleaseDataCards(
                     saveDir: appState.saveDir,
                     viewModel: viewModel,
-                  )
+                  ),
                 ],
               ),
               floatingActionButton: FloatingActionButton(
