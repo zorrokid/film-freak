@@ -1,5 +1,6 @@
 import 'package:film_freak/models/release_view_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'pictures_card.dart';
 import 'production_card.dart';
@@ -14,6 +15,7 @@ class ReleaseDataCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productions = viewModel.productions.toList();
     return Column(
       children: [
         Row(
@@ -27,12 +29,17 @@ class ReleaseDataCards extends StatelessWidget {
           ],
         ),
         ListView.builder(
-            shrinkWrap: true,
-            itemCount: viewModel.productions.length,
-            itemBuilder: (context, index) {
-              return ProductionCard(
-                  production: viewModel.productions.toList()[index]);
-            }),
+          shrinkWrap: true,
+          itemCount: productions.length,
+          itemBuilder: (context, index) {
+            return ExpansionTile(
+              title: Text(productions[index].title),
+              children: [
+                ProductionCard(production: productions[index]),
+              ],
+            );
+          },
+        ),
         ReleaseDetailsCard(release: viewModel.release),
         ReleaseProperties(
           releaseProperties: viewModel.properties.toList(),
