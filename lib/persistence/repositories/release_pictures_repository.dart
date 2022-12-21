@@ -20,6 +20,7 @@ class ReleasePicturesRepository
     final query = await db.query(tableName,
         where: 'releaseId IN (?) AND pictureType IN (?)',
         whereArgs: [
+          // TODO these propably won't work
           releaseids.join(','),
           picTypes.map((e) => e.index).join(',')
         ]);

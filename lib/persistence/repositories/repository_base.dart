@@ -62,6 +62,7 @@ abstract class RepositoryBase<T extends Entity> {
 
   Future<Iterable<T>> getByIds(Iterable<int> ids) async {
     Database db = await databaseProvider.database;
+    // TODO check if this actually works
     String idsArg = ids.join(',');
     final query = await db.query(tableName, where: 'id IN ($idsArg)');
     final result = query.map<T>((e) => mapper(e));

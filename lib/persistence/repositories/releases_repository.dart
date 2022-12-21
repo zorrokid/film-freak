@@ -41,6 +41,7 @@ class ReleasesRepository extends RepositoryBase<Release> {
   Future<Iterable<Release>> getByIds(Iterable<int> ids) async {
     Database db = await databaseProvider.database;
     List<Map<String, Object?>> queryResult = await db
+        // TODO check if this actually works (there was problem with similar whereArgs with join)
         .query(tableName, where: 'id IN (?)', whereArgs: [ids.join(',')]);
     return queryResult.map<Release>((e) => Release.fromMap(e)).toList();
   }
