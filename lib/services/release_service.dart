@@ -89,6 +89,7 @@ class ReleaseService {
   Future<int> upsert(ReleaseViewModel viewModel) async {
     int releaseId = await _upsertRelease(viewModel.release);
     await _upsertProductions(releaseId, viewModel.productions);
+    await _removeObsoleteProductionLinks(releaseId, viewModel.productions);
     await _linkProductions(releaseId, viewModel.productions);
     await releasePicturesRepository.upsertChildren(
         releaseId, viewModel.pictures);
@@ -131,8 +132,32 @@ class ReleaseService {
     }
   }
 
+  Future<void> _removeObsoleteProductionLinks(
+      int releaseId, Iterable<Production> productions) async {
+    final existingReleaseProductions =
+        await releaseProductionsRepository.getByReleaseId(releaseId);
+    final existingProductionIds =
+        existingReleaseProductions.map((e) => e.productionId).toSet();
+    // productions without productionId are new, they are inserted, no need to check those
+    final currentProductionIds = productions
+        .where((element) => element.id != null)
+        .map((e) => e.id)
+        .toList();
+    final productionIdsForUnlinking = <int>[];
+    for (final existingProdId in existingProductionIds) {
+      if (!currentProductionIds.contains(existingProdId)) {
+        productionIdsForUnlinking.add(existingProdId);
+      }
+    }
+    await releaseProductionsRepository.deleteByProductionIds(
+        releaseId, productionIdsForUnlinking);
+  }
+
   Future<void> _linkProductions(
       int releaseId, Iterable<Production> productions) async {
+    // TODO before returning when input productions list is empty,
+    // need to ensure if prodcutions already linked to release
+    // and the obsolete should be removed
     if (productions.isEmpty) return;
 
     assert(productions.any((element) => element.id == null) == false);

@@ -1,8 +1,11 @@
 import 'package:film_freak/entities/release_production.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/repositories/release_child_entities_repository.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ReleaseProductionsRepository
+    // this shouldn't be probably extended from the following since
+    // this is n:m and the usual case is 1:n and deleteObsoleteChilds cannot be used
     extends ReleaseChildEntitiesRepository<ReleaseProduction> {
   ReleaseProductionsRepository(DatabaseProvider databaseProvider)
       : super(
@@ -11,10 +14,22 @@ class ReleaseProductionsRepository
           ReleaseProduction.fromMap,
         );
 
+  Future<void> deleteByProductionIds(
+      int releaseId, Iterable<int> productionIds) async {
+    final Database db = await databaseProvider.database;
+    final batch = db.batch();
+    for (final prodId in productionIds) {
+      batch.delete(tableName,
+          where: 'productionId = ? AND releaseId = ?',
+          whereArgs: [prodId, releaseId]);
+    }
+    await batch.commit(noResult: true);
+  }
+
 //  @override
 //  Future<void> deleteObsoletedChilds(
 //    int releaseId,
-//    Iterable<ReleaseProduction> releaseChilds,
+//    Iterable<ReleaseParroduction> releaseChilds,
 //  ) async {
 //    final Iterable<ReleaseProduction> originalChildsInDb =
 //        await getByReleaseId(releaseId);
