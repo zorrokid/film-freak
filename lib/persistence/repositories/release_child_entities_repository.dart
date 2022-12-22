@@ -56,7 +56,8 @@ abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
   ) async {
     final originalChildsInDb = await getByReleaseId(releaseId);
     // Note new childs don't have an id before insert
-    final modifiedChildIds = releaseChilds.map((e) => e.id);
+    final modifiedChildIds =
+        releaseChilds.where((e) => e.id != null).map((e) => e.id);
     final childIdsToBeDeleted =
         originalChildsInDb.where((e) => !modifiedChildIds.contains(e.id));
     for (final child in childIdsToBeDeleted) {
