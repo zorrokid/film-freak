@@ -1,7 +1,6 @@
 import 'package:film_freak/entities/release_production.dart';
 import 'package:film_freak/persistence/db_provider.dart';
 import 'package:film_freak/persistence/repositories/release_child_entities_repository.dart';
-import 'package:sqflite/sqflite.dart';
 
 class ReleaseProductionsRepository
     // this shouldn't be probably extended from the following since
@@ -16,7 +15,7 @@ class ReleaseProductionsRepository
 
   Future<void> deleteByProductionIds(
       int releaseId, Iterable<int> productionIds) async {
-    final Database db = await databaseProvider.database;
+    final db = await databaseProvider.database;
     final batch = db.batch();
     for (final prodId in productionIds) {
       batch.delete(tableName,

@@ -8,7 +8,7 @@ import '../persistence/db_provider.dart';
 import '../persistence/repositories/collection_items_repository.dart';
 
 CollectionItemService initializeCollectionItemService() {
-  final dbProvider = DatabaseProvider.instance;
+  final dbProvider = DatabaseProviderSqflite.instance;
   return CollectionItemService(
     collectionItemRepository: CollectionItemsRepository(dbProvider),
     collectionItemCommentsRepository:

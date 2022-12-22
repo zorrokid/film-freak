@@ -37,7 +37,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   });
             }) ??
         false;
-    if (okToDelete && await DatabaseProvider.instance.truncateDb()) {
+    if (okToDelete && await DatabaseProviderSqflite.instance.truncateDb()) {
       cart.removeAll();
     }
   }
@@ -73,8 +73,8 @@ class _MainDrawerState extends State<MainDrawer> {
               onTap: () => _navigateFromDrawer(
                   context,
                   ImportView(
-                    fileImporter:
-                        FileImporter(dbProvider: DatabaseProvider.instance),
+                    fileImporter: FileImporter(
+                        dbProvider: DatabaseProviderSqflite.instance),
                   )),
             ),
             ListTile(

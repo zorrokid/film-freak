@@ -19,7 +19,7 @@ import '../persistence/repositories/release_pictures_repository.dart';
 import '../persistence/repositories/release_properties_repository.dart';
 
 ReleaseService initializeReleaseService() {
-  final dbProvider = DatabaseProvider.instance;
+  final dbProvider = DatabaseProviderSqflite.instance;
   return ReleaseService(
     releaseRepository: ReleasesRepository(dbProvider),
     releasePicturesRepository: ReleasePicturesRepository(dbProvider),

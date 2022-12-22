@@ -6,14 +6,20 @@ import 'migrations.dart';
 
 const String dbName = 'film_freak_db_1.db';
 
-class DatabaseProvider {
+abstract class DatabaseProvider {
+  Future<Database> get database;
+  Future<bool> truncateDb();
+}
+
+class DatabaseProviderSqflite extends DatabaseProvider {
   // singleton class
-  DatabaseProvider._privateConstructor();
+  DatabaseProviderSqflite._privateConstructor();
   static final DatabaseProvider instance =
-      DatabaseProvider._privateConstructor();
+      DatabaseProviderSqflite._privateConstructor();
 
   static Database? _database;
 
+  @override
   Future<Database> get database async {
     return _database ??= await _initialize();
   }

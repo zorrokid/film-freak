@@ -36,7 +36,7 @@ class BarcodeScanResult {
 }
 
 BarcodeScanResultsService initializeBarcodeScanResultsService() {
-  final dbProvider = DatabaseProvider.instance;
+  final dbProvider = DatabaseProviderSqflite.instance;
   return BarcodeScanResultsService(
     releaseRepository: ReleasesRepository(dbProvider),
     releasePicturesRepository: ReleasePicturesRepository(dbProvider),

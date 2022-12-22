@@ -15,15 +15,14 @@ class ReleasesRepository extends RepositoryBase<Release> {
         );
 
   Future<int> queryRowCount() async {
-    Database db = await databaseProvider.database;
-    List<Map<String, Object?>> result =
-        await db.rawQuery('SELECT COUNT(*) FROM $tableName');
+    final db = await databaseProvider.database;
+    final result = await db.rawQuery('SELECT COUNT(*) FROM $tableName');
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
   // TODO: generalize to base class?
   Future<Iterable<Release>> query(ReleaseQuerySpecs? filter) async {
-    Database db = await databaseProvider.database;
+    final db = await databaseProvider.database;
 
     final queryArgs = QueryHelper.filterToQueryArgs(filter);
     String? orderBy = QueryHelper.getOrderBy(filter);
@@ -34,21 +33,12 @@ class ReleasesRepository extends RepositoryBase<Release> {
         orderBy: orderBy,
         limit: filter?.top);
 
-    var result = query.map<Release>((e) => Release.fromMap(e));
-    return result;
-  }
-
-  Future<Iterable<Release>> getByIds(Iterable<int> ids) async {
-    Database db = await databaseProvider.database;
-    List<Map<String, Object?>> queryResult = await db
-        // TODO check if this actually works (there was problem with similar whereArgs with join)
-        .query(tableName, where: 'id IN (?)', whereArgs: [ids.join(',')]);
-    return queryResult.map<Release>((e) => Release.fromMap(e)).toList();
+    return query.map<Release>((e) => Release.fromMap(e));
   }
 
   Future<bool> barcodeExists(String barcode) async {
-    Database db = await databaseProvider.database;
-    List<Map<String, Object?>> result =
+    final db = await databaseProvider.database;
+    final result =
         await db.query(tableName, where: 'barcode=?', whereArgs: [barcode]);
     return result.isNotEmpty;
   }
