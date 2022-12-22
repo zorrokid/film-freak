@@ -20,8 +20,7 @@ abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
     for (final releaseChild in releaseChilds) {
       releaseChild.releaseId = releaseId;
     }
-    // TODO: this is not working correctly:
-    // deleteObsoletedChilds(releaseId, releaseChilds);
+    deleteObsoletedChilds(releaseId, releaseChilds);
     final ids = <int>[];
     final db = await databaseProvider.database;
     for (var child in releaseChilds) {
