@@ -12,6 +12,7 @@ class CollectionItemComment
     required this.comment,
   }) : super(
           id: id,
+          collectionItemId: collectionItemId,
           createdTime: createdTime,
           modifiedTime: modifiedTime,
         );
