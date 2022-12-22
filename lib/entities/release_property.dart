@@ -13,6 +13,7 @@ class ReleaseProperty extends ReleaseChildEntity<ReleaseProperty> {
     required this.propertyType,
   }) : super(
           id: id,
+          releaseId: releaseId,
           createdTime: createdTime,
           modifiedTime: modifiedTime,
         );

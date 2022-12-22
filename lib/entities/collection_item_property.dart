@@ -14,6 +14,7 @@ class CollectionItemProperty
     required this.propertyType,
   }) : super(
           id: id,
+          collectionItemId: collectionItemId,
           createdTime: createdTime,
           modifiedTime: modifiedTime,
         );
