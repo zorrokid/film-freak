@@ -1,5 +1,3 @@
-import 'package:sqflite/sqflite.dart';
-
 import '../../entities/release_picture.dart';
 import '../../enums/picture_type.dart';
 import '../db_provider.dart';
@@ -16,15 +14,12 @@ class ReleasePicturesRepository
 
   Future<Iterable<ReleasePicture>> getByReleaseIdsAndPicType(
       Iterable<int> releaseids, Iterable<PictureType> picTypes) async {
-    Database db = await databaseProvider.database;
-    final query = await db.query(tableName,
-        where: 'releaseId IN (?) AND pictureType IN (?)',
-        whereArgs: [
-          // TODO these propably won't work
-          releaseids.join(','),
-          picTypes.map((e) => e.index).join(',')
-        ]);
-    final result = query.map<ReleasePicture>((e) => ReleasePicture.fromMap(e));
-    return result;
+    final db = await databaseProvider.database;
+    final query = await db.query(
+      tableName,
+      where: '''releaseId IN (${releaseids.join(',')}) 
+          AND pictureType IN (${picTypes.map((e) => e.index).join(',')})''',
+    );
+    return query.map<ReleasePicture>((e) => ReleasePicture.fromMap(e));
   }
 }

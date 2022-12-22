@@ -1,5 +1,3 @@
-import 'package:sqflite/sqflite.dart';
-
 import '../../entities/entity.dart';
 import '../db_provider.dart';
 import 'repository_base.dart';
@@ -15,7 +13,7 @@ abstract class CollectionItemChildEntitiesRepository<
       child.collectionItemId = collectionItemId;
     }
     final ids = <int>[];
-    Database db = await databaseProvider.database;
+    final db = await databaseProvider.database;
     for (var child in childs) {
       if (child.id != null) {
         ids.add(

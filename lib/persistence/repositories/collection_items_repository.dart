@@ -1,5 +1,3 @@
-import 'package:sqflite/sqflite.dart';
-
 import 'query_helper.dart';
 import 'release_child_entities_repository.dart';
 import '../../entities/collection_item.dart';
@@ -19,7 +17,7 @@ class CollectionItemsRepository
   Future<Iterable<CollectionItem>> query(
       // TODO QuerySpecs<T> ?
       CollectionItemQuerySpecs filter) async {
-    Database db = await databaseProvider.database;
+    final db = await databaseProvider.database;
     // TODO filter.queryArgs
     final queryArgs = QueryHelper.filterToQueryArgs(filter);
     // TODO filter.orderBy
@@ -31,7 +29,6 @@ class CollectionItemsRepository
         orderBy: orderBy,
         limit: filter.top);
 
-    var result = query.map<CollectionItem>((e) => mapper(e)).toList();
-    return result;
+    return query.map<CollectionItem>((e) => mapper(e)).toList();
   }
 }

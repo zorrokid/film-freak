@@ -1,5 +1,3 @@
-import 'package:sqflite/sqflite.dart';
-
 import '../../entities/entity.dart';
 import '../db_provider.dart';
 import 'repository_base.dart';
@@ -25,7 +23,7 @@ abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
     // TODO: this is not working correctly:
     // deleteObsoletedChilds(releaseId, releaseChilds);
     final ids = <int>[];
-    Database db = await databaseProvider.database;
+    final db = await databaseProvider.database;
     for (var child in releaseChilds) {
       if (child.id != null) {
         ids.add(await db.update(tableName, child.map,
@@ -42,11 +40,10 @@ abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
   }
 
   Future<Iterable<T>> getByReleaseIds(Iterable<int> releaseids) async {
-    Database db = await databaseProvider.database;
+    final db = await databaseProvider.database;
     final query = await db.query(tableName,
-        where: 'releaseId IN (?)', whereArgs: [releaseids.join(',')]);
-    final result = query.map<T>((e) => mapper(e));
-    return result;
+        where: 'releaseId IN (${releaseids.join(',')}?)');
+    return query.map<T>((e) => mapper(e));
   }
 
   Future<int> deleteByReleaseId(int releaseId) async {

@@ -16,7 +16,7 @@ Future main() async {
     databaseFactory = databaseFactoryFfi;
   });
 
-  test('Test releases repository', () async {
+  test('Test get with inserted value, it should return value.', () async {
     final repository = ReleasesRepository(TestDatabaseProvider.instance);
     final expectedId = await repository.insert(
       Release(
@@ -28,5 +28,29 @@ Future main() async {
 
     final result = await repository.get(expectedId);
     expect(expectedId, result.id);
+  });
+
+  test('Test getByIds with inserted values, returns all the inserted entities',
+      () async {
+    final repository = ReleasesRepository(TestDatabaseProvider.instance);
+    final ids = <int>[];
+    ids.add(await repository.insert(
+      Release(
+        name: 'test2',
+        barcode: '',
+        caseType: CaseType.regularDvd,
+      ),
+    ));
+    ids.add(await repository.insert(
+      Release(
+        name: 'test1',
+        barcode: '',
+        caseType: CaseType.regularDvd,
+      ),
+    ));
+    final result = await repository.getByIds(ids);
+    expect(result.length, 2);
+    expect(true, result.any((r) => r.id == ids[0]));
+    expect(true, result.any((r) => r.id == ids[1]));
   });
 }
