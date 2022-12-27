@@ -2,6 +2,8 @@
 
 *film_freak* is WIP name for my collection management app which is mostly focusing on managing a movie collection but might support other types of media in future (games, music, books, comics etc).
 
+It is desgined to be an off-line first app and a synchronization support with cloud database will be added. 
+
 
 ## Tech
 
