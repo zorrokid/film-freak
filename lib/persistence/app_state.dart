@@ -1,59 +1,59 @@
 import 'dart:collection';
 
+import 'package:film_freak/realm_models/schema.dart';
 import 'package:flutter/foundation.dart';
-import 'package:film_freak/entities/release.dart';
 
 class AppState extends ChangeNotifier {
-  AppState({required this.saveDir});
-  final List<Release> _movieReleases = [];
+  AppState({required this.saveDir, required this.collectionStatuses});
+  final List<CollectionStatus> collectionStatuses;
+  final List<Release> _releases = [];
   String saveDir;
 
-  UnmodifiableListView<Release> get movieReleases =>
-      UnmodifiableListView(_movieReleases);
+  UnmodifiableListView<Release> get releases => UnmodifiableListView(_releases);
 
   UnmodifiableListView<Release> get recentReleases =>
       UnmodifiableListView(_recent);
 
-  int get totalMovieReleases => movieReleases.length;
+  int get totalReleases => releases.length;
 
   final Queue<Release> _recent = Queue<Release>();
 
-  void add(Release movieRelease) {
-    _movieReleases.add(movieRelease);
+  void add(Release release) {
+    _releases.add(release);
     if (_recent.length == 10) {
       _recent.removeFirst();
     }
-    _recent.add(movieRelease);
+    _recent.add(release);
     notifyListeners();
   }
 
   void reset(Iterable<Release> movieReleases, bool notify) {
-    _movieReleases.clear();
-    _movieReleases.addAll(movieReleases);
+    _releases.clear();
+    _releases.addAll(movieReleases);
     if (notify) {
       notifyListeners();
     }
   }
 
-  void update(Release movieRelease) {
-    _movieReleases.removeWhere((element) => element.id == movieRelease.id);
-    _recent.removeWhere((element) => element.id == movieRelease.id);
-    add(movieRelease);
+  void update(Release release) {
+    _releases.removeWhere((element) => element.id == release.id);
+    _recent.removeWhere((element) => element.id == release.id);
+    add(release);
   }
 
   void removeAll() {
-    _movieReleases.clear();
+    _releases.clear();
     _recent.clear();
     notifyListeners();
   }
 
-  void remove(int id) {
-    _movieReleases.removeWhere((element) => element.id == id);
-    _recent.removeWhere((element) => element.id == id);
-    notifyListeners();
-  }
+//  void remove(int id) {
+//    _releases.removeWhere((e) => e.id == id);
+//    _recent.removeWhere((e) => e.id == id);
+//    notifyListeners();
+//  }
 
   void setInitialState(List<Release> releases) {
-    _movieReleases.addAll(releases);
+    _releases.addAll(releases);
   }
 }

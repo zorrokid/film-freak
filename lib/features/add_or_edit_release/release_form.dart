@@ -327,11 +327,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
         final id = await _movieReleaseService.upsert(viewModel);
         viewModel.release.id = id;
 
-        if (isEditMode()) {
-          appState.update(viewModel.release);
-        } else {
-          appState.add(viewModel.release);
-        }
+//        if (isEditMode()) {
+//          appState.update(viewModel.release);
+//        } else {
+//          appState.add(viewModel.release);
+//        }
 
         for (final picToDelete in _picturesToDelete) {
           final imagePath = p.join(appState.saveDir, picToDelete.filename);
