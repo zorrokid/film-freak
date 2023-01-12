@@ -121,10 +121,6 @@ class BarcodeScanResultsService {
     return results;
   }
 
-  Future<bool> barcodeExists(String barcode) async {
-    return releaseRepository.barcodeExists(barcode);
-  }
-
   Future<Map<int, Release>> getReleasesMap(String barcode) async {
     final releases =
         await releaseRepository.query(ReleaseQuerySpecs(barcode: barcode));
