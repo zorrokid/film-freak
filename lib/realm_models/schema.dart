@@ -85,7 +85,6 @@ class _ReleaseMedia {
   @PrimaryKey()
   late ObjectId id;
   late _MediaType? mediaType;
-  late String? picFileName;
 }
 
 @RealmModel()
