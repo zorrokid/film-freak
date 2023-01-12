@@ -4,7 +4,7 @@ import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../features/scan_barcode/collection_item_filter_list.dart';
+import '../widgets/collection_item_filter_list.dart';
 import '../utils/dialog_utls.dart';
 import '../features/add_or_edit_release/release_form.dart';
 import '../persistence/app_state.dart';
