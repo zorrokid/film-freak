@@ -7,8 +7,8 @@ import 'package:film_freak/entities/release.dart';
 class AppState extends ChangeNotifier {
   AppState({required this.saveDir, required this.cameras});
   final List<CameraDescription> cameras;
-  final String saveDir;
   final List<Release> _movieReleases = [];
+  final String saveDir;
 
   UnmodifiableListView<Release> get movieReleases =>
       UnmodifiableListView(_movieReleases);

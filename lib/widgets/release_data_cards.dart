@@ -1,5 +1,4 @@
 import 'package:film_freak/models/release_view_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'pictures_card.dart';

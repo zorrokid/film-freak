@@ -4,8 +4,8 @@ import 'package:film_freak/features/view_release/release_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
-import '../enums/media_type.dart';
 import '../models/list_models/release_list_model.dart';
+import 'collection_item_list.dart';
 
 typedef OnCreateCallback = void Function(int id);
 
@@ -13,17 +13,27 @@ class ReleaseListTile extends StatelessWidget {
   const ReleaseListTile({
     required this.item,
     required this.onCreate,
+    required this.onDelete,
+    required this.onEdit,
     required this.saveDir,
     super.key,
   });
   final ReleaseListModel item;
   final OnCreateCallback onCreate;
+  final OnEditCallback onEdit;
+  final OnDeleteCallback onDelete;
   final String saveDir;
 
   void menuItemSelected(String? value) {
     switch (value) {
       case 'create':
         onCreate(item.id);
+        break;
+      case 'delete':
+        onDelete(item.id);
+        break;
+      case 'edit':
+        onEdit(item.id);
         break;
     }
   }
@@ -50,6 +60,14 @@ class ReleaseListTile extends StatelessWidget {
             const PopupMenuItem(
               value: 'create',
               child: Text('Create collection item'),
+            ),
+            const PopupMenuItem(
+              value: 'delete',
+              child: Text('Delete release'),
+            ),
+            const PopupMenuItem(
+              value: 'edit',
+              child: Text('Edit release'),
             ),
           ];
         },

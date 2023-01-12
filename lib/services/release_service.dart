@@ -101,6 +101,15 @@ class ReleaseService {
     return releaseId;
   }
 
+  Future<bool> barcodeExists(String barcode) async {
+    return releaseRepository.barcodeExists(barcode);
+  }
+
+  Future<bool> delete(int id) async {
+    // TODO
+    return false;
+  }
+
   Future<int> _upsertRelease(Release release) async {
     int releaseId;
     if (release.id != null) {
@@ -195,7 +204,7 @@ class ReleaseService {
     final mediaTypesByRelease = await getMediaTypesByReleaseMap(releaseIds);
     final picsByRelease = await getPicsByReleaseMap(releaseIds);
 
-    final collectionItems = releases.map(
+    final listModels = releases.map(
       (e) => ReleaseListModel(
         barcode: e.barcode,
         caseType: e.caseType,
@@ -214,7 +223,7 @@ class ReleaseService {
       ),
     );
 
-    return collectionItems;
+    return listModels;
   }
 
   Future<Map<int, List<ReleasePicture>>> getPicsByReleaseMap(
