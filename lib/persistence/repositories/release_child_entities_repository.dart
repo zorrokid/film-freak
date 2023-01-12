@@ -41,7 +41,7 @@ abstract class ReleaseChildEntitiesRepository<T extends ReleaseChildEntity>
   Future<Iterable<T>> getByReleaseIds(Iterable<int> releaseids) async {
     final db = await databaseProvider.database;
     final query = await db.query(tableName,
-        where: 'releaseId IN (${releaseids.join(',')}?)');
+        where: 'releaseId IN (${releaseids.join(',')})');
     return query.map<T>((e) => mapper(e));
   }
 
