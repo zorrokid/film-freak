@@ -9,20 +9,19 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../main.dart';
-
 enum ScreenMode { liveFeed, gallery }
 
 class CameraView extends StatefulWidget {
-  const CameraView(
-      {Key? key,
-      required this.title,
-      this.customPaint,
-      this.text,
-      required this.onImage,
-      this.onScreenModeChanged,
-      this.initialDirection = CameraLensDirection.back})
-      : super(key: key);
+  const CameraView({
+    Key? key,
+    required this.cameras,
+    required this.title,
+    this.customPaint,
+    this.text,
+    required this.onImage,
+    this.onScreenModeChanged,
+    this.initialDirection = CameraLensDirection.back,
+  }) : super(key: key);
 
   final String title;
   final CustomPaint? customPaint;
@@ -30,6 +29,7 @@ class CameraView extends StatefulWidget {
   final Function(InputImage inputImage) onImage;
   final Function(ScreenMode mode)? onScreenModeChanged;
   final CameraLensDirection initialDirection;
+  final List<CameraDescription> cameras;
 
   @override
   State<CameraView> createState() => _CameraViewState();
@@ -52,19 +52,19 @@ class _CameraViewState extends State<CameraView> {
 
     _imagePicker = ImagePicker();
 
-    if (cameras.any(
+    if (widget.cameras.any(
       (element) =>
           element.lensDirection == widget.initialDirection &&
           element.sensorOrientation == 90,
     )) {
-      _cameraIndex = cameras.indexOf(
-        cameras.firstWhere((element) =>
+      _cameraIndex = widget.cameras.indexOf(
+        widget.cameras.firstWhere((element) =>
             element.lensDirection == widget.initialDirection &&
             element.sensorOrientation == 90),
       );
     } else {
-      _cameraIndex = cameras.indexOf(
-        cameras.firstWhere(
+      _cameraIndex = widget.cameras.indexOf(
+        widget.cameras.firstWhere(
           (element) => element.lensDirection == widget.initialDirection,
         ),
       );
@@ -109,7 +109,7 @@ class _CameraViewState extends State<CameraView> {
 
   Widget? _floatingActionButton() {
     if (_mode == ScreenMode.gallery) return null;
-    if (cameras.length == 1) return null;
+    if (widget.cameras.length == 1) return null;
     return SizedBox(
         height: 70.0,
         width: 70.0,
@@ -258,7 +258,7 @@ class _CameraViewState extends State<CameraView> {
   }
 
   Future _startLiveFeed() async {
-    final camera = cameras[_cameraIndex];
+    final camera = widget.cameras[_cameraIndex];
     _controller = CameraController(
       camera,
       ResolutionPreset.high,
@@ -288,7 +288,7 @@ class _CameraViewState extends State<CameraView> {
 
   Future _switchLiveCamera() async {
     setState(() => _changingCameraLens = true);
-    _cameraIndex = (_cameraIndex + 1) % cameras.length;
+    _cameraIndex = (_cameraIndex + 1) % widget.cameras.length;
 
     await _stopLiveFeed();
     await _startLiveFeed();
@@ -318,7 +318,7 @@ class _CameraViewState extends State<CameraView> {
     final Size imageSize =
         Size(image.width.toDouble(), image.height.toDouble());
 
-    final camera = cameras[_cameraIndex];
+    final camera = widget.cameras[_cameraIndex];
     final imageRotation =
         InputImageRotationValue.fromRawValue(camera.sensorOrientation);
     if (imageRotation == null) return;

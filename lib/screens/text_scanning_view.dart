@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:provider/provider.dart';
 
+import '../persistence/app_state.dart';
 import 'camera_view.dart';
 
 class TextScanningView extends StatefulWidget {
@@ -24,12 +26,15 @@ class _TextScanningViewState extends State<TextScanningView> {
 
   @override
   Widget build(BuildContext context) {
-    return CameraView(
-      title: 'Text Detector',
-      onImage: (inputImage) {
-        processImage(inputImage);
-      },
-    );
+    return Consumer<AppState>(builder: (context, appState, child) {
+      return CameraView(
+        title: 'Text Detector',
+        onImage: (inputImage) {
+          processImage(inputImage);
+        },
+        cameras: appState.cameras,
+      );
+    });
   }
 
   Future<void> processImage(InputImage inputImage) async {
