@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
+import 'package:provider/provider.dart';
+import '../../persistence/app_state.dart';
 import '../../screens/camera_view.dart';
 
 class BarcodeScannerView extends StatefulWidget {
@@ -22,12 +24,15 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
 
   @override
   Widget build(BuildContext context) {
-    return CameraView(
-      title: 'Barcode Scanner',
-      onImage: (inputImage) async {
-        processImage(inputImage);
-      },
-    );
+    return Consumer<AppState>(builder: (context, appState, child) {
+      return CameraView(
+        title: 'Barcode Scanner',
+        onImage: (inputImage) async {
+          processImage(inputImage);
+        },
+        cameras: appState.cameras,
+      );
+    });
   }
 
   Future<void> processImage(InputImage inputImage) async {

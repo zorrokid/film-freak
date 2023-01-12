@@ -8,8 +8,6 @@ import 'package:film_freak/init/logging.dart';
 import 'init/remote_config.dart';
 import 'init/state.dart';
 
-List<CameraDescription> cameras = [];
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -18,13 +16,15 @@ Future<void> main() async {
   );
 
   await initializeRemoteConfig();
-  final collectionModel = await initializeCollectionModel();
+  final List<CameraDescription> cameras = await availableCameras();
+  final collectionModel = await initializeCollectionModel(cameras);
 
   initializeLogging();
-  cameras = await availableCameras();
   runApp(
     ChangeNotifierProvider(
-        create: (context) => collectionModel, child: const MyApp()),
+      create: (context) => collectionModel,
+      child: const MyApp(),
+    ),
   );
 }
 
