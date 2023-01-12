@@ -1,3 +1,4 @@
+import 'package:film_freak/entities/collection_item.dart';
 import 'package:film_freak/entities/release.dart';
 import 'package:film_freak/entities/release_comment.dart';
 import 'package:film_freak/entities/release_media.dart';
@@ -13,6 +14,7 @@ class ReleaseViewModel {
   final Iterable<Production> productions;
   final Iterable<ReleaseMedia> medias;
   final Iterable<ReleaseComment> comments;
+  final Iterable<CollectionItem> collectionItems;
   const ReleaseViewModel({
     required this.release,
     required this.pictures,
@@ -20,5 +22,6 @@ class ReleaseViewModel {
     required this.productions,
     required this.medias,
     required this.comments,
+    required this.collectionItems,
   });
 }

@@ -199,6 +199,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
       productions: _productions,
       medias: _medias,
       comments: <ReleaseComment>[],
+      collectionItems: [],
     );
   }
 
