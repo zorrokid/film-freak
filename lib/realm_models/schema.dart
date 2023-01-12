@@ -61,21 +61,21 @@ class _CollectionItemPropertyType {
 @RealmModel()
 class _CollectionItemProperty {
   @PrimaryKey()
-  late int id;
+  late ObjectId id;
   late _CollectionItemPropertyType? propertyType;
 }
 
 @RealmModel()
 class _ReleaseProperty {
   @PrimaryKey()
-  late int id;
+  late ObjectId id;
   late _ReleasePropertyType? propertyType;
 }
 
 @RealmModel()
 class _ReleasePicture {
   @PrimaryKey()
-  late int id;
+  late ObjectId id;
   late String filename;
   late _PictureType? pictureType;
 }
@@ -83,7 +83,7 @@ class _ReleasePicture {
 @RealmModel()
 class _ReleaseMedia {
   @PrimaryKey()
-  late int id;
+  late ObjectId id;
   late _MediaType? mediaType;
   late String? picFileName;
 }
@@ -91,7 +91,7 @@ class _ReleaseMedia {
 @RealmModel()
 class _CollectionItemMedia {
   @PrimaryKey()
-  late int id;
+  late ObjectId id;
   late _ReleaseMedia? media;
   late _Condition? condition;
 }
@@ -99,7 +99,7 @@ class _CollectionItemMedia {
 @RealmModel()
 class _Production {
   @PrimaryKey()
-  late int id;
+  late ObjectId id;
   late _ProductionType? productionType;
   late String title;
   late String originalTitle;
@@ -113,7 +113,7 @@ class _Production {
 @RealmModel()
 class _Release {
   @PrimaryKey()
-  late int id;
+  late ObjectId id;
   late String name;
   late String barcode;
   late _CaseType? caseType;
@@ -128,7 +128,7 @@ class _Release {
 @RealmModel()
 class _CollectionItem {
   @PrimaryKey()
-  late int id;
+  late ObjectId id;
   late _Condition? condition;
   late _CollectionStatus? status;
   late _Release? release;

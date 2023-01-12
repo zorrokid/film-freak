@@ -337,7 +337,7 @@ class CollectionItemPropertyType extends _CollectionItemPropertyType
 class CollectionItemProperty extends _CollectionItemProperty
     with RealmEntity, RealmObjectBase, RealmObject {
   CollectionItemProperty(
-    int id, {
+    ObjectId id, {
     CollectionItemPropertyType? propertyType,
   }) {
     RealmObjectBase.set(this, 'id', id);
@@ -347,9 +347,9 @@ class CollectionItemProperty extends _CollectionItemProperty
   CollectionItemProperty._();
 
   @override
-  int get id => RealmObjectBase.get<int>(this, 'id') as int;
+  ObjectId get id => RealmObjectBase.get<ObjectId>(this, 'id') as ObjectId;
   @override
-  set id(int value) => RealmObjectBase.set(this, 'id', value);
+  set id(ObjectId value) => RealmObjectBase.set(this, 'id', value);
 
   @override
   CollectionItemPropertyType? get propertyType =>
@@ -373,7 +373,7 @@ class CollectionItemProperty extends _CollectionItemProperty
     RealmObjectBase.registerFactory(CollectionItemProperty._);
     return const SchemaObject(ObjectType.realmObject, CollectionItemProperty,
         'CollectionItemProperty', [
-      SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
+      SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
       SchemaProperty('propertyType', RealmPropertyType.object,
           optional: true, linkTarget: 'CollectionItemPropertyType'),
     ]);
@@ -383,7 +383,7 @@ class CollectionItemProperty extends _CollectionItemProperty
 class ReleaseProperty extends _ReleaseProperty
     with RealmEntity, RealmObjectBase, RealmObject {
   ReleaseProperty(
-    int id, {
+    ObjectId id, {
     ReleasePropertyType? propertyType,
   }) {
     RealmObjectBase.set(this, 'id', id);
@@ -393,9 +393,9 @@ class ReleaseProperty extends _ReleaseProperty
   ReleaseProperty._();
 
   @override
-  int get id => RealmObjectBase.get<int>(this, 'id') as int;
+  ObjectId get id => RealmObjectBase.get<ObjectId>(this, 'id') as ObjectId;
   @override
-  set id(int value) => RealmObjectBase.set(this, 'id', value);
+  set id(ObjectId value) => RealmObjectBase.set(this, 'id', value);
 
   @override
   ReleasePropertyType? get propertyType =>
@@ -419,7 +419,7 @@ class ReleaseProperty extends _ReleaseProperty
     RealmObjectBase.registerFactory(ReleaseProperty._);
     return const SchemaObject(
         ObjectType.realmObject, ReleaseProperty, 'ReleaseProperty', [
-      SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
+      SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
       SchemaProperty('propertyType', RealmPropertyType.object,
           optional: true, linkTarget: 'ReleasePropertyType'),
     ]);
@@ -429,7 +429,7 @@ class ReleaseProperty extends _ReleaseProperty
 class ReleasePicture extends _ReleasePicture
     with RealmEntity, RealmObjectBase, RealmObject {
   ReleasePicture(
-    int id,
+    ObjectId id,
     String filename, {
     PictureType? pictureType,
   }) {
@@ -441,9 +441,9 @@ class ReleasePicture extends _ReleasePicture
   ReleasePicture._();
 
   @override
-  int get id => RealmObjectBase.get<int>(this, 'id') as int;
+  ObjectId get id => RealmObjectBase.get<ObjectId>(this, 'id') as ObjectId;
   @override
-  set id(int value) => RealmObjectBase.set(this, 'id', value);
+  set id(ObjectId value) => RealmObjectBase.set(this, 'id', value);
 
   @override
   String get filename =>
@@ -471,7 +471,7 @@ class ReleasePicture extends _ReleasePicture
     RealmObjectBase.registerFactory(ReleasePicture._);
     return const SchemaObject(
         ObjectType.realmObject, ReleasePicture, 'ReleasePicture', [
-      SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
+      SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
       SchemaProperty('filename', RealmPropertyType.string),
       SchemaProperty('pictureType', RealmPropertyType.object,
           optional: true, linkTarget: 'PictureType'),
@@ -482,21 +482,19 @@ class ReleasePicture extends _ReleasePicture
 class ReleaseMedia extends _ReleaseMedia
     with RealmEntity, RealmObjectBase, RealmObject {
   ReleaseMedia(
-    int id, {
+    ObjectId id, {
     MediaType? mediaType,
-    String? picFileName,
   }) {
     RealmObjectBase.set(this, 'id', id);
     RealmObjectBase.set(this, 'mediaType', mediaType);
-    RealmObjectBase.set(this, 'picFileName', picFileName);
   }
 
   ReleaseMedia._();
 
   @override
-  int get id => RealmObjectBase.get<int>(this, 'id') as int;
+  ObjectId get id => RealmObjectBase.get<ObjectId>(this, 'id') as ObjectId;
   @override
-  set id(int value) => RealmObjectBase.set(this, 'id', value);
+  set id(ObjectId value) => RealmObjectBase.set(this, 'id', value);
 
   @override
   MediaType? get mediaType =>
@@ -504,13 +502,6 @@ class ReleaseMedia extends _ReleaseMedia
   @override
   set mediaType(covariant MediaType? value) =>
       RealmObjectBase.set(this, 'mediaType', value);
-
-  @override
-  String? get picFileName =>
-      RealmObjectBase.get<String>(this, 'picFileName') as String?;
-  @override
-  set picFileName(String? value) =>
-      RealmObjectBase.set(this, 'picFileName', value);
 
   @override
   Stream<RealmObjectChanges<ReleaseMedia>> get changes =>
@@ -525,10 +516,9 @@ class ReleaseMedia extends _ReleaseMedia
     RealmObjectBase.registerFactory(ReleaseMedia._);
     return const SchemaObject(
         ObjectType.realmObject, ReleaseMedia, 'ReleaseMedia', [
-      SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
+      SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
       SchemaProperty('mediaType', RealmPropertyType.object,
           optional: true, linkTarget: 'MediaType'),
-      SchemaProperty('picFileName', RealmPropertyType.string, optional: true),
     ]);
   }
 }
@@ -536,7 +526,7 @@ class ReleaseMedia extends _ReleaseMedia
 class CollectionItemMedia extends _CollectionItemMedia
     with RealmEntity, RealmObjectBase, RealmObject {
   CollectionItemMedia(
-    int id, {
+    ObjectId id, {
     ReleaseMedia? media,
     Condition? condition,
   }) {
@@ -548,9 +538,9 @@ class CollectionItemMedia extends _CollectionItemMedia
   CollectionItemMedia._();
 
   @override
-  int get id => RealmObjectBase.get<int>(this, 'id') as int;
+  ObjectId get id => RealmObjectBase.get<ObjectId>(this, 'id') as ObjectId;
   @override
-  set id(int value) => RealmObjectBase.set(this, 'id', value);
+  set id(ObjectId value) => RealmObjectBase.set(this, 'id', value);
 
   @override
   ReleaseMedia? get media =>
@@ -580,7 +570,7 @@ class CollectionItemMedia extends _CollectionItemMedia
     RealmObjectBase.registerFactory(CollectionItemMedia._);
     return const SchemaObject(
         ObjectType.realmObject, CollectionItemMedia, 'CollectionItemMedia', [
-      SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
+      SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
       SchemaProperty('media', RealmPropertyType.object,
           optional: true, linkTarget: 'ReleaseMedia'),
       SchemaProperty('condition', RealmPropertyType.object,
@@ -592,7 +582,7 @@ class CollectionItemMedia extends _CollectionItemMedia
 class Production extends _Production
     with RealmEntity, RealmObjectBase, RealmObject {
   Production(
-    int id,
+    ObjectId id,
     String title,
     String originalTitle,
     DateTime createdTime, {
@@ -616,9 +606,9 @@ class Production extends _Production
   Production._();
 
   @override
-  int get id => RealmObjectBase.get<int>(this, 'id') as int;
+  ObjectId get id => RealmObjectBase.get<ObjectId>(this, 'id') as ObjectId;
   @override
-  set id(int value) => RealmObjectBase.set(this, 'id', value);
+  set id(ObjectId value) => RealmObjectBase.set(this, 'id', value);
 
   @override
   ProductionType? get productionType =>
@@ -685,7 +675,7 @@ class Production extends _Production
     RealmObjectBase.registerFactory(Production._);
     return const SchemaObject(
         ObjectType.realmObject, Production, 'Production', [
-      SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
+      SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
       SchemaProperty('productionType', RealmPropertyType.object,
           optional: true, linkTarget: 'ProductionType'),
       SchemaProperty('title', RealmPropertyType.string),
@@ -703,7 +693,7 @@ class Production extends _Production
 
 class Release extends _Release with RealmEntity, RealmObjectBase, RealmObject {
   Release(
-    int id,
+    ObjectId id,
     String name,
     String barcode,
     DateTime createdTime, {
@@ -733,9 +723,9 @@ class Release extends _Release with RealmEntity, RealmObjectBase, RealmObject {
   Release._();
 
   @override
-  int get id => RealmObjectBase.get<int>(this, 'id') as int;
+  ObjectId get id => RealmObjectBase.get<ObjectId>(this, 'id') as ObjectId;
   @override
-  set id(int value) => RealmObjectBase.set(this, 'id', value);
+  set id(ObjectId value) => RealmObjectBase.set(this, 'id', value);
 
   @override
   String get name => RealmObjectBase.get<String>(this, 'name') as String;
@@ -812,7 +802,7 @@ class Release extends _Release with RealmEntity, RealmObjectBase, RealmObject {
   static SchemaObject _initSchema() {
     RealmObjectBase.registerFactory(Release._);
     return const SchemaObject(ObjectType.realmObject, Release, 'Release', [
-      SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
+      SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
       SchemaProperty('barcode', RealmPropertyType.string),
       SchemaProperty('caseType', RealmPropertyType.object,
@@ -837,7 +827,7 @@ class Release extends _Release with RealmEntity, RealmObjectBase, RealmObject {
 class CollectionItem extends _CollectionItem
     with RealmEntity, RealmObjectBase, RealmObject {
   CollectionItem(
-    int id,
+    ObjectId id,
     DateTime createdTime, {
     Condition? condition,
     CollectionStatus? status,
@@ -861,9 +851,9 @@ class CollectionItem extends _CollectionItem
   CollectionItem._();
 
   @override
-  int get id => RealmObjectBase.get<int>(this, 'id') as int;
+  ObjectId get id => RealmObjectBase.get<ObjectId>(this, 'id') as ObjectId;
   @override
-  set id(int value) => RealmObjectBase.set(this, 'id', value);
+  set id(ObjectId value) => RealmObjectBase.set(this, 'id', value);
 
   @override
   Condition? get condition =>
@@ -930,7 +920,7 @@ class CollectionItem extends _CollectionItem
     RealmObjectBase.registerFactory(CollectionItem._);
     return const SchemaObject(
         ObjectType.realmObject, CollectionItem, 'CollectionItem', [
-      SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
+      SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
       SchemaProperty('condition', RealmPropertyType.object,
           optional: true, linkTarget: 'Condition'),
       SchemaProperty('status', RealmPropertyType.object,
