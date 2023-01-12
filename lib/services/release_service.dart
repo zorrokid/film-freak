@@ -1,4 +1,5 @@
 import 'package:film_freak/entities/release_production.dart';
+import 'package:film_freak/persistence/repositories/collection_items_repository.dart';
 import 'package:logging/logging.dart';
 
 import '../entities/release_picture.dart';
@@ -28,6 +29,7 @@ ReleaseService initializeReleaseService() {
     releaseMediasRepository: ReleaseMediasRepository(dbProvider),
     releaseProductionsRepository: ReleaseProductionsRepository(dbProvider),
     releaseCommentsRepository: ReleaseCommentsRepository(dbProvider),
+    collectionItemsRepository: CollectionItemsRepository(dbProvider),
   );
 }
 
@@ -40,6 +42,7 @@ class ReleaseService {
     required this.releaseProductionsRepository,
     required this.releaseMediasRepository,
     required this.releaseCommentsRepository,
+    required this.collectionItemsRepository,
   });
 
   final log = Logger('ReleaseService');
@@ -50,17 +53,20 @@ class ReleaseService {
   final ReleaseProductionsRepository releaseProductionsRepository;
   final ReleaseMediasRepository releaseMediasRepository;
   final ReleaseCommentsRepository releaseCommentsRepository;
+  final CollectionItemsRepository collectionItemsRepository;
 
   ReleaseViewModel initializeModel(String? barcode) {
     final release = Release.empty();
     release.barcode = barcode ?? '';
     return ReleaseViewModel(
-        release: release,
-        pictures: [],
-        properties: [],
-        productions: [],
-        comments: [],
-        medias: []);
+      release: release,
+      pictures: [],
+      properties: [],
+      productions: [],
+      comments: [],
+      medias: [],
+      collectionItems: [],
+    );
   }
 
   Future<ReleaseViewModel> getModel(int releaseId) async {
@@ -75,6 +81,8 @@ class ReleaseService {
         .getByIds(releaseProductions.map((e) => e.productionId));
     final medias = await releaseMediasRepository.getByReleaseId(releaseId);
     final comments = await releaseCommentsRepository.getByReleaseId(releaseId);
+    final collectionItems =
+        await collectionItemsRepository.getByReleaseId(releaseId);
 
     return ReleaseViewModel(
       release: release,
@@ -83,6 +91,7 @@ class ReleaseService {
       productions: productions,
       comments: comments,
       medias: medias,
+      collectionItems: collectionItems,
     );
   }
 

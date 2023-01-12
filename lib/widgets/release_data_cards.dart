@@ -1,6 +1,8 @@
+import 'package:film_freak/enums/condition.dart';
 import 'package:film_freak/models/release_view_model.dart';
 import 'package:flutter/material.dart';
 
+import 'collection_item_card.dart';
 import 'pictures_card.dart';
 import 'production_card.dart';
 import 'release_details_card.dart';
@@ -15,6 +17,7 @@ class ReleaseDataCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productions = viewModel.productions.toList();
+    final collectionItems = viewModel.collectionItems.toList();
     return Column(
       children: [
         Row(
@@ -42,6 +45,19 @@ class ReleaseDataCards extends StatelessWidget {
         ReleaseDetailsCard(release: viewModel.release),
         ReleaseProperties(
           releaseProperties: viewModel.properties.toList(),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: collectionItems.length,
+          itemBuilder: (context, index) {
+            return ExpansionTile(
+              title: Text(
+                  conditionFormFieldValues[collectionItems[index].condition]!),
+              children: [
+                CollectionItemCard(collectionItem: collectionItems[index]),
+              ],
+            );
+          },
         ),
       ],
     );
