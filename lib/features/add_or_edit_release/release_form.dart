@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:film_freak/entities/release_media.dart';
 import 'package:film_freak/entities/release_property.dart';
 import 'package:film_freak/extensions/string_extensions.dart';
+import 'package:film_freak/features/add_or_edit_release/media_selector.dart';
 import 'package:film_freak/features/add_or_edit_release/productions_list.dart';
+import 'package:film_freak/features/add_or_edit_release/release_media_widget.dart';
 import 'package:film_freak/features/tmdb_search/tmdb_movie_result.dart';
 import 'package:film_freak/models/release_view_model.dart';
 import 'package:film_freak/enums/picture_type.dart';
@@ -11,7 +13,6 @@ import 'package:film_freak/entities/release_picture.dart';
 import 'package:film_freak/features/scan_barcode/barcode_scanner_view.dart';
 import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/screens/property_selection_view.dart';
-import 'package:film_freak/widgets/form/drop_down_form_field.dart';
 import 'package:film_freak/widgets/error_display_widget.dart';
 import 'package:film_freak/widgets/picture_type_selection.dart';
 import 'package:film_freak/widgets/buttons/release_pic_delete.dart';
@@ -23,12 +24,14 @@ import 'package:film_freak/entities/release.dart';
 
 import '../../entities/production.dart';
 import '../../entities/release_comment.dart';
+import '../../enums/media_type.dart';
 import '../../persistence/app_state.dart';
 
 import 'package:path/path.dart' as p;
 
 import '../../services/release_service.dart';
 import '../../widgets/form/decorated_text_form_field.dart';
+import '../../widgets/form/drop_down_form_field.dart';
 import '../../widgets/preview_pic.dart';
 import '../../widgets/buttons/release_pic_crop.dart';
 import '../../widgets/buttons/release_pic_selection.dart';
@@ -71,6 +74,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
   List<Production> _productions = <Production>[];
   List<ReleaseMedia> _medias = <ReleaseMedia>[];
   List<ReleaseProperty> _properties = <ReleaseProperty>[];
+  final List<ReleaseMedia> _media = <ReleaseMedia>[];
 
   @override
   void initState() {
@@ -266,6 +270,31 @@ class _ReleaseFormState extends State<ReleaseForm> {
     setState(() {
       _properties = selectedProperties;
     });
+  }
+
+  void addMedia(int pcs, MediaType mediaType) {
+    final media = <ReleaseMedia>[];
+    for (int i = 0; i < pcs; i++) {
+      media.add(ReleaseMedia(mediaType: mediaType));
+    }
+    setState(() {
+      _media.addAll(media);
+    });
+  }
+
+  Future<void> selectMedia(BuildContext context) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return MediaSelector(
+          onAddMedia: (int pcs, MediaType mediaType) {
+            addMedia(pcs, mediaType);
+            Navigator.pop(context);
+          },
+          onCancel: () => Navigator.pop(context),
+        );
+      },
+    );
   }
 
   Future<void> getTextFromImage(
@@ -474,12 +503,18 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       ),
                     ],
                   ),
-                  // TODO: add media type selection on separate screen
                   DropDownFormField(
                     initialValue: viewModel.release.caseType,
                     values: caseTypeFormFieldValues,
                     onValueChange: onCaseTypeSelected,
                     labelText: 'Case type',
+                  ),
+                  ReleaseMediaWidget(
+                    releaseMedia: _media,
+                  ),
+                  ElevatedButton(
+                    onPressed: () => selectMedia(context),
+                    child: const Text('Select media'),
                   ),
                   Row(
                     children: [
