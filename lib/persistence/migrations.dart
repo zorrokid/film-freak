@@ -68,4 +68,9 @@ final migrationScripts = <int, String>{
           condition INTEGER,
           createdTime DATETIME,
           modifiedTime DATETIME)''',
+  11: '''CREATE TABLE collectionItemMedias(
+          id INTEGER PRIMARY KEY,
+          collectionItemId INTEGER,
+          releaseMediaId INTEGER,
+          condition INTEGER)''',
 };
