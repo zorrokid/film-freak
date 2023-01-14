@@ -1,5 +1,5 @@
 import 'package:film_freak/enums/media_type.dart';
-import 'package:film_freak/widgets/form/drop_down_form_field.dart';
+import 'package:film_freak/widgets/form/dropdown_form_field.dart';
 import 'package:flutter/material.dart';
 
 typedef OnAddMedia = void Function(int pcs, MediaType mediaType);
@@ -72,7 +72,7 @@ class _MediaSelectorState extends State<MediaSelector> {
               ),
             ],
           ),
-          DropDownFormField(
+          DropdownFormField(
             initialValue: _mediaType,
             labelText: 'Media type',
             onValueChange: setMediaType,
