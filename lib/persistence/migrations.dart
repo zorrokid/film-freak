@@ -73,4 +73,6 @@ final migrationScripts = <int, String>{
           collectionItemId INTEGER,
           releaseMediaId INTEGER,
           condition INTEGER)''',
+  12: 'ALTER TABLE collectionItemMedias ADD COLUMN createdTime DATETIME',
+  13: 'ALTER TABLE collectionItemMedias ADD COLUMN modifiedTime DATETIME',
 };
