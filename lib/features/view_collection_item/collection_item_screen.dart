@@ -1,9 +1,10 @@
 import 'package:film_freak/services/collection_item_service.dart';
+import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/collection_item_view_model.dart';
-import '../../screens/forms/collection_item_form.dart';
+import '../add_or_edit_collection_item/collection_item_form.dart';
 import '../../widgets/error_display_widget.dart';
 import '../../widgets/release_data_cards.dart';
 import '../../widgets/spinner.dart';
@@ -61,6 +62,8 @@ class _CollectionItemScreenState extends State<CollectionItemScreen> {
                   builder: (context) => CollectionItemForm(
                     id: viewModel.collectionItem.id,
                     releaseId: viewModel.collectionItem.releaseId!,
+                    releaseService: initializeReleaseService(),
+                    collectionItemService: initializeCollectionItemService(),
                   ),
                 ),
               );

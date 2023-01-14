@@ -1,10 +1,11 @@
 import 'package:film_freak/models/list_models/release_list_model.dart';
 import 'package:film_freak/persistence/query_specs/release_query_specs.dart';
+import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/services/release_service.dart';
 import 'package:film_freak/widgets/release_filter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../screens/forms/collection_item_form.dart';
+import '../add_or_edit_collection_item/collection_item_form.dart';
 import '../../persistence/app_state.dart';
 import '../../utils/dialog_utls.dart';
 import '../add_or_edit_release/release_form.dart';
@@ -87,6 +88,8 @@ class _ScanViewState extends State<ScanView> {
       builder: (context) {
         return CollectionItemForm(
           releaseId: releaseId,
+          releaseService: initializeReleaseService(),
+          collectionItemService: initializeCollectionItemService(),
         );
       },
     ));

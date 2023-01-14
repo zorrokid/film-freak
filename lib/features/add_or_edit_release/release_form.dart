@@ -13,6 +13,7 @@ import 'package:film_freak/entities/release_picture.dart';
 import 'package:film_freak/features/scan_barcode/barcode_scanner_view.dart';
 import 'package:film_freak/screens/image_text_selector.dart';
 import 'package:film_freak/screens/property_selection_view.dart';
+import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/widgets/error_display_widget.dart';
 import 'package:film_freak/widgets/picture_type_selection.dart';
 import 'package:film_freak/widgets/buttons/release_pic_delete.dart';
@@ -31,14 +32,14 @@ import 'package:path/path.dart' as p;
 
 import '../../services/release_service.dart';
 import '../../widgets/form/decorated_text_form_field.dart';
-import '../../widgets/form/drop_down_form_field.dart';
+import '../../widgets/form/dropdown_form_field.dart';
 import '../../widgets/preview_pic.dart';
 import '../../widgets/buttons/release_pic_crop.dart';
 import '../../widgets/buttons/release_pic_selection.dart';
 import '../../widgets/release_properties.dart';
 import '../../screens/image_process_view.dart';
 import '../tmdb_search/tmdb_movie_search_screen.dart';
-import '../../screens/forms/collection_item_form.dart';
+import '../add_or_edit_collection_item/collection_item_form.dart';
 
 class ReleaseForm extends StatefulWidget {
   const ReleaseForm(
@@ -72,9 +73,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
   List<ReleasePicture> _pictures = <ReleasePicture>[];
   final List<ReleasePicture> _picturesToDelete = <ReleasePicture>[];
   List<Production> _productions = <Production>[];
-  List<ReleaseMedia> _medias = <ReleaseMedia>[];
   List<ReleaseProperty> _properties = <ReleaseProperty>[];
-  final List<ReleaseMedia> _media = <ReleaseMedia>[];
+  List<ReleaseMedia> _media = <ReleaseMedia>[];
 
   @override
   void initState() {
@@ -181,7 +181,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
     _pictures = model.pictures.toList();
     _caseType = model.release.caseType;
     _productions = model.productions.toList();
-    _medias = model.medias.toList();
+    _media = model.medias.toList();
 
     // do not setState!
 
@@ -201,7 +201,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
       pictures: _pictures,
       properties: _properties,
       productions: _productions,
-      medias: _medias,
+      medias: _media,
       comments: <ReleaseComment>[],
       collectionItems: [],
     );
@@ -377,6 +377,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 builder: (context) {
                   return CollectionItemForm(
                     releaseId: id,
+                    releaseService: initializeReleaseService(),
+                    collectionItemService: initializeCollectionItemService(),
                   );
                 },
               ),
@@ -503,7 +505,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       ),
                     ],
                   ),
-                  DropDownFormField(
+                  DropdownFormField(
                     initialValue: viewModel.release.caseType,
                     values: caseTypeFormFieldValues,
                     onValueChange: onCaseTypeSelected,

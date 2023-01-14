@@ -1,22 +1,36 @@
+import 'package:film_freak/entities/collection_item_media.dart';
+import 'package:film_freak/models/collection_item_edit_view_model.dart';
+import 'package:film_freak/models/collection_item_media_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../enums/collection_status.dart';
+import '../../models/collection_item_save_model.dart';
+import '../../services/release_service.dart';
 import '../../widgets/error_display_widget.dart';
 import '../../widgets/spinner.dart';
-import '../../widgets/form/drop_down_form_field.dart';
+import '../../widgets/form/dropdown_form_field.dart';
 
 import '../../entities/collection_item.dart';
 import '../../persistence/app_state.dart';
 import '../../enums/condition.dart';
 
 import '../../services/collection_item_service.dart';
+import 'collection_item_media_edit_card.dart';
 
 class CollectionItemForm extends StatefulWidget {
-  const CollectionItemForm({required this.releaseId, this.id, super.key});
-
   final int releaseId;
   final int? id;
+  final CollectionItemService collectionItemService;
+  final ReleaseService releaseService;
+
+  const CollectionItemForm({
+    required this.releaseService,
+    required this.collectionItemService,
+    required this.releaseId,
+    this.id,
+    super.key,
+  });
 
   @override
   State<CollectionItemForm> createState() {
@@ -27,12 +41,12 @@ class CollectionItemForm extends StatefulWidget {
 class _CollectionItemFormState extends State<CollectionItemForm> {
   final _formKey = GlobalKey<FormState>();
   final _notesController = TextEditingController();
-  final _collectionItemService = initializeCollectionItemService();
 
   // form state
-  late Future<CollectionItem> _futureModel;
+  late Future<CollectionItemEditViewModel> _futureModel;
   Condition _condition = Condition.unknown;
   CollectionStatus _status = CollectionStatus.unknown;
+  List<CollectionItemMedia> _media = <CollectionItemMedia>[];
 
   @override
   void initState() {
@@ -60,25 +74,43 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
 
   bool isEditMode() => widget.id != null;
 
-  Future<CollectionItem> _loadData() async {
+  Future<CollectionItemEditViewModel> _loadData() async {
     final model = widget.id != null
-        ? await _collectionItemService.get(widget.id!)
-        : CollectionItem.empty(widget.releaseId);
+        ? await widget.collectionItemService.getEditModel(widget.id!)
+        : await widget.collectionItemService
+            .initializeAddModel(widget.releaseId);
 
-    _condition = model.condition;
-    _status = model.status;
+    _condition = model.collectionItem.condition;
+    _status = model.collectionItem.status;
+    _media = model.media.map((e) => e.collectionItemMedia).toList();
 
     // do not setState!
 
     return model;
   }
 
-  CollectionItem _buildModel() => CollectionItem(
-        id: widget.id,
-        releaseId: widget.releaseId,
-        condition: _condition,
-        status: _status,
+  CollectionItemSaveModel _buildModel() => CollectionItemSaveModel(
+        collectionItem: CollectionItem(
+          id: widget.id,
+          releaseId: widget.releaseId,
+          condition: _condition,
+          status: _status,
+        ),
+        media: _media,
+        properties: [],
       );
+
+  void onUpdateCollectionItemMedia(int index, Condition condition) {
+    final oldMedia = _media[index];
+    _media[index] = CollectionItemMedia(
+      releaseMediaId: oldMedia.releaseMediaId,
+      id: oldMedia.id,
+      collectionItemId: oldMedia.collectionItemId,
+      createdTime: oldMedia.createdTime,
+      modifiedTime: oldMedia.modifiedTime,
+      condition: condition,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +127,8 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
           ),
         );
 
-        viewModel.id = await _collectionItemService.upsert(viewModel);
+        viewModel.collectionItem.id =
+            await widget.collectionItemService.upsert(viewModel);
 
         if (mounted) {
           Navigator.of(context).pop();
@@ -109,8 +142,8 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
                 : const Text('Add a collection item')),
         body: FutureBuilder(
           future: _futureModel,
-          builder:
-              (BuildContext context, AsyncSnapshot<CollectionItem> snapshot) {
+          builder: (BuildContext context,
+              AsyncSnapshot<CollectionItemEditViewModel> snapshot) {
             if (snapshot.hasError) {
               return ErrorDisplayWidget(snapshot.error.toString());
             }
@@ -118,24 +151,36 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
               return const Spinner();
             }
 
-            final CollectionItem viewModel = snapshot.data!;
+            final CollectionItem viewModel = snapshot.data!.collectionItem;
+            final List<CollectionItemMediaViewModel> media =
+                snapshot.data!.media;
 
             return Form(
               key: _formKey,
-              child: ListView(
+              child: Column(
                 children: [
-                  DropDownFormField(
+                  DropdownFormField(
                     initialValue: viewModel.condition,
                     values: conditionFormFieldValues,
                     onValueChange: onConditionSelected,
                     labelText: 'Condition',
                   ),
-                  DropDownFormField(
+                  DropdownFormField(
                     initialValue: viewModel.status,
                     values: collectionStatusFieldValues,
                     onValueChange: onStatusSelected,
                     labelText: 'Status',
                   ),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: media.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CollectionItemMediaEditCard(
+                          index: index,
+                          viewModel: media[index],
+                          onUpdate: onUpdateCollectionItemMedia,
+                        );
+                      }),
                 ],
               ),
             );
