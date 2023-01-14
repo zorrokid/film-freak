@@ -1,9 +1,16 @@
+import 'package:film_freak/entities/collection_item_media.dart';
+import 'package:film_freak/enums/condition.dart';
+import 'package:film_freak/models/collection_item_edit_view_model.dart';
+import 'package:film_freak/models/collection_item_media_view_model.dart';
 import 'package:film_freak/models/collection_item_view_model.dart';
 import 'package:film_freak/persistence/repositories/collection_item_comments_repository.dart';
+import 'package:film_freak/persistence/repositories/collection_item_media_repository.dart';
 import 'package:film_freak/persistence/repositories/collection_item_properties_repository.dart';
+import 'package:film_freak/persistence/repositories/release_medias_repository.dart';
 import 'package:film_freak/services/release_service.dart';
 import 'package:logging/logging.dart';
 import '../entities/collection_item.dart';
+import '../models/collection_item_save_model.dart';
 import '../persistence/db_provider.dart';
 import '../persistence/repositories/collection_items_repository.dart';
 
@@ -15,6 +22,8 @@ CollectionItemService initializeCollectionItemService() {
         CollectionItemCommentsRepository(dbProvider),
     collectionItemPropertiesRepository:
         CollectionItemPropertiesRepository(dbProvider),
+    collectionItemMediaRepository: CollectionItemMediaRepository(dbProvider),
+    releaseMediasRepository: ReleaseMediasRepository(dbProvider),
     releaseService: initializeReleaseService(),
   );
 }
@@ -24,6 +33,8 @@ class CollectionItemService {
     required this.collectionItemRepository,
     required this.collectionItemCommentsRepository,
     required this.collectionItemPropertiesRepository,
+    required this.collectionItemMediaRepository,
+    required this.releaseMediasRepository,
     required this.releaseService,
   });
 
@@ -31,6 +42,8 @@ class CollectionItemService {
   final CollectionItemsRepository collectionItemRepository;
   final CollectionItemCommentsRepository collectionItemCommentsRepository;
   final CollectionItemPropertiesRepository collectionItemPropertiesRepository;
+  final CollectionItemMediaRepository collectionItemMediaRepository;
+  final ReleaseMediasRepository releaseMediasRepository;
   final ReleaseService releaseService;
 
   Future<CollectionItemViewModel> getModel(int id) async {
@@ -50,17 +63,65 @@ class CollectionItemService {
     return model;
   }
 
+  Future<CollectionItemEditViewModel> getEditModel(int collectionItemId) async {
+    final collectionItem = await collectionItemRepository.get(collectionItemId);
+    final properties = await collectionItemPropertiesRepository
+        .getByCollectionItemId(collectionItemId);
+    final releaseMedia =
+        await releaseMediasRepository.getByReleaseId(collectionItem.releaseId!);
+    final media = await collectionItemMediaRepository
+        .getByCollectionItemId(collectionItemId);
+    final mediaViewModel = media
+        .map(
+          (e) => CollectionItemMediaViewModel(
+              releaseMedia:
+                  releaseMedia.where((rm) => rm.id == e.releaseMediaId).single,
+              collectionItemMedia: e),
+        )
+        .toList();
+    final model = CollectionItemEditViewModel(
+      collectionItem: collectionItem,
+      properties: properties.toList(),
+      media: mediaViewModel,
+    );
+    return model;
+  }
+
+  Future<CollectionItemEditViewModel> initializeAddModel(int releaseId) async {
+    final releaseMedia =
+        await releaseMediasRepository.getByReleaseId(releaseId);
+    final collectionItemMedia = releaseMedia.map(
+      (e) => CollectionItemMediaViewModel(
+        releaseMedia: e,
+        collectionItemMedia: CollectionItemMedia(
+          condition: Condition.unknown,
+          releaseMediaId: e.id!,
+        ),
+      ),
+    );
+    return CollectionItemEditViewModel(
+      collectionItem: CollectionItem.empty(releaseId),
+      properties: [],
+      media: collectionItemMedia.toList(),
+    );
+  }
+
   Future<CollectionItem> get(int id) async {
     return await collectionItemRepository.get(id);
   }
 
-  Future<int> upsert(CollectionItem collectionItem) async {
-    int? id = collectionItem.id;
+  Future<int> upsert(CollectionItemSaveModel saveModel) async {
+    int? id = saveModel.collectionItem.id;
     if (id != null) {
-      await collectionItemRepository.update(collectionItem);
+      await collectionItemRepository.update(saveModel.collectionItem);
     } else {
-      id = await collectionItemRepository.insert(collectionItem);
+      id = await collectionItemRepository.insert(saveModel.collectionItem);
     }
+    for (CollectionItemMedia media in saveModel.media) {
+      media.collectionItemId = id;
+      collectionItemMediaRepository.upsert(media);
+    }
+    // TODO add/update properties
     return id;
   }
 
@@ -68,51 +129,4 @@ class CollectionItemService {
     final rows = await collectionItemRepository.delete(collectionItemId);
     return rows > 0;
   }
-
-  // Future<Iterable<CollectionItemListModel>> getListModels(
-  //     CollectionItemQuerySpecs filter) async {
-  //   final collectionItems = await collectionItemRepository.query(filter);
-  //   final releaseIds = collectionItems.map((e) => e.releaseId!).toSet();
-  //   final releases = await releaseRepository.getByIds(releaseIds);
-  //   assert(releases.length == releaseIds.length);
-  //   final releaseMap = <int, Release>{};
-  //   for (final release in releases) {
-  //     releaseMap[release.id!] = release;
-  //   }
-  //   // TODO
-  //   // final movieIds = releases
-  //   //     .where((e) => e.productionId != null)
-  //   //     .map((e) => e.productionId!)
-  //   //     .toSet();
-  //   // final movies = await movieRepository.getByIds(movieIds);
-  //   // assert(movies.length == movieIds.length);
-  //   // final movieMap = <int, Production>{};
-  //   // for (final movie in movies) {
-  //   //   movieMap[movie.id!] = movie;
-  //   // }
-  //   final pics = await releasePicturesRepository
-  //       .getByReleaseIds(releaseIds); //, [PictureType.coverFront]);
-
-  //   final List<MediaType> mediaTypes = <MediaType>[];
-
-  //   final collectionItemListModels =
-  //       collectionItems.map((e) => CollectionItemListModel(
-  //             barcode: releaseMap[e.releaseId]!.barcode,
-  //             caseType: releaseMap[e.releaseId]!.caseType,
-  //             condition: e.condition,
-  //             id: e.id!,
-  //             mediaTypes: mediaTypes,
-  //             name: releaseMap[e.releaseId]!.name,
-  //             // TODO
-  //             productionNames: [] /*releaseMap[e.releaseId]!.productionId != null
-  //                 ? movieMap[releaseMap[e.releaseId]!.productionId]!.title
-  //                 : null*/
-  //             ,
-  //             picFileName: pics.any((p) => p.releaseId == e.id)
-  //                 ? pics.firstWhere((p) => p.releaseId == e.id).filename
-  //                 : null,
-  //           ));
-
-  //   return collectionItemListModels;
-  // }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class DropDownFormField<T> extends StatelessWidget {
-  const DropDownFormField(
+class DropdownFormField<T> extends StatelessWidget {
+  const DropdownFormField(
       {required this.initialValue,
       required this.values,
       required this.onValueChange,
