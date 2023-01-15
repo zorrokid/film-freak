@@ -16,6 +16,11 @@ Future main() async {
     databaseFactory = databaseFactoryFfi;
   });
 
+  tearDown(() async {
+    final db = await TestDatabaseProvider.instance.database;
+    db.delete('releaseProperties');
+  });
+
   test('Test get with inserted value, it should return value.', () async {
     final releasePropertiesRepository =
         ReleasePropertiesRepository(TestDatabaseProvider.instance);
