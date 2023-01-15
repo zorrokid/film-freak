@@ -1,5 +1,6 @@
 import 'package:film_freak/entities/release_production.dart';
 import 'package:film_freak/persistence/repositories/collection_items_repository.dart';
+import 'package:film_freak/services/production_service.dart';
 import 'package:logging/logging.dart';
 
 import '../entities/release_picture.dart';
@@ -26,6 +27,8 @@ ReleaseService initializeReleaseService() {
     releasePicturesRepository: ReleasePicturesRepository(dbProvider),
     releasePropertiesRepository: ReleasePropertiesRepository(dbProvider),
     productionsRepository: ProductionsRepository(dbProvider),
+    productionService: ProductionService(
+        productionsRepository: ProductionsRepository(dbProvider)),
     releaseMediasRepository: ReleaseMediasRepository(dbProvider),
     releaseProductionsRepository: ReleaseProductionsRepository(dbProvider),
     releaseCommentsRepository: ReleaseCommentsRepository(dbProvider),
@@ -39,6 +42,7 @@ class ReleaseService {
     required this.releasePicturesRepository,
     required this.releasePropertiesRepository,
     required this.productionsRepository,
+    required this.productionService,
     required this.releaseProductionsRepository,
     required this.releaseMediasRepository,
     required this.releaseCommentsRepository,
@@ -50,6 +54,7 @@ class ReleaseService {
   final ReleasePicturesRepository releasePicturesRepository;
   final ReleasePropertiesRepository releasePropertiesRepository;
   final ProductionsRepository productionsRepository;
+  final ProductionService productionService;
   final ReleaseProductionsRepository releaseProductionsRepository;
   final ReleaseMediasRepository releaseMediasRepository;
   final ReleaseCommentsRepository releaseCommentsRepository;
@@ -97,7 +102,7 @@ class ReleaseService {
 
   Future<int> upsert(ReleaseViewModel viewModel) async {
     int releaseId = await _upsertRelease(viewModel.release);
-    await _upsertProductions(releaseId, viewModel.productions);
+    await productionService.upsertProductions(viewModel.productions);
     await _removeObsoleteProductionLinks(releaseId, viewModel.productions);
     await _linkProductions(releaseId, viewModel.productions);
     await releasePicturesRepository.upsertChildren(
@@ -129,25 +134,6 @@ class ReleaseService {
     }
 
     return releaseId;
-  }
-
-  Future<void> _upsertProductions(
-      int releaseId, Iterable<Production> productions) async {
-    if (productions.isEmpty) return;
-
-    for (final production in productions) {
-      // check if production entry with tmdb id already exists and assign id if it does
-      if (production.id == null && production.tmdbId != null) {
-        final existingProduction =
-            await productionsRepository.getByTmdbId(production.tmdbId!);
-        if (existingProduction != null) {
-          production.id = existingProduction.id;
-        }
-      }
-
-      final productionId = await productionsRepository.upsert(production);
-      production.id = productionId;
-    }
   }
 
   Future<void> _removeObsoleteProductionLinks(
