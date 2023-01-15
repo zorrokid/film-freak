@@ -28,6 +28,7 @@ Future main() async {
   tearDown(() async {
     final db = await TestDatabaseProvider.instance.database;
     db.delete('productions');
+    db.delete('releaseProductions');
   });
 
   test('No existing production, production is inserted and populated with id.',
@@ -61,5 +62,25 @@ Future main() async {
     final productions = <Production>[testProduction];
     await productionService.upsertProductions(productions);
     expect(testProduction.id == id, true);
+  });
+
+  test("Link productions to release", () async {
+    final db = await TestDatabaseProvider.instance.database;
+    final testProduction = Production(
+      productionType: ProductionType.movie,
+      title: 'A Movie',
+      originalTitle: 'Elokuva',
+      tmdbId: 123,
+      id: 22,
+    );
+    const releaseId = 11;
+    final productions = <Production>[testProduction];
+    await productionService.linkProductions(releaseId, productions);
+    final result = await db.query(
+      'releaseProductions',
+      where: 'releaseId=?',
+      whereArgs: [releaseId],
+    );
+    expect(result.length, 1);
   });
 }

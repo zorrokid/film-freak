@@ -1,4 +1,3 @@
-import 'package:film_freak/entities/release_production.dart';
 import 'package:film_freak/persistence/repositories/collection_items_repository.dart';
 import 'package:film_freak/services/production_service.dart';
 import 'package:logging/logging.dart';
@@ -31,7 +30,6 @@ ReleaseService initializeReleaseService() {
       releaseProductionsRepository: ReleaseProductionsRepository(dbProvider),
     ),
     releaseMediasRepository: ReleaseMediasRepository(dbProvider),
-    releaseProductionsRepository: ReleaseProductionsRepository(dbProvider),
     releaseCommentsRepository: ReleaseCommentsRepository(dbProvider),
     collectionItemsRepository: CollectionItemsRepository(dbProvider),
   );
@@ -43,7 +41,6 @@ class ReleaseService {
     required this.releasePicturesRepository,
     required this.releasePropertiesRepository,
     required this.productionService,
-    required this.releaseProductionsRepository,
     required this.releaseMediasRepository,
     required this.releaseCommentsRepository,
     required this.collectionItemsRepository,
@@ -54,7 +51,6 @@ class ReleaseService {
   final ReleasePicturesRepository releasePicturesRepository;
   final ReleasePropertiesRepository releasePropertiesRepository;
   final ProductionService productionService;
-  final ReleaseProductionsRepository releaseProductionsRepository;
   final ReleaseMediasRepository releaseMediasRepository;
   final ReleaseCommentsRepository releaseCommentsRepository;
   final CollectionItemsRepository collectionItemsRepository;
@@ -80,7 +76,7 @@ class ReleaseService {
     final releaseProperties =
         await releasePropertiesRepository.getByReleaseId(releaseId);
     final releaseProductions =
-        await releaseProductionsRepository.getByReleaseId(releaseId);
+        await productionService.getReleaseProductions(releaseId);
     final productions = await productionService
         .getProductionsByIds(releaseProductions.map((e) => e.productionId));
     final medias = await releaseMediasRepository.getByReleaseId(releaseId);
@@ -102,8 +98,9 @@ class ReleaseService {
   Future<int> upsert(ReleaseViewModel viewModel) async {
     int releaseId = await _upsertRelease(viewModel.release);
     await productionService.upsertProductions(viewModel.productions);
-    await _removeObsoleteProductionLinks(releaseId, viewModel.productions);
-    await _linkProductions(releaseId, viewModel.productions);
+    await productionService.removeObsoleteProductionLinks(
+        releaseId, viewModel.productions);
+    await productionService.linkProductions(releaseId, viewModel.productions);
     await releasePicturesRepository.upsertChildren(
         releaseId, viewModel.pictures);
     await releasePropertiesRepository.upsertChildren(
@@ -133,60 +130,6 @@ class ReleaseService {
     }
 
     return releaseId;
-  }
-
-  Future<void> _removeObsoleteProductionLinks(
-      int releaseId, Iterable<Production> productions) async {
-    final existingReleaseProductions =
-        await releaseProductionsRepository.getByReleaseId(releaseId);
-    final existingProductionIds =
-        existingReleaseProductions.map((e) => e.productionId).toSet();
-    // productions without productionId are new, they are inserted, no need to check those
-    final currentProductionIds = productions
-        .where((element) => element.id != null)
-        .map((e) => e.id)
-        .toList();
-    final productionIdsForUnlinking = <int>[];
-    for (final existingProdId in existingProductionIds) {
-      if (!currentProductionIds.contains(existingProdId)) {
-        productionIdsForUnlinking.add(existingProdId);
-      }
-    }
-    await releaseProductionsRepository.deleteByProductionIds(
-        releaseId, productionIdsForUnlinking);
-  }
-
-  Future<void> _linkProductions(
-      int releaseId, Iterable<Production> productions) async {
-    // TODO before returning when input productions list is empty,
-    // need to ensure if prodcutions already linked to release
-    // and the obsolete should be removed
-    if (productions.isEmpty) return;
-
-    assert(productions.any((element) => element.id == null) == false);
-
-    final releaseProductions = productions.map(
-        (e) => ReleaseProduction(releaseId: releaseId, productionId: e.id!));
-
-    final existingReleaseProductions =
-        await releaseProductionsRepository.getByReleaseId(releaseId);
-
-    final productionReleaseProductionIdMap = <int, int>{};
-    for (final existingProd in existingReleaseProductions) {
-      productionReleaseProductionIdMap[existingProd.productionId] =
-          existingProd.id!;
-    }
-
-    for (final releaseProduction in releaseProductions) {
-      if (productionReleaseProductionIdMap
-          .containsKey(releaseProduction.productionId)) {
-        releaseProduction.id =
-            productionReleaseProductionIdMap[releaseProduction.productionId];
-      }
-    }
-
-    await releaseProductionsRepository.upsertChildren(
-        releaseId, releaseProductions);
   }
 
   Future<Iterable<ReleaseListModel>> getListModels(
@@ -251,7 +194,7 @@ class ReleaseService {
   Future<Map<int, List<Production>>> getProductionsByReleaseMap(
       Iterable<int> releaseIds) async {
     final releaseProductions =
-        await releaseProductionsRepository.getByReleaseIds(releaseIds);
+        await productionService.getReleaseProductionsByReleaseIds(releaseIds);
     final productionIds = releaseProductions.map((e) => e.productionId).toSet();
     final productions =
         await productionService.getProductionsByIds(productionIds);
