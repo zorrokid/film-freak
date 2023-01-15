@@ -1,6 +1,7 @@
 import 'package:film_freak/entities/production.dart';
 import 'package:film_freak/enums/production_type.dart';
 import 'package:film_freak/persistence/repositories/productions_repository.dart';
+import 'package:film_freak/persistence/repositories/release_productions_repository.dart';
 import 'package:film_freak/services/production_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sqflite.dart';
@@ -17,8 +18,11 @@ Future main() async {
     // Change the default factory
     databaseFactory = databaseFactoryFfi;
     productionService = ProductionService(
-        productionsRepository:
-            ProductionsRepository(TestDatabaseProvider.instance));
+      productionsRepository:
+          ProductionsRepository(TestDatabaseProvider.instance),
+      releaseProductionsRepository:
+          ReleaseProductionsRepository(TestDatabaseProvider.instance),
+    );
   });
 
   tearDown(() async {
