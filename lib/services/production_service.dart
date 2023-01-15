@@ -43,10 +43,6 @@ class ProductionService {
     // check that each production has id
     assert(productions.any((element) => element.id == null) == false);
 
-    // create release production entites from productions
-    final releaseProductions = productions.map(
-        (e) => ReleaseProduction(releaseId: releaseId, productionId: e.id!));
-
     // check which ones are already mapped
     final existingReleaseProductions =
         await releaseProductionsRepository.getByReleaseId(releaseId);
@@ -58,13 +54,21 @@ class ProductionService {
           existingProd.id!;
     }
 
-    // set release production id for those productions which are already linked
-    for (final releaseProduction in releaseProductions) {
-      if (productionReleaseProductionIdMap
-          .containsKey(releaseProduction.productionId)) {
-        releaseProduction.id =
-            productionReleaseProductionIdMap[releaseProduction.productionId];
+    // create release production entites from productions
+    final releaseProductions = <ReleaseProduction>[];
+
+    for (final production in productions) {
+      int? id = null;
+      if (productionReleaseProductionIdMap.containsKey(production.id)) {
+        id = productionReleaseProductionIdMap[production.id];
       }
+      releaseProductions.add(
+        ReleaseProduction(
+          releaseId: releaseId,
+          productionId: production.id!,
+          id: id,
+        ),
+      );
     }
 
     // now finally upsert links
