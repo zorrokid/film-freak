@@ -33,13 +33,8 @@ class ProductionService {
     }
   }
 
-  Future<void> linkProductions(
+  Future<void> updateProductionLinks(
       int releaseId, Iterable<Production> productions) async {
-    // TODO before returning when input productions list is empty,
-    // need to ensure if produtions already linked to release
-    // and the obsolete should be removed
-    if (productions.isEmpty) return;
-
     // check that each production has id
     assert(productions.any((element) => element.id == null) == false);
 
@@ -47,47 +42,14 @@ class ProductionService {
     final existingReleaseProductions =
         await releaseProductionsRepository.getByReleaseId(releaseId);
 
-    // create map from those existing productions
-    final productionReleaseProductionIdMap = <int, int>{};
-    for (final existingProd in existingReleaseProductions) {
-      productionReleaseProductionIdMap[existingProd.productionId] =
-          existingProd.id!;
-    }
-
-    // create release production entites from productions
-    final releaseProductions = <ReleaseProduction>[];
-
-    for (final production in productions) {
-      int? id = null;
-      if (productionReleaseProductionIdMap.containsKey(production.id)) {
-        id = productionReleaseProductionIdMap[production.id];
-      }
-      releaseProductions.add(
-        ReleaseProduction(
-          releaseId: releaseId,
-          productionId: production.id!,
-          id: id,
-        ),
-      );
-    }
-
-    // now finally upsert links
-    for (final releaseProduction in releaseProductions) {
-      await releaseProductionsRepository.upsert(releaseProduction);
-    }
-  }
-
-  Future<void> removeObsoleteProductionLinks(
-      int releaseId, Iterable<Production> productions) async {
-    final existingReleaseProductions =
-        await releaseProductionsRepository.getByReleaseId(releaseId);
     final existingProductionIds =
         existingReleaseProductions.map((e) => e.productionId).toSet();
-    // productions without productionId are new, they are inserted, no need to check those
-    final currentProductionIds = productions
-        .where((element) => element.id != null)
-        .map((e) => e.id)
-        .toList();
+
+    // unlink obsolete productions
+    // - productions without productionId are new, they are going to be inserted
+    //   no need to check those
+    final currentProductionIds =
+        productions.where((e) => e.id != null).map((e) => e.id).toSet();
     final productionIdsForUnlinking = <int>[];
     for (final existingProdId in existingProductionIds) {
       if (!currentProductionIds.contains(existingProdId)) {
@@ -96,6 +58,20 @@ class ProductionService {
     }
     await releaseProductionsRepository.deleteByProductionIds(
         releaseId, productionIdsForUnlinking);
+
+    // need to insert only those without id
+
+    final newReleaseProductions = productions
+        .where((e) =>
+            existingProductionIds.contains(e.id) ==
+                false // this shouldn't actually be happening
+            ||
+            e.id == null)
+        .map(((e) =>
+            ReleaseProduction(releaseId: releaseId, productionId: e.id!)));
+
+    // now finally upsert links
+    await releaseProductionsRepository.insertAll(newReleaseProductions);
   }
 
   Future<Iterable<ReleaseProduction>> getReleaseProductions(

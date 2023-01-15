@@ -25,19 +25,12 @@ class ReleaseProductionsRepository
     await batch.commit(noResult: true);
   }
 
-//  @override
-//  Future<void> deleteObsoletedChilds(
-//    int releaseId,
-//    Iterable<ReleaseParroduction> releaseChilds,
-//  ) async {
-//    final Iterable<ReleaseProduction> originalChildsInDb =
-//        await getByReleaseId(releaseId);
-//    final Iterable<int> modifiedChildIds =
-//        releaseChilds.map((e) => e.productionId);
-//    final Iterable<ReleaseProduction> childIdsToBeDeleted = originalChildsInDb
-//        .where((e) => !modifiedChildIds.contains(e.productionId));
-//    for (final child in childIdsToBeDeleted) {
-//      await super.delete(child.id!);
-//    }
-//  }
+  Future<void> insertAll(Iterable<ReleaseProduction> releaseProductions) async {
+    final db = await databaseProvider.database;
+    final batch = db.batch();
+    for (final releaseProduction in releaseProductions) {
+      batch.insert(tableName, releaseProduction.map);
+    }
+    await batch.commit(noResult: true);
+  }
 }
