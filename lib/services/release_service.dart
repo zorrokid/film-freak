@@ -98,9 +98,8 @@ class ReleaseService {
   Future<int> upsert(ReleaseViewModel viewModel) async {
     int releaseId = await _upsertRelease(viewModel.release);
     await productionService.upsertProductions(viewModel.productions);
-    await productionService.removeObsoleteProductionLinks(
+    await productionService.updateProductionLinks(
         releaseId, viewModel.productions);
-    await productionService.linkProductions(releaseId, viewModel.productions);
     await releasePicturesRepository.upsertChildren(
         releaseId, viewModel.pictures);
     await releasePropertiesRepository.upsertChildren(

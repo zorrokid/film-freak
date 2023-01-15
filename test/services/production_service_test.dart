@@ -84,7 +84,7 @@ Future main() async {
     const releaseId = 11;
     final productions = <Production>[testProduction];
     // act
-    await productionService.linkProductions(releaseId, productions);
+    await productionService.updateProductionLinks(releaseId, productions);
     // assert
     final result = await db.query(
       'releaseProductions',
@@ -111,7 +111,7 @@ Future main() async {
     db.insert('releaseProductions', releaseProduction.map);
     final productions = <Production>[testProduction];
     // act
-    await productionService.linkProductions(releaseId, productions);
+    await productionService.updateProductionLinks(releaseId, productions);
     // assert
     final result = await db.query(
       'releaseProductions',
@@ -131,8 +131,7 @@ Future main() async {
     db.insert('releaseProductions', releaseProduction.map);
     final productions = <Production>[];
     // act
-    await productionService.removeObsoleteProductionLinks(
-        releaseId, productions);
+    await productionService.updateProductionLinks(releaseId, productions);
     // assert
     final result = await db.query(
       'releaseProductions',
