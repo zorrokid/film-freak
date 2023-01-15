@@ -26,9 +26,10 @@ ReleaseService initializeReleaseService() {
     releaseRepository: ReleasesRepository(dbProvider),
     releasePicturesRepository: ReleasePicturesRepository(dbProvider),
     releasePropertiesRepository: ReleasePropertiesRepository(dbProvider),
-    productionsRepository: ProductionsRepository(dbProvider),
     productionService: ProductionService(
-        productionsRepository: ProductionsRepository(dbProvider)),
+      productionsRepository: ProductionsRepository(dbProvider),
+      releaseProductionsRepository: ReleaseProductionsRepository(dbProvider),
+    ),
     releaseMediasRepository: ReleaseMediasRepository(dbProvider),
     releaseProductionsRepository: ReleaseProductionsRepository(dbProvider),
     releaseCommentsRepository: ReleaseCommentsRepository(dbProvider),
@@ -41,7 +42,6 @@ class ReleaseService {
     required this.releaseRepository,
     required this.releasePicturesRepository,
     required this.releasePropertiesRepository,
-    required this.productionsRepository,
     required this.productionService,
     required this.releaseProductionsRepository,
     required this.releaseMediasRepository,
@@ -53,7 +53,6 @@ class ReleaseService {
   final ReleasesRepository releaseRepository;
   final ReleasePicturesRepository releasePicturesRepository;
   final ReleasePropertiesRepository releasePropertiesRepository;
-  final ProductionsRepository productionsRepository;
   final ProductionService productionService;
   final ReleaseProductionsRepository releaseProductionsRepository;
   final ReleaseMediasRepository releaseMediasRepository;
@@ -82,8 +81,8 @@ class ReleaseService {
         await releasePropertiesRepository.getByReleaseId(releaseId);
     final releaseProductions =
         await releaseProductionsRepository.getByReleaseId(releaseId);
-    final productions = await productionsRepository
-        .getByIds(releaseProductions.map((e) => e.productionId));
+    final productions = await productionService
+        .getProductionsByIds(releaseProductions.map((e) => e.productionId));
     final medias = await releaseMediasRepository.getByReleaseId(releaseId);
     final comments = await releaseCommentsRepository.getByReleaseId(releaseId);
     final collectionItems =
@@ -254,7 +253,8 @@ class ReleaseService {
     final releaseProductions =
         await releaseProductionsRepository.getByReleaseIds(releaseIds);
     final productionIds = releaseProductions.map((e) => e.productionId).toSet();
-    final productions = await productionsRepository.getByIds(productionIds);
+    final productions =
+        await productionService.getProductionsByIds(productionIds);
 
     final productionsByRelease = <int, List<Production>>{};
 
