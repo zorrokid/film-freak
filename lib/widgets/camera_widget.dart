@@ -1,12 +1,10 @@
 // This class is based on Google-Ml-Kit-plugin example:
 // https://github.com/bharat-biradar/Google-Ml-Kit-plugin/tree/master/packages/google_ml_kit/example
 
-import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
-import 'package:image_picker/image_picker.dart';
 
 class CameraWidget extends StatefulWidget {
   const CameraWidget({
@@ -28,19 +26,11 @@ class CameraWidget extends StatefulWidget {
 
 class _CameraWidgetState extends State<CameraWidget> {
   CameraController? _controller;
-  File? _image;
-  String? _path;
-  ImagePicker? _imagePicker;
   int _cameraIndex = 0;
-  double zoomLevel = 0.0, minZoomLevel = 0.0, maxZoomLevel = 0.0;
-  final bool _allowPicker = true;
-  bool _changingCameraLens = false;
 
   @override
   void initState() {
     super.initState();
-
-    _imagePicker = ImagePicker();
 
     if (widget.cameras.any(
       (element) =>
@@ -83,54 +73,7 @@ class _CameraWidgetState extends State<CameraWidget> {
     if (_controller?.value.isInitialized == false) {
       return Container();
     }
-
-    final size = MediaQuery.of(context).size;
-    // calculate scale depending on screen and camera ratios
-    // this is actually size.aspectRatio / (1 / camera.aspectRatio)
-    // because camera preview size is received as landscape
-    // but we're calculating for portrait orientation
-    var scale = size.aspectRatio * _controller!.value.aspectRatio;
-
-    // to prevent scaling down, invert the value
-    if (scale < 1) scale = 1 / scale;
-
-    return Container(
-      color: Colors.black,
-      child: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Transform.scale(
-            scale: scale,
-            child: Center(
-              child: _changingCameraLens
-                  ? const Center(
-                      child: Text('Changing camera lens'),
-                    )
-                  : CameraPreview(_controller!),
-            ),
-          ),
-          Positioned(
-            bottom: 100,
-            left: 50,
-            right: 50,
-            child: Slider(
-              value: zoomLevel,
-              min: minZoomLevel,
-              max: maxZoomLevel,
-              onChanged: (newSliderValue) {
-                setState(() {
-                  zoomLevel = newSliderValue;
-                  _controller!.setZoomLevel(zoomLevel);
-                });
-              },
-              divisions: (maxZoomLevel - 1).toInt() < 1
-                  ? null
-                  : (maxZoomLevel - 1).toInt(),
-            ),
-          )
-        ],
-      ),
-    );
+    return CameraPreview(_controller!);
   }
 
   Future _startLiveFeed() async {
@@ -144,13 +87,6 @@ class _CameraWidgetState extends State<CameraWidget> {
       if (!mounted) {
         return;
       }
-      _controller?.getMinZoomLevel().then((value) {
-        zoomLevel = value;
-        minZoomLevel = value;
-      });
-      _controller?.getMaxZoomLevel().then((value) {
-        maxZoomLevel = value;
-      });
       _controller?.startImageStream(_processCameraImage);
       setState(() {});
     });
@@ -160,28 +96,6 @@ class _CameraWidgetState extends State<CameraWidget> {
     await _controller?.stopImageStream();
     await _controller?.dispose();
     _controller = null;
-  }
-
-  Future _switchLiveCamera() async {
-    setState(() => _changingCameraLens = true);
-    _cameraIndex = (_cameraIndex + 1) % widget.cameras.length;
-
-    await _stopLiveFeed();
-    await _startLiveFeed();
-    setState(() => _changingCameraLens = false);
-  }
-
-  Future _processPickedFile(XFile? pickedFile) async {
-    final path = pickedFile?.path;
-    if (path == null) {
-      return;
-    }
-    setState(() {
-      _image = File(path);
-    });
-    _path = path;
-    final inputImage = InputImage.fromFilePath(path);
-    widget.onImage(inputImage);
   }
 
   Future _processCameraImage(CameraImage image) async {
