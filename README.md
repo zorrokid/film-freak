@@ -33,6 +33,42 @@ Some of the features currently implemented are:
 - Store items to local database
 - Search TMDB API for movies - search text can be selected from active image
 
+## Data model
+
+```mermaid
+    erDiagram
+        release }o--o{ production : includes 
+        release {
+            string barcode
+            string name
+            int caseType
+        }
+        production {
+            int tmdbId
+            string title
+            string originalTitle
+        }
+        collectionItem }o--|| release : isInstanceOf 
+        collectionItem {
+            int status
+            int condition
+        }
+        release ||--o{ releasePicture : has
+        releasePicture {
+            int pictureType
+            string fileName
+        }
+        release ||--o{ releaseMedia : has
+        releaseMedia {
+            int mediaType
+        }
+        collectionItem ||--o{ collectionItemMedia : has
+        collectionItemMedia }o--|| releaseMedia: isIstanceOf
+        collectionItemMedia {
+            int condition
+        }
+```
+
 ## Build & Run
 
 To build, install and run this app you need to (more comprehensive instructions will be added later):
