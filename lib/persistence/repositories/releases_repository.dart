@@ -35,6 +35,12 @@ class ReleasesRepository extends RepositoryBase<Release> {
     return query.map<Release>((e) => Release.fromMap(e));
   }
 
+  Future<Iterable<Release>> getAll() async {
+    final db = await databaseProvider.database;
+    final query = await db.query(tableName);
+    return query.map<Release>((e) => Release.fromMap(e));
+  }
+
   Future<bool> barcodeExists(String barcode) async {
     final db = await databaseProvider.database;
     final result =

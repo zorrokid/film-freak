@@ -29,8 +29,8 @@ class _ScanViewState extends State<ScanView> {
   late String _barcode;
 
   Future<List<ReleaseListModel>> _getResults(String barcode) async {
-    return (await _releaseService
-            .getListModels(ReleaseQuerySpecs(barcode: barcode)))
+    return (await _releaseService.getListModels(
+            filter: ReleaseQuerySpecs(barcode: barcode)))
         .toList();
   }
 

@@ -2,12 +2,13 @@ import 'package:film_freak/persistence/query_specs/release_query_specs.dart';
 import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../persistence/query_specs/collection_item_query_specs.dart';
-import '../../models/list_models/collection_item_list_model.dart';
+import '../../models/list_models/release_list_model.dart';
+import '../../widgets/error_display_widget.dart';
 import '../../widgets/main_drawer.dart';
 import '../../utils/dialog_utls.dart';
 import '../../persistence/app_state.dart';
 import '../../widgets/release_filter_list.dart';
+import '../../widgets/spinner.dart';
 import '../add_or_edit_release/release_form.dart';
 
 class ReleasesListView extends StatefulWidget {
@@ -23,24 +24,16 @@ class ReleasesListView extends StatefulWidget {
 
 class _ReleasesListViewState extends State<ReleasesListView> {
   final releaseService = initializeReleaseService();
+  late Future<List<ReleaseListModel>> _futureReleasesResult;
 
   @override
   void initState() {
     super.initState();
+    _futureReleasesResult = _getResults();
   }
 
-  List<ReleaseListModel> filterReleases(
-      List<CollectionItemListModel> collectionItems,
-      CollectionItemQuerySpecs? filter) {
-    if (filter == null) return collectionItems;
-
-    if (filter.barcode != null) {
-      return collectionItems
-          .where((element) => element.barcode == filter.barcode)
-          .toList();
-    }
-
-    return collectionItems;
+  Future<List<ReleaseListModel>> _getResults() async {
+    return (await releaseService.getListModels()).toList();
   }
 
   @override
@@ -54,11 +47,10 @@ class _ReleasesListViewState extends State<ReleasesListView> {
 
       Future<void> onDelete(int id) async {
         final isOkToDelete = await okToDelete(context, 'Are you sure?',
-            'Are you really sure you want to dele<void>te the item?');
+            '''Are you really sure you want to delete the release 
+            and collection items related to it?''');
         if (!isOkToDelete) return;
         await releaseService.delete(id);
-        // TODO: data from CollectionModel is not used here
-        //cart.remove(id);
       }
 
       Future<void> onCreate(int id) async {}
@@ -76,14 +68,26 @@ class _ReleasesListViewState extends State<ReleasesListView> {
       return Scaffold(
         drawer: const MainDrawer(),
         appBar: AppBar(
-          title: const Text('Results'),
+          title: const Text('Releases'),
         ),
-        body: ReleaseFilterList(
-          saveDir: appState.saveDir,
-          onDelete: onDelete,
-          onEdit: onEdit,
-          releases: [],
-          onCreate: onCreate,
+        body: FutureBuilder(
+          future: _futureReleasesResult,
+          builder: (BuildContext context,
+              AsyncSnapshot<List<ReleaseListModel>> snapshot) {
+            if (snapshot.hasError) {
+              return ErrorDisplayWidget(snapshot.error.toString());
+            }
+            if (!snapshot.hasData) {
+              return const Spinner();
+            }
+            return ReleaseFilterList(
+              saveDir: appState.saveDir,
+              onDelete: onDelete,
+              onEdit: onEdit,
+              releases: snapshot.data!,
+              onCreate: onCreate,
+            );
+          },
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: addRelease,
