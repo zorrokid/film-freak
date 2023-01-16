@@ -1,3 +1,5 @@
+import 'package:film_freak/services/collection_item_service.dart';
+import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/main_drawer.dart';
 
@@ -6,7 +8,10 @@ class AboutView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const MainDrawer(),
+        drawer: MainDrawer(
+          releaseService: initializeReleaseService(),
+          collectionItemService: initializeCollectionItemService(),
+        ),
         appBar: AppBar(
           title: const Text('About film_freak'),
         ),

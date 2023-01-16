@@ -1,3 +1,5 @@
+import 'package:film_freak/services/collection_item_service.dart';
+import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -33,6 +35,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'film_freak', home: ScanView());
+    return MaterialApp(
+        title: 'film_freak',
+        home: ScanView(
+          releaseService: initializeReleaseService(),
+          collectionItemService: initializeCollectionItemService(),
+        ));
   }
 }

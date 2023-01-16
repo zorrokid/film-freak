@@ -12,12 +12,14 @@ class ReleaseFilterList extends StatelessWidget {
     required this.onCreate,
     required this.onDelete,
     required this.onEdit,
+    required this.onTap,
     required this.releases,
   });
   final String saveDir;
   final OnCreateCallback onCreate;
   final OnEditCallback onEdit;
   final OnDeleteCallback onDelete;
+  final OnTapCallback onTap;
   final List<ReleaseListModel> releases;
 
   @override
@@ -31,6 +33,7 @@ class ReleaseFilterList extends StatelessWidget {
           onCreate: onCreate,
           onDelete: onDelete,
           onEdit: onEdit,
+          onTap: onTap,
           saveDir: saveDir,
         );
       },

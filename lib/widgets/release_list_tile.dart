@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import '../screens/view_release/release_screen.dart';
 import '../models/list_models/release_list_model.dart';
 import 'collection_item_list.dart';
 
@@ -13,6 +12,7 @@ class ReleaseListTile extends StatelessWidget {
     required this.onCreate,
     required this.onDelete,
     required this.onEdit,
+    required this.onTap,
     required this.saveDir,
     super.key,
   });
@@ -20,6 +20,7 @@ class ReleaseListTile extends StatelessWidget {
   final OnCreateCallback onCreate;
   final OnEditCallback onEdit;
   final OnDeleteCallback onDelete;
+  final OnTapCallback onTap;
   final String saveDir;
 
   void menuItemSelected(String? value) {
@@ -71,13 +72,7 @@ class ReleaseListTile extends StatelessWidget {
         },
         onSelected: menuItemSelected,
       ),
-      onTap: () => {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return ReleaseScreen(id: item.id);
-          },
-        ))
-      },
+      onTap: () => onTap(item.id),
     );
   }
 }

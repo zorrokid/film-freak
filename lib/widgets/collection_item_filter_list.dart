@@ -1,6 +1,8 @@
+import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import '../models/list_models/collection_item_list_model.dart';
 import '../persistence/query_specs/collection_item_query_specs.dart';
+import '../screens/view_collection_item/collection_item_screen.dart';
 import '../services/collection_item_service.dart';
 import 'collection_item_list.dart';
 import 'error_display_widget.dart';
@@ -58,6 +60,18 @@ class _CollectionItemFilterListState extends State<CollectionItemFilterList> {
     reloadData();
   }
 
+  Future<void> viewCollectionItem(int id) async {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return CollectionItemScreen(
+          id: id,
+          collectionItemService: widget.service,
+          releaseService: initializeReleaseService(),
+        );
+      },
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -74,6 +88,7 @@ class _CollectionItemFilterListState extends State<CollectionItemFilterList> {
           collectionItems: snapshot.data!.toList(),
           onDelete: onDelete,
           onEdit: widget.onEdit,
+          onTap: viewCollectionItem,
           saveDir: widget.saveDir,
         );
       },
