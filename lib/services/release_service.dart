@@ -130,9 +130,12 @@ class ReleaseService {
     return releaseId;
   }
 
-  Future<Iterable<ReleaseListModel>> getListModels(
-      ReleaseQuerySpecs? filter) async {
-    final releases = await releaseRepository.query(filter);
+  Future<Iterable<ReleaseListModel>> getListModels({
+    ReleaseQuerySpecs? filter,
+  }) async {
+    final releases = filter != null
+        ? await releaseRepository.query(filter)
+        : await releaseRepository.getAll();
     final releaseIds = releases.map((e) => e.id!).toSet();
 
     final productionsByRelease = await getProductionsByReleaseMap(releaseIds);
