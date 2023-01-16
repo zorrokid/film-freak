@@ -1,4 +1,5 @@
 import 'package:film_freak/persistence/query_specs/release_query_specs.dart';
+import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,9 +11,15 @@ import '../../persistence/app_state.dart';
 import '../../widgets/release_filter_list.dart';
 import '../../widgets/spinner.dart';
 import '../add_or_edit_release/release_form.dart';
+import '../view_release/release_screen.dart';
 
 class ReleasesListView extends StatefulWidget {
-  const ReleasesListView({this.filter, super.key});
+  final ReleaseService releaseService;
+  const ReleasesListView({
+    required this.releaseService,
+    this.filter,
+    super.key,
+  });
 
   final ReleaseQuerySpecs? filter;
 
@@ -23,7 +30,6 @@ class ReleasesListView extends StatefulWidget {
 }
 
 class _ReleasesListViewState extends State<ReleasesListView> {
-  final releaseService = initializeReleaseService();
   late Future<List<ReleaseListModel>> _futureReleasesResult;
 
   @override
@@ -33,7 +39,7 @@ class _ReleasesListViewState extends State<ReleasesListView> {
   }
 
   Future<List<ReleaseListModel>> _getResults() async {
-    return (await releaseService.getListModels()).toList();
+    return (await widget.releaseService.getListModels()).toList();
   }
 
   @override
@@ -41,7 +47,9 @@ class _ReleasesListViewState extends State<ReleasesListView> {
     return Consumer<AppState>(builder: (context, appState, child) {
       void addRelease() {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return const ReleaseForm();
+          return ReleaseForm(
+            releaseService: widget.releaseService,
+          );
         }));
       }
 
@@ -50,7 +58,7 @@ class _ReleasesListViewState extends State<ReleasesListView> {
             '''Are you really sure you want to delete the release 
             and collection items related to it?''');
         if (!isOkToDelete) return;
-        await releaseService.delete(id);
+        await widget.releaseService.delete(id);
       }
 
       Future<void> onCreate(int id) async {}
@@ -60,13 +68,28 @@ class _ReleasesListViewState extends State<ReleasesListView> {
           builder: (context) {
             return ReleaseForm(
               id: id,
+              releaseService: widget.releaseService,
+            );
+          },
+        ));
+      }
+
+      Future<void> navigate(int id) async {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return ReleaseScreen(
+              id: id,
+              releaseService: widget.releaseService,
             );
           },
         ));
       }
 
       return Scaffold(
-        drawer: const MainDrawer(),
+        drawer: MainDrawer(
+          releaseService: widget.releaseService,
+          collectionItemService: initializeCollectionItemService(),
+        ),
         appBar: AppBar(
           title: const Text('Releases'),
         ),
@@ -84,6 +107,7 @@ class _ReleasesListViewState extends State<ReleasesListView> {
               saveDir: appState.saveDir,
               onDelete: onDelete,
               onEdit: onEdit,
+              onTap: navigate,
               releases: snapshot.data!,
               onCreate: onCreate,
             );

@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import '../screens/view_release/release_screen.dart';
 import '../models/list_models/collection_item_list_model.dart';
 import 'condition_icon.dart';
 
 typedef OnDeleteCallback = void Function(int id);
 typedef OnEditCallback = void Function(int id);
+typedef OnTapCallback = void Function(int id);
 
 class CollectionItemListTile extends StatelessWidget {
   const CollectionItemListTile({
@@ -14,11 +14,13 @@ class CollectionItemListTile extends StatelessWidget {
     required this.onDelete,
     required this.onEdit,
     required this.saveDir,
+    required this.onTap,
     super.key,
   });
   final CollectionItemListModel collectionItem;
   final OnDeleteCallback onDelete;
   final OnEditCallback onEdit;
+  final OnTapCallback onTap;
   final String saveDir;
 
   void menuItemSelected(String? value) {
@@ -68,13 +70,7 @@ class CollectionItemListTile extends StatelessWidget {
         },
         onSelected: menuItemSelected,
       ),
-      onTap: () => {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return ReleaseScreen(id: collectionItem.id!);
-          },
-        ))
-      },
+      onTap: () => onTap(collectionItem.id),
     );
   }
 }

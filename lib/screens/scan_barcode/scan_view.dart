@@ -12,10 +12,17 @@ import '../../widgets/main_drawer.dart';
 import '../../widgets/spinner.dart';
 import '../add_or_edit_release/release_form.dart';
 import '../add_or_edit_collection_item/collection_item_form.dart';
+import '../view_release/release_screen.dart';
 import 'barcode_scanner_view.dart';
 
 class ScanView extends StatefulWidget {
-  const ScanView({super.key});
+  final ReleaseService releaseService;
+  final CollectionItemService collectionItemService;
+  const ScanView({
+    super.key,
+    required this.releaseService,
+    required this.collectionItemService,
+  });
 
   @override
   State<ScanView> createState() {
@@ -24,13 +31,12 @@ class ScanView extends StatefulWidget {
 }
 
 class _ScanViewState extends State<ScanView> {
-  final _releaseService = initializeReleaseService();
   late Future<List<ReleaseListModel>> _futureBarcodeScanResults;
   late String _barcode;
 
   Future<List<ReleaseListModel>> _getResults(String barcode) async {
-    return (await _releaseService.getListModels(
-            filter: ReleaseQuerySpecs(barcode: barcode)))
+    return (await widget.releaseService
+            .getListModels(filter: ReleaseQuerySpecs(barcode: barcode)))
         .toList();
   }
 
@@ -50,12 +56,13 @@ class _ScanViewState extends State<ScanView> {
     if (barcode == null) return;
     _barcode = barcode;
 
-    var barcodeExists = await _releaseService.barcodeExists(barcode);
+    var barcodeExists = await widget.releaseService.barcodeExists(barcode);
 
     // when barcode doesn't exist, create a new release with collection item
     final route = MaterialPageRoute<String>(builder: (context) {
       return ReleaseForm(
         barcode: barcode,
+        releaseService: widget.releaseService,
       );
     });
 
@@ -75,13 +82,16 @@ class _ScanViewState extends State<ScanView> {
         Also the collection items created from this release 
         will be deleted!''');
     if (!isOkToDelete) return;
-    await _releaseService.delete(id);
+    await widget.releaseService.delete(id);
   }
 
   Future<void> _onEdit(int id) async {
     await Navigator.push(context, MaterialPageRoute(
       builder: (context) {
-        return ReleaseForm(id: id);
+        return ReleaseForm(
+          id: id,
+          releaseService: widget.releaseService,
+        );
       },
     ));
 
@@ -91,13 +101,24 @@ class _ScanViewState extends State<ScanView> {
     });
   }
 
+  Future<void> _viewRelease(int id) async {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return ReleaseScreen(
+          id: id,
+          releaseService: widget.releaseService,
+        );
+      },
+    ));
+  }
+
   Future<void> _onCreateCollectionItem(int releaseId) async {
     await Navigator.push(context, MaterialPageRoute(
       builder: (context) {
         return CollectionItemForm(
           releaseId: releaseId,
-          releaseService: initializeReleaseService(),
-          collectionItemService: initializeCollectionItemService(),
+          releaseService: widget.releaseService,
+          collectionItemService: widget.collectionItemService,
         );
       },
     ));
@@ -107,7 +128,10 @@ class _ScanViewState extends State<ScanView> {
   Widget build(BuildContext context) {
     return Consumer<AppState>(builder: (context, appState, child) {
       return Scaffold(
-        drawer: const MainDrawer(),
+        drawer: MainDrawer(
+          releaseService: widget.releaseService,
+          collectionItemService: widget.collectionItemService,
+        ),
         appBar: AppBar(
           title: const Text('Barcode scan results'),
         ),
@@ -127,6 +151,7 @@ class _ScanViewState extends State<ScanView> {
               onCreate: _onCreateCollectionItem,
               onDelete: _onDelete,
               onEdit: _onEdit,
+              onTap: _viewRelease,
             );
           },
         ),

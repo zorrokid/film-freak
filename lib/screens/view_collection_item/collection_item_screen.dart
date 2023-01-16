@@ -11,7 +11,14 @@ import '../add_or_edit_collection_item/collection_item_form.dart';
 import 'collection_item_details_card.dart';
 
 class CollectionItemScreen extends StatefulWidget {
-  const CollectionItemScreen({required this.id, super.key});
+  final ReleaseService releaseService;
+  final CollectionItemService collectionItemService;
+  const CollectionItemScreen({
+    required this.id,
+    super.key,
+    required this.collectionItemService,
+    required this.releaseService,
+  });
 
   final int id;
 
@@ -22,8 +29,6 @@ class CollectionItemScreen extends StatefulWidget {
 }
 
 class _CollectionItemScreenState extends State<CollectionItemScreen> {
-  final _collectionItemService = initializeCollectionItemService();
-
   // form state
   late Future<CollectionItemViewModel> _futureModel;
   late int? _id;
@@ -36,7 +41,7 @@ class _CollectionItemScreenState extends State<CollectionItemScreen> {
   }
 
   Future<CollectionItemViewModel> _loadData() async =>
-      await _collectionItemService.getModel(_id!);
+      await widget.collectionItemService.getModel(_id!);
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +66,8 @@ class _CollectionItemScreenState extends State<CollectionItemScreen> {
                   builder: (context) => CollectionItemForm(
                     id: viewModel.collectionItem.id,
                     releaseId: viewModel.collectionItem.releaseId!,
-                    releaseService: initializeReleaseService(),
-                    collectionItemService: initializeCollectionItemService(),
+                    releaseService: widget.releaseService,
+                    collectionItemService: widget.collectionItemService,
                   ),
                 ),
               );

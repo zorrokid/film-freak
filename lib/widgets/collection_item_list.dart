@@ -4,6 +4,7 @@ import '../widgets/collection_item_list_tile.dart';
 
 typedef OnDeleteCallback = Future<void> Function(int id);
 typedef OnEditCallback = Future<void> Function(int id);
+typedef OnTapCallback = Future<void> Function(int id);
 
 class CollectionItemList extends StatelessWidget {
   const CollectionItemList({
@@ -11,12 +12,14 @@ class CollectionItemList extends StatelessWidget {
     required this.collectionItems,
     required this.onDelete,
     required this.onEdit,
+    required this.onTap,
     required this.saveDir,
   });
 
   final List<CollectionItemListModel> collectionItems;
   final OnDeleteCallback onDelete;
   final OnEditCallback onEdit;
+  final OnTapCallback onTap;
   final String saveDir;
 
   @override
@@ -30,6 +33,7 @@ class CollectionItemList extends StatelessWidget {
           onDelete: onDelete,
           onEdit: onEdit,
           saveDir: saveDir,
+          onTap: onTap,
         );
       },
     );

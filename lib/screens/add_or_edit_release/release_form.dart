@@ -38,12 +38,18 @@ import 'widgets/productions_list.dart';
 import 'widgets/release_media_widget.dart';
 
 class ReleaseForm extends StatefulWidget {
-  const ReleaseForm(
-      {this.barcode, this.id, super.key, this.addCollectionItem = false});
-
   final String? barcode;
   final int? id;
   final bool addCollectionItem;
+  final ReleaseService releaseService;
+
+  const ReleaseForm({
+    required this.releaseService,
+    this.barcode,
+    this.id,
+    super.key,
+    this.addCollectionItem = false,
+  });
 
   @override
   State<ReleaseForm> createState() {
@@ -56,7 +62,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
   final _nameController = TextEditingController();
   final _barcodeController = TextEditingController();
   final _notesController = TextEditingController();
-  final _movieReleaseService = initializeReleaseService();
   final _movieSearchTextController = TextEditingController();
 
   int _selectedPicIndex = 0;
@@ -167,8 +172,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   Future<ReleaseViewModel> _loadData() async {
     final model = _id == null
-        ? _movieReleaseService.initializeModel(_barcode)
-        : await _movieReleaseService.getModel(_id!);
+        ? widget.releaseService.initializeModel(_barcode)
+        : await widget.releaseService.getModel(_id!);
 
     _pictures = model.pictures.toList();
     _properties = model.properties.toList();
@@ -350,7 +355,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
           ),
         );
 
-        final id = await _movieReleaseService.upsert(viewModel);
+        final id = await widget.releaseService.upsert(viewModel);
         viewModel.release.id = id;
 
         if (isEditMode()) {
@@ -373,7 +378,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 builder: (context) {
                   return CollectionItemForm(
                     releaseId: id,
-                    releaseService: initializeReleaseService(),
+                    releaseService: widget.releaseService,
                     collectionItemService: initializeCollectionItemService(),
                   );
                 },

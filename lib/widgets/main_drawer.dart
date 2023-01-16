@@ -1,3 +1,5 @@
+import 'package:film_freak/services/collection_item_service.dart';
+import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../screens/scan_barcode/scan_view.dart';
@@ -10,7 +12,13 @@ import '../screens/view_releases/releases_list_view.dart';
 import '../services/file_importer.dart';
 
 class MainDrawer extends StatefulWidget {
-  const MainDrawer({super.key});
+  final ReleaseService releaseService;
+  final CollectionItemService collectionItemService;
+  const MainDrawer({
+    super.key,
+    required this.releaseService,
+    required this.collectionItemService,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -61,12 +69,20 @@ class _MainDrawerState extends State<MainDrawer> {
             ),
             ListTile(
               title: const Text('Releases'),
-              onTap: () =>
-                  _navigateFromDrawer(context, const ReleasesListView()),
+              onTap: () => _navigateFromDrawer(
+                  context,
+                  ReleasesListView(
+                    releaseService: widget.releaseService,
+                  )),
             ),
             ListTile(
               title: const Text('Scan'),
-              onTap: () => _navigateFromDrawer(context, const ScanView()),
+              onTap: () => _navigateFromDrawer(
+                  context,
+                  ScanView(
+                    releaseService: widget.releaseService,
+                    collectionItemService: widget.collectionItemService,
+                  )),
             ),
             ListTile(
               title: const Text('Import'),

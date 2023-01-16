@@ -9,7 +9,12 @@ import '../../widgets/spinner.dart';
 import '../add_or_edit_release/release_form.dart';
 
 class ReleaseScreen extends StatefulWidget {
-  const ReleaseScreen({required this.id, super.key});
+  final ReleaseService releaseService;
+  const ReleaseScreen({
+    required this.id,
+    required this.releaseService,
+    super.key,
+  });
 
   final int id;
 
@@ -20,8 +25,6 @@ class ReleaseScreen extends StatefulWidget {
 }
 
 class _ReleaseScreenState extends State<ReleaseScreen> {
-  final _movieReleaseService = initializeReleaseService();
-
   // form state
   late Future<ReleaseViewModel> _futureModel;
   late int? _id;
@@ -34,7 +37,7 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
   }
 
   Future<ReleaseViewModel> _loadData() async =>
-      await _movieReleaseService.getModel(_id!);
+      await widget.releaseService.getModel(_id!);
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +61,7 @@ class _ReleaseScreenState extends State<ReleaseScreen> {
                 MaterialPageRoute(
                   builder: (context) => ReleaseForm(
                     id: viewModel.release.id,
+                    releaseService: widget.releaseService,
                   ),
                 ),
               );
