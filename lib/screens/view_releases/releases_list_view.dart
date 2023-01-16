@@ -1,34 +1,35 @@
+import 'package:film_freak/persistence/query_specs/release_query_specs.dart';
+import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../persistence/query_specs/collection_item_query_specs.dart';
 import '../../models/list_models/collection_item_list_model.dart';
-import '../../services/collection_item_service.dart';
 import '../../widgets/main_drawer.dart';
-import '../../widgets/collection_item_filter_list.dart';
 import '../../utils/dialog_utls.dart';
 import '../../persistence/app_state.dart';
+import '../../widgets/release_filter_list.dart';
 import '../add_or_edit_release/release_form.dart';
 
-class CollectionList extends StatefulWidget {
-  const CollectionList({this.filter, super.key});
+class ReleasesListView extends StatefulWidget {
+  const ReleasesListView({this.filter, super.key});
 
-  final CollectionItemQuerySpecs? filter;
+  final ReleaseQuerySpecs? filter;
 
   @override
   State<StatefulWidget> createState() {
-    return _CollectionListState();
+    return _ReleasesListViewState();
   }
 }
 
-class _CollectionListState extends State<CollectionList> {
-  final collectionItemService = initializeCollectionItemService();
+class _ReleasesListViewState extends State<ReleasesListView> {
+  final releaseService = initializeReleaseService();
 
   @override
   void initState() {
     super.initState();
   }
 
-  List<CollectionItemListModel> filterReleases(
+  List<ReleaseListModel> filterReleases(
       List<CollectionItemListModel> collectionItems,
       CollectionItemQuerySpecs? filter) {
     if (filter == null) return collectionItems;
@@ -53,12 +54,14 @@ class _CollectionListState extends State<CollectionList> {
 
       Future<void> onDelete(int id) async {
         final isOkToDelete = await okToDelete(context, 'Are you sure?',
-            'Are you really sure you want to delete the item?');
+            'Are you really sure you want to dele<void>te the item?');
         if (!isOkToDelete) return;
-        await collectionItemService.delete(id);
+        await releaseService.delete(id);
         // TODO: data from CollectionModel is not used here
         //cart.remove(id);
       }
+
+      Future<void> onCreate(int id) async {}
 
       Future<void> onEdit(int id) async {
         await Navigator.push(context, MaterialPageRoute(
@@ -75,12 +78,12 @@ class _CollectionListState extends State<CollectionList> {
         appBar: AppBar(
           title: const Text('Results'),
         ),
-        body: CollectionItemFilterList(
-          specs: widget.filter,
+        body: ReleaseFilterList(
           saveDir: appState.saveDir,
           onDelete: onDelete,
           onEdit: onEdit,
-          service: collectionItemService,
+          releases: [],
+          onCreate: onCreate,
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: addRelease,
