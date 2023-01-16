@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../domain/enums/media_type.dart';
-import '../../domain/entities/release_media.dart';
+import '../../../domain/enums/media_type.dart';
+import '../../../domain/entities/release_media.dart';
 
 class ReleaseMediaWidget extends StatelessWidget {
   final List<ReleaseMedia> releaseMedia;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../domain/enums/media_type.dart';
-import '../../widgets/form/dropdown_form_field.dart';
+import '../../../domain/enums/media_type.dart';
+import '../../../widgets/form/dropdown_form_field.dart';
 
 typedef OnAddMedia = void Function(int pcs, MediaType mediaType);
 typedef OnCancel = void Function();

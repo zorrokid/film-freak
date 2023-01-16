@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import '../../domain/enums/case_type.dart';
 import '../../utils/image_utils.dart';
 import '../../utils/geometry_utils.dart';
-import '../../widgets/case_type_selection.dart';
 import 'painters/image_painter.dart';
 import 'painters/selection_painter.dart';
+import 'case_type_selection.dart';
 
 class ImageProcessView extends StatefulWidget {
   const ImageProcessView({required this.imagePath, super.key});

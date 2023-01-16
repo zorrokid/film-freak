@@ -12,7 +12,6 @@ import '../../models/tmdb_movie_result.dart';
 import '../../services/collection_item_service.dart';
 import '../../widgets/error_display_widget.dart';
 import '../../widgets/picture_type_selection.dart';
-import '../../widgets/buttons/release_pic_delete.dart';
 import '../../widgets/spinner.dart';
 import '../../domain/enums/case_type.dart';
 import '../../domain/entities/release.dart';
@@ -24,8 +23,6 @@ import '../../services/release_service.dart';
 import '../../widgets/form/decorated_text_form_field.dart';
 import '../../widgets/form/dropdown_form_field.dart';
 import '../../widgets/preview_pic.dart';
-import '../../widgets/buttons/release_pic_crop.dart';
-import '../../widgets/buttons/release_pic_selection.dart';
 import '../../widgets/release_properties.dart';
 import '../process_image/image_process_view.dart';
 import '../tmdb_search/tmdb_movie_search_screen.dart';
@@ -33,9 +30,12 @@ import '../add_or_edit_collection_item/collection_item_form.dart';
 import '../scan_barcode/barcode_scanner_view.dart';
 import '../select_text_from_image/image_text_selector.dart';
 import '../select_properties/property_selection_view.dart';
-import 'media_selector.dart';
-import 'productions_list.dart';
-import 'release_media_widget.dart';
+import 'buttons/release_pic_selection.dart';
+import 'buttons/release_pic_delete.dart';
+import 'buttons/release_pic_crop.dart';
+import 'widgets/media_selector.dart';
+import 'widgets/productions_list.dart';
+import 'widgets/release_media_widget.dart';
 
 class ReleaseForm extends StatefulWidget {
   const ReleaseForm(
