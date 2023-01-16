@@ -1,8 +1,8 @@
-import 'package:film_freak/enums/collection_status.dart';
-import 'package:film_freak/enums/condition.dart';
 import 'package:flutter/material.dart';
-import '../../widgets/labelled_text.dart';
-import '../entities/collection_item.dart';
+import '../domain/enums/collection_status.dart';
+import '../domain/enums/condition.dart';
+import '../widgets/labelled_text.dart';
+import '../domain/entities/collection_item.dart';
 
 class CollectionItemCard extends StatelessWidget {
   const CollectionItemCard({super.key, required this.collectionItem});

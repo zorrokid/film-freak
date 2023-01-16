@@ -1,8 +1,7 @@
 import 'dart:io';
-
-import 'package:film_freak/entities/release_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import '../domain/entities/release_picture.dart';
 
 class PreviewPic extends StatelessWidget {
   const PreviewPic(

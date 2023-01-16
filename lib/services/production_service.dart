@@ -1,8 +1,7 @@
-import 'package:film_freak/persistence/repositories/productions_repository.dart';
-import 'package:film_freak/persistence/repositories/release_productions_repository.dart';
-
-import '../entities/production.dart';
-import '../entities/release_production.dart';
+import '../../persistence/repositories/productions_repository.dart';
+import '../../persistence/repositories/release_productions_repository.dart';
+import '../domain/entities/production.dart';
+import '../domain/entities/release_production.dart';
 
 class ProductionService {
   final ProductionsRepository productionsRepository;

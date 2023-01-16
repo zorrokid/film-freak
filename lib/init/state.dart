@@ -1,5 +1,4 @@
 import 'package:camera/camera.dart';
-
 import '../persistence/app_state.dart';
 import '../utils/directory_utils.dart';
 

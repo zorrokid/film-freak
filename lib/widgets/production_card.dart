@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../entities/production.dart';
-import '../../widgets/labelled_text.dart';
+import '../domain/entities/production.dart';
+import 'labelled_text.dart';
 
 class ProductionCard extends StatelessWidget {
   const ProductionCard({super.key, required this.production});

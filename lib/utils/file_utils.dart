@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:path/path.dart';
 
 int deleteFiles(Iterable<String> fileNames, String filePath) {

@@ -1,5 +1,4 @@
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-
 import '../models/selectable_text_block.dart';
 
 extension TextBlockExtension on TextBlock {

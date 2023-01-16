@@ -1,10 +1,9 @@
-import 'package:film_freak/entities/release.dart';
-import 'package:film_freak/persistence/db_provider.dart';
-import 'package:film_freak/persistence/repositories/query_helper.dart';
-import 'package:film_freak/persistence/repositories/repository_base.dart';
 import 'package:sqflite/sqflite.dart';
-
+import '../../domain/entities/release.dart';
+import '../db_provider.dart';
 import '../query_specs/release_query_specs.dart';
+import 'query_helper.dart';
+import 'repository_base.dart';
 
 class ReleasesRepository extends RepositoryBase<Release> {
   ReleasesRepository(DatabaseProvider databaseProvider)

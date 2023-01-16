@@ -1,8 +1,7 @@
 import 'dart:collection';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
-import 'package:film_freak/entities/release.dart';
+import '../domain/entities/release.dart';
 
 class AppState extends ChangeNotifier {
   AppState({required this.saveDir, required this.cameras});

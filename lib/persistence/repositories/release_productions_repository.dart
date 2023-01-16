@@ -1,6 +1,6 @@
-import 'package:film_freak/entities/release_production.dart';
-import 'package:film_freak/persistence/db_provider.dart';
-import 'package:film_freak/persistence/repositories/release_child_entities_repository.dart';
+import '../../domain/entities/release_production.dart';
+import '../db_provider.dart';
+import 'release_child_entities_repository.dart';
 
 class ReleaseProductionsRepository
     // this shouldn't be probably extended from the following since

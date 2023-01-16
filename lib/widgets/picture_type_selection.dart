@@ -1,10 +1,8 @@
 import 'dart:io';
-
-import 'package:film_freak/entities/release_picture.dart';
 import 'package:flutter/material.dart';
-
-import '../enums/picture_type.dart';
 import 'package:path/path.dart';
+import '../domain/entities/release_picture.dart';
+import '../domain/enums/picture_type.dart';
 
 final _listItems = pictureTypeFormFieldValues.entries.map((e) {
   return DropdownMenuItem(value: e.key, child: Text(e.value));

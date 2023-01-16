@@ -1,7 +1,7 @@
-import '../../enums/case_type.dart';
-import '../../enums/condition.dart';
-import '../../enums/media_type.dart';
 import 'list_model_base.dart';
+import '../../domain/enums/case_type.dart';
+import '../../domain/enums/condition.dart';
+import '../../domain/enums/media_type.dart';
 
 class CollectionItemListModel extends ListModelBase {
   Condition condition;

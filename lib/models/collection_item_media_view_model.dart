@@ -1,5 +1,5 @@
-import 'package:film_freak/entities/collection_item_media.dart';
-import 'package:film_freak/entities/release_media.dart';
+import '../domain/entities/collection_item_media.dart';
+import '../domain/entities/release_media.dart';
 
 class CollectionItemMediaViewModel {
   final ReleaseMedia releaseMedia;

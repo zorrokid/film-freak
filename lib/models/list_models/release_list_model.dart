@@ -1,6 +1,6 @@
 import 'list_model_base.dart';
-import '../../enums/case_type.dart';
-import '../../enums/media_type.dart';
+import '../../domain/enums/case_type.dart';
+import '../../domain/enums/media_type.dart';
 
 class ReleaseListModel extends ListModelBase {
   ReleaseListModel({

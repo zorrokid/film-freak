@@ -1,13 +1,12 @@
-import 'package:film_freak/features/scan_barcode/scan_view.dart';
-import 'package:film_freak/widgets/confirm_dialog.dart';
-import 'package:film_freak/persistence/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../screens/scan_barcode/scan_view.dart';
+import '../widgets/confirm_dialog.dart';
+import '../persistence/db_provider.dart';
 import '../persistence/app_state.dart';
-import '../screens/about_view.dart';
-import '../screens/import_view.dart';
-import '../screens/movie_releases_list_view.dart';
+import '../screens/view_about/about_view.dart';
+import '../screens/import_collection/import_view.dart';
+import '../screens/view_releases/movie_releases_list_view.dart';
 import '../services/file_importer.dart';
 
 class MainDrawer extends StatefulWidget {

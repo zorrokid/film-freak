@@ -1,5 +1,4 @@
 import 'package:tuple/tuple.dart';
-
 import '../query_specs/query_specs_base.dart';
 import '../query_specs/query_specs_enums.dart';
 

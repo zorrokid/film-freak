@@ -1,6 +1,6 @@
-import 'package:film_freak/models/list_models/collection_item_list_model.dart';
-import 'package:film_freak/widgets/collection_item_list_tile.dart';
 import 'package:flutter/material.dart';
+import '../models/list_models/collection_item_list_model.dart';
+import '../widgets/collection_item_list_tile.dart';
 
 typedef OnDeleteCallback = Future<void> Function(int id);
 typedef OnEditCallback = Future<void> Function(int id);
