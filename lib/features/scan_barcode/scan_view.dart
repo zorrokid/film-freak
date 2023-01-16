@@ -26,6 +26,7 @@ class ScanView extends StatefulWidget {
 class _ScanViewState extends State<ScanView> {
   final _releaseService = initializeReleaseService();
   late Future<List<ReleaseListModel>> _futureBarcodeScanResults;
+  late String _barcode;
 
   Future<List<ReleaseListModel>> _getResults(String barcode) async {
     return (await _releaseService
@@ -37,6 +38,7 @@ class _ScanViewState extends State<ScanView> {
   void initState() {
     super.initState();
     _futureBarcodeScanResults = _getResults('');
+    _barcode = '';
   }
 
   Future<void> barcodeScan() async {
@@ -46,6 +48,7 @@ class _ScanViewState extends State<ScanView> {
     }));
 
     if (barcode == null) return;
+    _barcode = barcode;
 
     var barcodeExists = await _releaseService.barcodeExists(barcode);
 
@@ -81,6 +84,11 @@ class _ScanViewState extends State<ScanView> {
         return ReleaseForm(id: id);
       },
     ));
+
+    // TODO: maybe use bloc-pattern to react to data changes instead
+    setState(() {
+      _futureBarcodeScanResults = _getResults(_barcode);
+    });
   }
 
   Future<void> _onCreateCollectionItem(int releaseId) async {
