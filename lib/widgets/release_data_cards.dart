@@ -1,7 +1,6 @@
-import 'package:film_freak/enums/condition.dart';
-import 'package:film_freak/models/release_view_model.dart';
 import 'package:flutter/material.dart';
-
+import '../domain/enums/condition.dart';
+import '../models/release_view_model.dart';
 import 'collection_item_card.dart';
 import 'pictures_card.dart';
 import 'production_card.dart';

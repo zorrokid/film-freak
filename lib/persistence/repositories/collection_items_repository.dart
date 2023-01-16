@@ -1,6 +1,6 @@
 import 'query_helper.dart';
 import 'release_child_entities_repository.dart';
-import '../../entities/collection_item.dart';
+import '../../domain/entities/collection_item.dart';
 import '../db_provider.dart';
 import '../query_specs/collection_item_query_specs.dart';
 

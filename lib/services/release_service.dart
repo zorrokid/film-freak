@@ -1,12 +1,11 @@
-import 'package:film_freak/persistence/repositories/collection_items_repository.dart';
-import 'package:film_freak/services/production_service.dart';
 import 'package:logging/logging.dart';
-
-import '../entities/release_picture.dart';
-import '../entities/production.dart';
-import '../entities/release.dart';
-import '../enums/media_type.dart';
-import '../enums/picture_type.dart';
+import '../persistence/repositories/collection_items_repository.dart';
+import '../services/production_service.dart';
+import '../domain/entities/release_picture.dart';
+import '../domain/entities/production.dart';
+import '../domain/entities/release.dart';
+import '../domain/enums/media_type.dart';
+import '../domain/enums/picture_type.dart';
 import '../models/list_models/release_list_model.dart';
 import '../models/release_view_model.dart';
 import '../persistence/db_provider.dart';

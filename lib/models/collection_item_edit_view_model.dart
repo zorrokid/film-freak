@@ -1,6 +1,6 @@
-import '../entities/collection_item.dart';
-import '../entities/collection_item_property.dart';
 import 'collection_item_media_view_model.dart';
+import '../domain/entities/collection_item.dart';
+import '../domain/entities/collection_item_property.dart';
 
 class CollectionItemEditViewModel {
   final CollectionItem collectionItem;

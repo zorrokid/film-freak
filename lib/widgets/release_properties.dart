@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../entities/release_property.dart';
-import '../enums/release_property_type.dart';
+import '../domain/entities/release_property.dart';
+import '../domain/enums/release_property_type.dart';
 
 class ReleaseProperties extends StatelessWidget {
   const ReleaseProperties({super.key, required this.releaseProperties});

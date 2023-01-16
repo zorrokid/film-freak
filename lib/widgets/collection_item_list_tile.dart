@@ -1,10 +1,8 @@
 import 'dart:io';
-
-import 'package:film_freak/features/view_release/release_screen.dart';
-import 'package:film_freak/models/list_models/collection_item_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-
+import '../screens/view_release/release_screen.dart';
+import '../models/list_models/collection_item_list_model.dart';
 import 'condition_icon.dart';
 
 typedef OnDeleteCallback = void Function(int id);

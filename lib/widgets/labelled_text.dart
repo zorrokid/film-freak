@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class LabelledText extends StatelessWidget {
   const LabelledText({super.key, required this.label, required this.value});

@@ -1,6 +1,6 @@
-import '../entities/collection_item.dart';
-import '../entities/collection_item_media.dart';
-import '../entities/collection_item_property.dart';
+import '../domain/entities/collection_item.dart';
+import '../domain/entities/collection_item_media.dart';
+import '../domain/entities/collection_item_property.dart';
 
 class CollectionItemSaveModel {
   final CollectionItem collectionItem;

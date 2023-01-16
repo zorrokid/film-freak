@@ -1,8 +1,7 @@
-import 'package:film_freak/widgets/picture_type_viewer.dart';
-import 'package:film_freak/widgets/preview_pic.dart';
 import 'package:flutter/material.dart';
-
-import '../../entities/release_picture.dart';
+import '../widgets/picture_type_viewer.dart';
+import '../widgets/preview_pic.dart';
+import '../domain/entities/release_picture.dart';
 
 class PicturesCard extends StatefulWidget {
   const PicturesCard(

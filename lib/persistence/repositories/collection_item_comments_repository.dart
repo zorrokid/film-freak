@@ -1,4 +1,4 @@
-import '../../entities/collection_item_comment.dart';
+import '../../domain/entities/collection_item_comment.dart';
 import '../db_provider.dart';
 import 'collection_item_child_entities_repository.dart';
 

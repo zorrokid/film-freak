@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../widgets/confirm_dialog.dart';
 
 Future<bool> okToDelete(

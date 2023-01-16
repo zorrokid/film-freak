@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 bool isInObject(Point<double> point, double radius, double dx, double dy) {

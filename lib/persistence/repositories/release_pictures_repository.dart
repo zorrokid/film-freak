@@ -1,5 +1,5 @@
-import '../../entities/release_picture.dart';
-import '../../enums/picture_type.dart';
+import '../../domain/entities/release_picture.dart';
+import '../../domain/enums/picture_type.dart';
 import '../db_provider.dart';
 import 'release_child_entities_repository.dart';
 

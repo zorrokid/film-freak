@@ -1,6 +1,6 @@
-import 'package:film_freak/entities/production.dart';
-import 'package:film_freak/entities/release_production.dart';
-import 'package:film_freak/enums/production_type.dart';
+import 'package:film_freak/domain/entities/production.dart';
+import 'package:film_freak/domain/entities/release_production.dart';
+import 'package:film_freak/domain/enums/production_type.dart';
 import 'package:film_freak/persistence/repositories/productions_repository.dart';
 import 'package:film_freak/persistence/repositories/release_productions_repository.dart';
 import 'package:film_freak/services/production_service.dart';

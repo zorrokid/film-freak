@@ -1,4 +1,4 @@
-import '../../entities/entity.dart';
+import '../../domain/entities/entity.dart';
 import '../db_provider.dart';
 
 abstract class RepositoryBase<T extends Entity> {

@@ -1,5 +1,5 @@
 import 'repository_base.dart';
-import '../../entities/production.dart';
+import '../../domain/entities/production.dart';
 import '../db_provider.dart';
 
 class ProductionsRepository extends RepositoryBase<Production> {

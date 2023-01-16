@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:film_freak/persistence/repositories/releases_repository.dart';
-
-import '../entities/release.dart';
+import '../domain/entities/release.dart';
+import '../persistence/repositories/releases_repository.dart';
 import '../persistence/db_provider.dart';
 
 class FileImporter {

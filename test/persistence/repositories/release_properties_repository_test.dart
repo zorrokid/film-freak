@@ -1,5 +1,5 @@
-import 'package:film_freak/entities/release_property.dart';
-import 'package:film_freak/enums/release_property_type.dart';
+import 'package:film_freak/domain/entities/release_property.dart';
+import 'package:film_freak/domain/enums/release_property_type.dart';
 import 'package:film_freak/persistence/repositories/release_properties_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sqflite.dart';

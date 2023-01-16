@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../../entities/release.dart';
-import '../../enums/case_type.dart';
-import '../../widgets/labelled_text.dart';
+import '../domain/entities/release.dart';
+import '../domain/enums/case_type.dart';
+import 'labelled_text.dart';
 
 class ReleaseDetailsCard extends StatelessWidget {
   const ReleaseDetailsCard({super.key, required this.release});

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'migrations.dart';
@@ -56,6 +55,7 @@ class DatabaseProviderSqflite extends DatabaseProvider {
     }
   }
 
+  @override
   Future<bool> truncateDb() async {
     await _database?.close();
     final path = join(await getDatabasesPath(), dbName);
