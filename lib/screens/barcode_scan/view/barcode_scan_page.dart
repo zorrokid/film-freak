@@ -16,7 +16,7 @@ class BarcodeScanPage extends StatelessWidget {
         releaseService: context.read<ReleaseService>(),
         collectionItemService: context.read<CollectionItemService>(),
       ),
-      child: BarcodeScanView(),
+      child: const BarcodeScanView(),
     );
   }
 }

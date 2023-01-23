@@ -3,7 +3,6 @@ import 'package:film_freak/screens/barcode_scan/cubit/barcode_scan_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import '../../../models/list_models/release_list_model.dart';
 import '../../../services/collection_item_service.dart';
 import '../../../services/release_service.dart';
 import '../../../widgets/release_filter_list.dart';
@@ -30,51 +29,11 @@ class BarcodeScanView extends StatefulWidget {
 }
 
 class _BarcodeScanViewState extends State<BarcodeScanView> {
-  late Future<List<ReleaseListModel>> _futureBarcodeScanResults;
-  late String _barcode;
-
-//  Future<List<ReleaseListModel>> _getResults(String barcode) async {
-//    return (await widget.releaseService
-//            .getListModels(filter: ReleaseQuerySpecs(barcode: barcode)))
-//        .toList();
-//  }
-
   @override
   void initState() {
     super.initState();
-    //_futureBarcodeScanResults = _getResults('');
-    _barcode = '';
   }
 
-/*  Future<void> barcodeScan() async {
-    final barcode = await Navigator.push<String>(context,
-        MaterialPageRoute<String>(builder: (context) {
-      return const BarcodeScannerView();
-    }));
-
-    if (barcode == null) return;
-    _barcode = barcode;
-
-    var barcodeExists = await widget.releaseService.barcodeExists(barcode);
-
-    // when barcode doesn't exist, create a new release with collection item
-    final route = MaterialPageRoute<String>(builder: (context) {
-      return ReleaseForm(
-        barcode: barcode,
-        releaseService: widget.releaseService,
-      );
-    });
-
-    if (mounted && !barcodeExists) {
-      await Navigator.push(context, route);
-    }
-
-    // otherwise fetch results to view
-    setState(() {
-      _futureBarcodeScanResults = _getResults(barcode);
-    });
-  }
-*/
   Future<void> _onDelete(int id) async {
     final isOkToDelete = await okToDelete(context, 'Are you sure?',
         '''Are you really sure you want to delete the release? 
