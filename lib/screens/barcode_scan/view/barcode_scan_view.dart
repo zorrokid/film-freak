@@ -1,5 +1,5 @@
-import 'package:film_freak/screens/scan_barcode/cubit/scan_barcode_cubit.dart';
-import 'package:film_freak/screens/scan_barcode/cubit/scan_barcode_state.dart';
+import 'package:film_freak/screens/barcode_scan/cubit/barcode_scan_cubit.dart';
+import 'package:film_freak/screens/barcode_scan/cubit/barcode_scan_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';

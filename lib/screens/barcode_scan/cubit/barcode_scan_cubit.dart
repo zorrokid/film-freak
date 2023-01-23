@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../persistence/query_specs/release_query_specs.dart';
 import '../../add_or_edit_release/release_form.dart';
 import '../view/barcode_scanner_view.dart';
-import 'scan_barcode_state.dart';
+import 'barcode_scan_state.dart';
 
 class ScanBarcodeCubit extends Cubit<ScanBarcodeState> {
   ScanBarcodeCubit({
