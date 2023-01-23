@@ -11,7 +11,7 @@ import '../../persistence/app_state.dart';
 import '../../widgets/release_filter_list.dart';
 import '../../widgets/spinner.dart';
 import '../add_or_edit_release/release_form.dart';
-import '../view_release/release_screen.dart';
+import '../view_release/view/release_page.dart';
 
 class ReleasesListView extends StatefulWidget {
   final ReleaseService releaseService;
@@ -77,10 +77,7 @@ class _ReleasesListViewState extends State<ReleasesListView> {
       Future<void> navigate(int id) async {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {
-            return ReleaseScreen(
-              id: id,
-              releaseService: widget.releaseService,
-            );
+            return ReleasePage(releaseId: id);
           },
         ));
       }

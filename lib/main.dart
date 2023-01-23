@@ -1,5 +1,8 @@
+import 'package:film_freak/services/collection_item_service.dart';
+import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'film_freak_app.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -21,9 +24,19 @@ Future<void> main() async {
 
   initializeLogging();
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => collectionModel,
-      child: const FilmFreakApp(),
+    MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<ReleaseService>(
+          create: (context) => initializeReleaseService(),
+        ),
+        RepositoryProvider<CollectionItemService>(
+          create: (context) => initializeCollectionItemService(),
+        )
+      ],
+      child: ChangeNotifierProvider(
+        create: (context) => collectionModel,
+        child: const FilmFreakApp(),
+      ),
     ),
   );
 }
