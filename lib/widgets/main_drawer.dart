@@ -2,7 +2,7 @@ import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../screens/scan_barcode/view/barcode_scan_view.dart';
+import '../screens/barcode_scan/view/barcode_scan_view.dart';
 import '../widgets/confirm_dialog.dart';
 import '../persistence/db_provider.dart';
 import '../persistence/app_state.dart';

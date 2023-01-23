@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../persistence/query_specs/release_query_specs.dart';
+import '../../add_or_edit_collection_item/collection_item_form.dart';
 import '../../add_or_edit_release/release_form.dart';
+import '../../view_release/release_screen.dart';
 import '../view/barcode_scanner_view.dart';
 import 'barcode_scan_state.dart';
 
@@ -49,5 +51,55 @@ class ScanBarcodeCubit extends Cubit<ScanBarcodeState> {
     });
 
     await Navigator.push(context, route);
+  }
+
+  Future<void> createCollectionItem(BuildContext context, int releaseId) async {
+    await Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return CollectionItemForm(
+          releaseId: releaseId,
+          releaseService: initializeReleaseService(),
+          collectionItemService: initializeCollectionItemService(),
+        );
+      },
+    ));
+  }
+
+  Future<void> delete(int releaseId, String barcode) async {
+    // TODO
+    /* final isOkToDelete = await okToDelete(context, 'Are you sure?',
+        '''Are you really sure you want to delete the release? 
+        Also the collection items created from this release 
+        will be deleted!''');*/
+
+    await releaseService.delete(releaseId);
+    await getReleases(barcode);
+  }
+
+  Future<void> edit(BuildContext context, int releaseId, String barcode) async {
+    await Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return ReleaseForm(
+          id: releaseId,
+          releaseService: initializeReleaseService(),
+        );
+      },
+    ));
+
+    await getReleases(barcode);
+  }
+
+  Future<void> view(BuildContext context, int releaseId) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return ReleaseScreen(
+            id: releaseId,
+            releaseService: initializeReleaseService(),
+          );
+        },
+      ),
+    );
   }
 }
