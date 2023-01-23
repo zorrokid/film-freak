@@ -27,7 +27,7 @@ import '../../widgets/release_properties.dart';
 import '../process_image/image_process_view.dart';
 import '../tmdb_search/tmdb_movie_search_screen.dart';
 import '../add_or_edit_collection_item/collection_item_form.dart';
-import '../scan_barcode/barcode_scanner_view.dart';
+import '../barcode_scan/view/barcode_scanner_view.dart';
 import '../select_text_from_image/image_text_selector.dart';
 import '../select_properties/property_selection_view.dart';
 import 'buttons/release_pic_selection.dart';

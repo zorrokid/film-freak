@@ -1,11 +1,9 @@
-import 'package:film_freak/services/collection_item_service.dart';
-import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'film_freak_app.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:camera/camera.dart';
-import 'screens/scan_barcode/scan_view.dart';
 import 'init/logging.dart';
 import 'init/remote_config.dart';
 import 'init/state.dart';
@@ -25,21 +23,7 @@ Future<void> main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => collectionModel,
-      child: const MyApp(),
+      child: const FilmFreakApp(),
     ),
   );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'film_freak',
-        home: ScanView(
-          releaseService: initializeReleaseService(),
-          collectionItemService: initializeCollectionItemService(),
-        ));
-  }
 }
