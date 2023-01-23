@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
-import '../../persistence/app_state.dart';
-import '../../widgets/camera_widget.dart';
+import '../../../persistence/app_state.dart';
+import '../../../widgets/camera_widget.dart';
 
 class BarcodeScannerView extends StatefulWidget {
   const BarcodeScannerView({super.key});
