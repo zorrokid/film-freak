@@ -50,27 +50,26 @@ class _BarcodeScanViewState extends State<BarcodeScanView> {
             }
           },
           builder: (context, state) {
-            if (state.status == ScanBarcodeStatus.failure) {
-              return const ErrorDisplayWidget('TODO: error message');
-            }
-            if (state.status == ScanBarcodeStatus.loading) {
-              return const Spinner();
-            }
-            if (state.items.isNotEmpty) {
-              final cubit = context.read<ScanBarcodeCubit>();
-              return ReleaseFilterList(
-                releases: state.items,
-                saveDir: appState.saveDir,
-                onCreate: (int releaseId) =>
-                    cubit.createCollectionItem(context, releaseId),
-                onDelete: (int releaseId) =>
-                    cubit.delete(releaseId, state.barcode),
-                onEdit: (int releaseId) =>
-                    cubit.edit(context, releaseId, state.barcode),
-                onTap: (int releaseId) => cubit.view(context, releaseId),
-              );
-            } else {
-              return const Center(child: Text('Scan barcode'));
+            switch (state.status) {
+              case ScanBarcodeStatus.failure:
+                return ErrorDisplayWidget(state.error);
+              case ScanBarcodeStatus.loading:
+                return const Spinner();
+              case ScanBarcodeStatus.loaded:
+                final cubit = context.read<ScanBarcodeCubit>();
+                return ReleaseFilterList(
+                  releases: state.items,
+                  saveDir: appState.saveDir,
+                  onCreate: (int releaseId) =>
+                      cubit.createCollectionItem(context, releaseId),
+                  onDelete: (int releaseId) =>
+                      cubit.delete(releaseId, state.barcode),
+                  onEdit: (int releaseId) =>
+                      cubit.edit(context, releaseId, state.barcode),
+                  onTap: (int releaseId) => cubit.view(context, releaseId),
+                );
+              default:
+                return const Center(child: Text('Scan barcode'));
             }
           },
         ),

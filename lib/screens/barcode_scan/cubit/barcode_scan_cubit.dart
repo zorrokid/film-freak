@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../persistence/query_specs/release_query_specs.dart';
 import '../../add_or_edit_collection_item/collection_item_form.dart';
 import '../../add_or_edit_release/release_form.dart';
-import '../../view_release/release_screen.dart';
+import '../../view_release/view/release_page.dart';
 import '../view/barcode_scanner_view.dart';
 import 'barcode_scan_state.dart';
 
@@ -94,10 +94,7 @@ class ScanBarcodeCubit extends Cubit<ScanBarcodeState> {
       context,
       MaterialPageRoute(
         builder: (context) {
-          return ReleaseScreen(
-            id: releaseId,
-            releaseService: initializeReleaseService(),
-          );
+          return ReleasePage(releaseId: releaseId);
         },
       ),
     );

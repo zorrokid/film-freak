@@ -18,6 +18,7 @@ class ScanBarcodeState extends Equatable {
     this.items = const <ReleaseListModel>[],
     this.barcode = "",
     this.barcodeExists = false,
+    this.error = "",
   });
 
   const ScanBarcodeState.initial() : this._();
@@ -35,12 +36,14 @@ class ScanBarcodeState extends Equatable {
           status: ScanBarcodeStatus.loaded,
           items: items,
         );
-  const ScanBarcodeState.failure() : this._(status: ScanBarcodeStatus.failure);
+  const ScanBarcodeState.failure(String error)
+      : this._(status: ScanBarcodeStatus.failure, error: error);
 
   final ScanBarcodeStatus status;
   final List<ReleaseListModel> items;
   final String barcode;
   final bool barcodeExists;
+  final String error;
 
   @override
   List<Object?> get props => [status, items];
