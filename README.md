@@ -7,7 +7,7 @@ It is desgined to be an off-line first app and a synchronization support with cl
 
 ## Tech
 
-It's implemented with [Flutter SDK](https://flutter.dev/) using [Dart](https://dart.dev/) programming language. This is my first serious attempt with Flutter and I must say I'm quite impressed with it. I really enjoy developing with Flutter and Dart.
+It's implemented with [Flutter SDK](https://flutter.dev/) using [Dart](https://dart.dev/) programming language and with [bloc-library](https://bloclibrary.dev) to implement BLoC pattern. This is my first serious attempt with Flutter and I must say I'm quite impressed with it. I really enjoy developing with Flutter and Dart.
 
 Currently data is saved to a local [SQLite](https://www.sqlite.org) database but I'm planning implementing a data synchronization with a cloud database (at that phase user accounts will be supported as well).
 
