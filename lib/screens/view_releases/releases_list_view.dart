@@ -56,7 +56,7 @@ class _ReleasesListViewState extends State<ReleasesListView> {
       }
 
       Future<void> onDelete(int id) async {
-        final isOkToDelete = await okToDelete(context, 'Are you sure?',
+        final isOkToDelete = await confirm(context, 'Are you sure?',
             '''Are you really sure you want to delete the release 
             and collection items related to it?''');
         if (!isOkToDelete) return;

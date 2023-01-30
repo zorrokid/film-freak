@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/confirm_dialog.dart';
 
-Future<bool> okToDelete(
-    BuildContext context, String title, String message) async {
+Future<bool> confirm(BuildContext context, String title, String message) async {
   return await showDialog<bool>(
           context: context,
           builder: (BuildContext context) {

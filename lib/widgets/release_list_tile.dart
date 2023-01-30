@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import '../models/list_models/release_list_model.dart';
-import 'collection_item_list.dart';
+import 'release_filter_list.dart';
 
 typedef OnCreateCallback = void Function(int id);
 

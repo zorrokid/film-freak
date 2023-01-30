@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/list_models/release_list_model.dart';
-import 'collection_item_list.dart';
 import 'release_list_tile.dart';
 
-typedef OnCreateCallback = Future<void> Function(int id);
+typedef OnCreateCallback = void Function(int id);
+typedef OnEditCallback = void Function(int id);
+typedef OnDeleteCallback = void Function(int id);
+typedef OnTapCallback = void Function(int id);
 
 class ReleaseFilterList extends StatelessWidget {
   const ReleaseFilterList({

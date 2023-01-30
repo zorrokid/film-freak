@@ -1,6 +1,6 @@
-import 'package:film_freak/screens/add_or_edit_release/view/widgets/media_selector.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+
 import '../../../domain/enums/media_type.dart';
 import '../../../domain/enums/picture_type.dart';
 import '../../../widgets/error_display_widget.dart';
@@ -20,6 +20,7 @@ import 'buttons/release_pic_delete.dart';
 import 'buttons/release_pic_selection.dart';
 import 'widgets/productions_list.dart';
 import 'widgets/release_media_widget.dart';
+import 'widgets/media_selector.dart';
 
 class ReleaseForm extends StatefulWidget {
   final String? barcode;
