@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:film_freak/domain/enums/media_type.dart';
 
+import '../../../domain/enums/media_type.dart';
 import '../../../domain/entities/production.dart';
 import '../../../domain/entities/release_media.dart';
 import '../../../domain/entities/release_picture.dart';

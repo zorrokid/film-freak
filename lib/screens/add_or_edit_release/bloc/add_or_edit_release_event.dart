@@ -1,12 +1,10 @@
-import 'package:equatable/equatable.dart';
-import 'package:film_freak/domain/enums/case_type.dart';
-import 'package:film_freak/domain/enums/picture_type.dart';
 import 'package:flutter/widgets.dart';
+import 'package:equatable/equatable.dart';
 
-import '../../../domain/entities/release.dart';
+import '../../../domain/enums/case_type.dart';
+import '../../../domain/enums/picture_type.dart';
 import '../../../domain/enums/media_type.dart';
 
-// inspiration: https://bloclibrary.dev/#/flutterlogintutorial
 abstract class AddOrEditReleaseEvent extends Equatable {
   const AddOrEditReleaseEvent();
 

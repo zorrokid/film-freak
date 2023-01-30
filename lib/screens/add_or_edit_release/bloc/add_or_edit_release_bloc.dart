@@ -1,12 +1,10 @@
 import 'dart:io';
-
-import 'package:film_freak/extensions/string_extensions.dart';
-import 'package:film_freak/screens/add_or_edit_release/bloc/add_or_edit_release_state.dart';
-import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as p;
 
+import '../../../extensions/string_extensions.dart';
+import '../../../services/release_service.dart';
 import '../../../domain/entities/release.dart';
 import '../../../domain/entities/release_comment.dart';
 import '../../../domain/entities/release_media.dart';
@@ -22,6 +20,7 @@ import '../../select_properties/property_selection_view.dart';
 import '../../select_text_from_image/image_text_selector.dart';
 import '../../tmdb_search/tmdb_movie_search_screen.dart';
 import '../view/widgets/media_selector.dart';
+import '../bloc/add_or_edit_release_state.dart';
 import 'add_or_edit_release_event.dart';
 
 class AddOrEditReleaseBloc
