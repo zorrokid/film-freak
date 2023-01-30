@@ -1,3 +1,4 @@
+import 'package:film_freak/screens/add_or_edit_release/view/add_or_edit_release_page.dart';
 import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../persistence/query_specs/release_query_specs.dart';
 import '../../add_or_edit_collection_item/collection_item_form.dart';
-import '../../add_or_edit_release/release_form.dart';
+import '../../add_or_edit_release/view/release_form.dart';
 import '../../view_release/view/release_page.dart';
 import '../view/barcode_scanner_view.dart';
 import 'barcode_scan_state.dart';
@@ -44,9 +45,8 @@ class ScanBarcodeCubit extends Cubit<ScanBarcodeState> {
 
   Future<void> addRelease(String barcode, BuildContext context) async {
     final route = MaterialPageRoute<String>(builder: (context) {
-      return ReleaseForm(
+      return AddOrEditReleasePage(
         barcode: barcode,
-        releaseService: releaseService,
       );
     });
 
@@ -79,9 +79,9 @@ class ScanBarcodeCubit extends Cubit<ScanBarcodeState> {
   Future<void> edit(BuildContext context, int releaseId, String barcode) async {
     await Navigator.push(context, MaterialPageRoute(
       builder: (context) {
-        return ReleaseForm(
+        return AddOrEditReleasePage(
           id: releaseId,
-          releaseService: initializeReleaseService(),
+          barcode: barcode,
         );
       },
     ));

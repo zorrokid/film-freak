@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../domain/entities/production.dart';
-import '../../../widgets/collection_item_list_tile.dart';
+import '../../../../domain/entities/production.dart';
+import '../../../../widgets/collection_item_list_tile.dart';
 
 class ProductionsList extends StatelessWidget {
   final List<Production> productions;

@@ -1,4 +1,6 @@
 import 'package:film_freak/persistence/query_specs/release_query_specs.dart';
+import 'package:film_freak/screens/add_or_edit_release/bloc/add_or_edit_release_bloc.dart';
+import 'package:film_freak/screens/add_or_edit_release/view/add_or_edit_release_page.dart';
 import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,7 @@ import '../../utils/dialog_utls.dart';
 import '../../persistence/app_state.dart';
 import '../../widgets/release_filter_list.dart';
 import '../../widgets/spinner.dart';
-import '../add_or_edit_release/release_form.dart';
+import '../add_or_edit_release/view/release_form.dart';
 import '../view_release/view/release_page.dart';
 
 class ReleasesListView extends StatefulWidget {
@@ -47,8 +49,8 @@ class _ReleasesListViewState extends State<ReleasesListView> {
     return Consumer<AppState>(builder: (context, appState, child) {
       void addRelease() {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return ReleaseForm(
-            releaseService: widget.releaseService,
+          return const AddOrEditReleasePage(
+            barcode: 'TODO',
           );
         }));
       }
@@ -66,9 +68,8 @@ class _ReleasesListViewState extends State<ReleasesListView> {
       Future<void> onEdit(int id) async {
         await Navigator.push(context, MaterialPageRoute(
           builder: (context) {
-            return ReleaseForm(
+            return AddOrEditReleasePage(
               id: id,
-              releaseService: widget.releaseService,
             );
           },
         ));
