@@ -3,7 +3,7 @@ import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../add_or_edit_release/release_form.dart';
+import '../../add_or_edit_release/view/release_form.dart';
 
 class ReleaseViewCubit extends Cubit<ReleaseViewState> {
   ReleaseViewCubit({required this.releaseService})
