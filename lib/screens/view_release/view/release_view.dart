@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import '../bloc/release_view_cubit.dart';
+import '../bloc/release_view_bloc.dart';
+import '../bloc/release_view_event.dart';
 import '../bloc/release_view_state.dart';
 import '../../../persistence/app_state.dart';
 import '../../../widgets/release_data_cards.dart';
@@ -14,7 +15,7 @@ class ReleaseView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<AppState>(builder: (context, appState, child) {
-      return BlocBuilder<ReleaseViewCubit, ReleaseViewState>(
+      return BlocBuilder<ReleaseViewBloc, ReleaseViewState>(
           builder: (context, state) {
         switch (state.status) {
           case ReleaseViewStatus.initial:
@@ -38,8 +39,8 @@ class ReleaseView extends StatelessWidget {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () => context
-                    .read<ReleaseViewCubit>()
-                    .editRelease(context, state.releaseId),
+                    .read<ReleaseViewBloc>()
+                    .add(EditRelease(context, state.releaseId)),
                 backgroundColor: Colors.green,
                 child: const Icon(Icons.edit),
               ),
