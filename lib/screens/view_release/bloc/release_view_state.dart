@@ -7,26 +7,35 @@ enum ReleaseViewStatus {
   loading,
   loaded,
   loadFailed,
+  edited,
 }
 
 class ReleaseViewState extends Equatable {
-  const ReleaseViewState._({
+  const ReleaseViewState({
     this.releaseId = 0,
     this.status = ReleaseViewStatus.initial,
     this.error = "",
     this.release,
   });
-  const ReleaseViewState.initial() : this._();
-  const ReleaseViewState.loading(int releaseId) : this._(releaseId: releaseId);
-  const ReleaseViewState.loaded(ReleaseViewModel release)
-      : this._(release: release, status: ReleaseViewStatus.loaded);
-  const ReleaseViewState.loadFailed(String error)
-      : this._(status: ReleaseViewStatus.loadFailed, error: error);
 
   final int releaseId;
   final ReleaseViewStatus status;
   final ReleaseViewModel? release;
   final String error;
+
+  ReleaseViewState copyWith({
+    int? releaseId,
+    ReleaseViewStatus? status,
+    ReleaseViewModel? release,
+    String? error,
+  }) {
+    return ReleaseViewState(
+      release: release ?? this.release,
+      error: error ?? this.error,
+      releaseId: releaseId ?? this.releaseId,
+      status: status ?? this.status,
+    );
+  }
 
   @override
   List<Object?> get props => [status, releaseId, release, error];

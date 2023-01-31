@@ -1,9 +1,10 @@
-import 'package:film_freak/screens/view_release/view/release_view.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../services/release_service.dart';
-import '../bloc/release_view_cubit.dart';
+import '../bloc/release_view_bloc.dart';
+import '../bloc/release_view_event.dart';
+import 'release_view.dart';
 
 class ReleasePage extends StatelessWidget {
   final int releaseId;
@@ -13,11 +14,11 @@ class ReleasePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
-        final cubit = ReleaseViewCubit(
+        final bloc = ReleaseViewBloc(
           releaseService: context.read<ReleaseService>(),
         );
-        cubit.loadRelease(releaseId);
-        return cubit;
+        bloc.add(LoadRelease(releaseId));
+        return bloc;
       },
       child: const ReleaseView(),
     );
