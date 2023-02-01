@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../domain/enums/condition.dart';
-import '../../domain/enums/media_type.dart';
-import '../../models/collection_item_media_view_model.dart';
-import '../../widgets/form/dropdown_form_field.dart';
+
+import '../../../domain/enums/condition.dart';
+import '../../../domain/enums/media_type.dart';
+import '../../../models/collection_item_media_view_model.dart';
+import '../../../widgets/form/dropdown_form_field.dart';
 
 typedef OnCollectionItemMediaUpdate = void Function(
     int index, Condition condition);

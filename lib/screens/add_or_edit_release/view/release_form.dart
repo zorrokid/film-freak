@@ -107,13 +107,13 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
     return BlocConsumer<AddOrEditReleaseBloc, AddOrEditReleaseState>(
         listener: (context, state) {
-      final cubit = context.read<AddOrEditReleaseBloc>();
+      final bloc = context.read<AddOrEditReleaseBloc>();
       switch (state.status) {
         case AddOrEditReleaseStatus.initialized:
           if (state.id != null) {
-            cubit.add(LoadRelease(state.id!));
+            bloc.add(LoadRelease(state.id!));
           } else {
-            cubit.add(InitRelease(state.barcode));
+            bloc.add(InitRelease(state.barcode));
           }
           break;
         case AddOrEditReleaseStatus.scanned:
@@ -126,7 +126,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
           _barcodeController.text = viewModel.release.barcode;
           break;
         case AddOrEditReleaseStatus.submitted:
-          cubit.add(const DeletePics());
+          bloc.add(const DeletePics());
           break;
         case AddOrEditReleaseStatus.picsDeleted:
           // last form state so we can leave
