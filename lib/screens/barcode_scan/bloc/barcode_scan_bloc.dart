@@ -5,8 +5,8 @@ import '../../../services/collection_item_service.dart';
 import '../../../services/release_service.dart';
 import '../../../persistence/query_specs/release_query_specs.dart';
 import '../../../utils/dialog_utls.dart';
-import '../../add_or_edit_collection_item/collection_item_form.dart';
 import '../../add_or_edit_release/view/add_or_edit_release_page.dart';
+import '../../add_or_edit_collection_item/view/add_or_edit_collection_item_page.dart';
 import '../../view_release/view/release_page.dart';
 import '../view/barcode_scanner_view.dart';
 import 'barcode_scan_event.dart';
@@ -88,11 +88,7 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
   ) async {
     await Navigator.push(event.context, MaterialPageRoute(
       builder: (context) {
-        return CollectionItemForm(
-          releaseId: event.releaseId,
-          releaseService: initializeReleaseService(),
-          collectionItemService: initializeCollectionItemService(),
-        );
+        return AddOrEditCollectionItemPage(releaseId: event.releaseId);
       },
     ));
     emit(state.copyWith(status: BarcodeScanStatus.collectionItemAdded));

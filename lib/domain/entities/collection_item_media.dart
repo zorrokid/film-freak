@@ -4,7 +4,7 @@ import '../enums/condition.dart';
 class CollectionItemMedia
     extends CollectionItemChildEntity<CollectionItemMedia> {
   final int releaseMediaId;
-  final Condition condition;
+  Condition condition;
   CollectionItemMedia({
     int? id,
     int? collectionItemId,
@@ -27,6 +27,24 @@ class CollectionItemMedia
         'createdTime': (createdTime ?? DateTime.now()).toIso8601String(),
         'modifiedTime': (modifiedTime ?? DateTime.now()).toIso8601String(),
       };
+
+  CollectionItemMedia copyWith({
+    int? id,
+    int? collectionItemId,
+    int? releaseMediaId,
+    Condition? condition,
+    DateTime? createdTime,
+    DateTime? modifiedTime,
+  }) {
+    return CollectionItemMedia(
+      id: id ?? this.id,
+      collectionItemId: collectionItemId ?? this.collectionItemId,
+      releaseMediaId: releaseMediaId ?? this.releaseMediaId,
+      condition: condition ?? this.condition,
+      createdTime: createdTime ?? this.createdTime,
+      modifiedTime: modifiedTime ?? this.modifiedTime,
+    );
+  }
 
   static CollectionItemMedia fromMap(Map<String, Object?> map) {
     return CollectionItemMedia(

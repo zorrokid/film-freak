@@ -1,3 +1,4 @@
+import 'package:film_freak/screens/add_or_edit_collection_item/view/add_or_edit_collection_item_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/collection_item_service.dart';
@@ -7,7 +8,6 @@ import '../../widgets/error_display_widget.dart';
 import '../../widgets/release_data_cards.dart';
 import '../../widgets/spinner.dart';
 import '../../persistence/app_state.dart';
-import '../add_or_edit_collection_item/collection_item_form.dart';
 import 'collection_item_details_card.dart';
 
 class CollectionItemScreen extends StatefulWidget {
@@ -63,11 +63,9 @@ class _CollectionItemScreenState extends State<CollectionItemScreen> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CollectionItemForm(
-                    id: viewModel.collectionItem.id,
+                  builder: (context) => AddOrEditCollectionItemPage(
+                    collectionItemId: viewModel.collectionItem.id,
                     releaseId: viewModel.collectionItem.releaseId!,
-                    releaseService: widget.releaseService,
-                    collectionItemService: widget.collectionItemService,
                   ),
                 ),
               );
