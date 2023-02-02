@@ -1,15 +1,15 @@
-import 'package:film_freak/services/collection_item_service.dart';
-import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../screens/barcode_scan/view/barcode_scan_view.dart';
-import '../widgets/confirm_dialog.dart';
-import '../persistence/db_provider.dart';
-import '../persistence/app_state.dart';
-import '../screens/view_about/about_view.dart';
-import '../screens/import_collection/import_view.dart';
-import '../screens/view_releases/releases_list_view.dart';
-import '../services/file_importer.dart';
+import '/screens/view_releases/view/view_releases_page.dart';
+import '/services/collection_item_service.dart';
+import '/services/release_service.dart';
+import '/screens/barcode_scan/view/barcode_scan_view.dart';
+import '/widgets/confirm_dialog.dart';
+import '/persistence/db_provider.dart';
+import '/persistence/app_state.dart';
+import '/screens/view_about/about_view.dart';
+import '/screens/import_collection/import_view.dart';
+import '/services/file_importer.dart';
 
 class MainDrawer extends StatefulWidget {
   final ReleaseService releaseService;
@@ -69,11 +69,8 @@ class _MainDrawerState extends State<MainDrawer> {
             ),
             ListTile(
               title: const Text('Releases'),
-              onTap: () => _navigateFromDrawer(
-                  context,
-                  ReleasesListView(
-                    releaseService: widget.releaseService,
-                  )),
+              onTap: () =>
+                  _navigateFromDrawer(context, const ViewReleasesPage()),
             ),
             ListTile(
               title: const Text('Scan'),
