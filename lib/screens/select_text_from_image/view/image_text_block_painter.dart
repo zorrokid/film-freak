@@ -1,6 +1,6 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import '../../models/selectable_text_block.dart';
+import '../../../models/selectable_text_block.dart';
 
 enum TextBlockPainterMode { paintByBlock, paintByWord }
 
@@ -23,10 +23,12 @@ class ImageTextBlockPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(ImageTextBlockPainter oldDelegate) =>
-      image != oldDelegate.image ||
-      textBlocks != oldDelegate.textBlocks ||
-      mode != oldDelegate.mode;
+  bool shouldRepaint(ImageTextBlockPainter oldDelegate) {
+    var repaint = image != oldDelegate.image ||
+        textBlocks != oldDelegate.textBlocks ||
+        mode != oldDelegate.mode;
+    return repaint;
+  }
 
   void _paintByBlock(Canvas canvas, Paint paint, Paint paintSelected) {
     for (var block in textBlocks) {

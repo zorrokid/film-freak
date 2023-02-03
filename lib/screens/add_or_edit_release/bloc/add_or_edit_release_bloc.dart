@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:film_freak/screens/select_text_from_image/view/select_text_from_image_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as p;
@@ -17,7 +18,7 @@ import '../../../models/tmdb_movie_result.dart';
 import '../../barcode_scan/view/barcode_scanner_view.dart';
 import '../../process_image/image_process_view.dart';
 import '../../select_properties/property_selection_view.dart';
-import '../../select_text_from_image/image_text_selector.dart';
+import '../../select_text_from_image/view/image_text_selector.dart';
 import '../../tmdb_search/tmdb_movie_search_screen.dart';
 import '../view/widgets/media_selector.dart';
 import '../bloc/add_or_edit_release_state.dart';
@@ -126,9 +127,7 @@ class AddOrEditReleaseBloc
     final imagePath = p.join(state.saveDir, selectedPic.filename);
     var selectedText = await Navigator.push(event.context,
         MaterialPageRoute<String>(builder: (context) {
-      return ImageTextSelector(
-        imagePath: imagePath,
-      );
+      return SelectTextFromImagePage(imagePath: imagePath);
     }));
     if (selectedText == null) return;
     if (event.capitalizeWords) {
