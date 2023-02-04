@@ -12,6 +12,8 @@ enum SelectTextFromImageStatus {
   imageLoaded,
   blockSelected,
   selectionReady,
+  selectingTextBlock,
+  selectedTextBlock,
 }
 
 class SelectTextFromImageState extends Equatable {

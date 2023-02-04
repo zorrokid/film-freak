@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -111,51 +112,49 @@ class SelectTextFromImageBloc
     Emitter<SelectTextFromImageState> emit,
   ) {
     if (state.image == null || state.textBlocks.isEmpty) return;
+    emit(state.copyWith(status: SelectTextFromImageStatus.selectingTextBlock));
+    // TODO: not actually a deep copy since multi dimensional list:
     final textBlocks = [...state.textBlocks];
-    final newTextBlocks = state.showTextByWords
-        ? _findByWords(event.details.localPosition, textBlocks)
-        : _findByBlocks(event.details.localPosition, textBlocks);
-    final newText = '${state.textSelection}aaa';
+    final selectedBlock =
+        _getSelectedBlock(event.details.localPosition, textBlocks);
+    if (selectedBlock == null) return;
+    if (state.showTextByWords) {
+      final selectedWord =
+          _getSelectedWord(event.details.localPosition, selectedBlock);
+      if (selectedWord == null) return;
+      selectedWord.isSelected = !selectedWord.isSelected;
+    } else {
+      selectedBlock.isSelected = !selectedBlock.isSelected;
+    }
     emit(state.copyWith(
-      textBlocks: newTextBlocks,
-      textSelection: newText,
-    ));
+        textBlocks: textBlocks,
+        status: SelectTextFromImageStatus.selectedTextBlock));
   }
 
-  List<SelectableTextBlock> _findByWords(
-      Offset localPosition, List<SelectableTextBlock> textBlocks) {
-    for (var i = 0; i < textBlocks.length; i++) {
-      if (localPosition.isInside(textBlocks[i].boundingBox)) {
-        for (var j = 0; j < textBlocks[i].lines.length; j++) {
-          final line = textBlocks[i].lines[j];
-          if (localPosition.isInside(line.boundingBox)) {
-            for (var k = 0; k < textBlocks[i].lines[j].elements.length; k++) {
-              if (localPosition
-                  .isInside(textBlocks[i].lines[j].elements[k].boundingBox)) {
-                final word = textBlocks[i].lines[j].elements[k];
-                // toggle selection
-                word.isSelected = !word.isSelected;
-                // exit once found
-                return textBlocks;
-              }
-            }
+  SelectableTextElement? _getSelectedWord(
+      Offset localPosition, SelectableTextBlock textBlock) {
+    if (textBlock.lines.isEmpty) return null;
+    for (var i = 0; i < textBlock.lines.length; i++) {
+      final line = textBlock.lines[i];
+      if (localPosition.isInside(line.boundingBox)) {
+        for (var j = 0; j < textBlock.lines[i].elements.length; j++) {
+          if (localPosition
+              .isInside(textBlock.lines[i].elements[j].boundingBox)) {
+            return textBlock.lines[i].elements[j];
           }
         }
       }
     }
-    return textBlocks;
+    return null;
   }
 
-  List<SelectableTextBlock> _findByBlocks(
+  SelectableTextBlock? _getSelectedBlock(
       Offset localPosition, List<SelectableTextBlock> textBlocks) {
     for (var i = 0; i < textBlocks.length; i++) {
       if (localPosition.isInside(textBlocks[i].boundingBox)) {
-        // toggle selection
-        textBlocks[i].isSelected = !textBlocks[i].isSelected;
-        // exit once found
-        return textBlocks;
+        return textBlocks[i];
       }
     }
-    return textBlocks;
+    return null;
   }
 }
