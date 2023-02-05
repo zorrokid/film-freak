@@ -2,31 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../services/collection_item_service.dart';
-import '../../../services/release_service.dart';
-import '../../../widgets/release_filter_list.dart';
-import '../../../persistence/app_state.dart';
-import '../../../widgets/error_display_widget.dart';
-import '../../../widgets/main_drawer.dart';
-import '../../../widgets/spinner.dart';
+import '/persistence/query_specs/release_query_specs.dart';
+import '/services/collection_item_service.dart';
+import '/services/release_service.dart';
+import '/widgets/release_filter_list.dart';
+import '/persistence/app_state.dart';
+import '/widgets/error_display_widget.dart';
+import '/widgets/main_drawer.dart';
+import '/widgets/spinner.dart';
 import '../bloc/barcode_scan_bloc.dart';
 import '../bloc/barcode_scan_state.dart';
 import '../bloc/barcode_scan_event.dart';
 
-class BarcodeScanView extends StatefulWidget {
+class BarcodeScanView extends StatelessWidget {
   const BarcodeScanView({super.key});
-
-  @override
-  State<BarcodeScanView> createState() {
-    return _BarcodeScanViewState();
-  }
-}
-
-class _BarcodeScanViewState extends State<BarcodeScanView> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   void barcodeScanListener(BuildContext context, BarcodeScanState state) {
     final bloc = context.read<ScanBarcodeBloc>();
@@ -34,16 +23,17 @@ class _BarcodeScanViewState extends State<BarcodeScanView> {
       case BarcodeScanStatus.scanned:
         if (state.barcode.isNotEmpty) {
           if (state.barcodeExists) {
-            bloc.add(GetReleases(state.barcode));
+            bloc.add(GetReleases(ReleaseQuerySpecs(barcode: state.barcode)));
           } else {
             bloc.add(AddRelease(context, state.barcode));
           }
         }
         break;
+      case BarcodeScanStatus.initialized: // fall through
       case BarcodeScanStatus.releaseAdded: // fall through
       case BarcodeScanStatus.releaseEdited: // fall through
       case BarcodeScanStatus.releaseDeleted:
-        bloc.add(GetReleases(state.barcode));
+        bloc.add(GetReleases(state.querySpecs));
         break;
       case BarcodeScanStatus.deleteConfirmed:
         if (state.releaseId != null) {

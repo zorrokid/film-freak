@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../services/collection_item_service.dart';
 import '../../../services/release_service.dart';
-import '../../../persistence/query_specs/release_query_specs.dart';
 import '../../../utils/dialog_utls.dart';
 import '../../add_or_edit_release/view/add_or_edit_release_page.dart';
 import '../../add_or_edit_collection_item/view/add_or_edit_collection_item_page.dart';
@@ -17,6 +16,7 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
     required this.releaseService,
     required this.collectionItemService,
   }) : super(const BarcodeScanState()) {
+    on<Initialize>(_onInitialize);
     on<ScanBarcode>(_onScanBarcode);
     on<GetReleases>(_onGetReleases);
     on<AddRelease>(_onAddRelease);
@@ -29,6 +29,16 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
 
   final ReleaseService releaseService;
   final CollectionItemService collectionItemService;
+
+  void _onInitialize(
+    Initialize event,
+    Emitter<BarcodeScanState> emit,
+  ) {
+    emit(state.copyWith(
+      status: BarcodeScanStatus.initialized,
+      querySpecs: event.querySpecs,
+    ));
+  }
 
   Future<void> _onScanBarcode(
     ScanBarcode event,
@@ -58,10 +68,12 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
     GetReleases event,
     Emitter<BarcodeScanState> emit,
   ) async {
-    emit(state.copyWith(status: BarcodeScanStatus.loading));
-    final releases = (await releaseService.getListModels(
-            filter: ReleaseQuerySpecs(barcode: event.barcode)))
-        .toList();
+    emit(state.copyWith(
+      status: BarcodeScanStatus.loading,
+      querySpecs: event.querySpecs,
+    ));
+    final releases =
+        (await releaseService.getListModels(filter: event.querySpecs)).toList();
     emit(state.copyWith(
       status: BarcodeScanStatus.loaded,
       items: releases,

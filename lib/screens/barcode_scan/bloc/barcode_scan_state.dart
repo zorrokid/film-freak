@@ -1,9 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'package:film_freak/persistence/query_specs/query_specs_enums.dart';
 
 import '../../../models/list_models/release_list_model.dart';
+import '../../../persistence/query_specs/release_query_specs.dart';
 
 enum BarcodeScanStatus {
   initial,
+  initialized,
   scanning,
   scanned,
   loading,
@@ -26,6 +29,8 @@ class BarcodeScanState extends Equatable {
     this.error = "",
     this.releaseId,
     this.canDelete = false,
+    this.querySpecs =
+        const ReleaseQuerySpecs(top: 10, orderBy: OrderByEnum.latest),
   });
 
   final BarcodeScanStatus status;
@@ -35,6 +40,7 @@ class BarcodeScanState extends Equatable {
   final String error;
   final int? releaseId;
   final bool canDelete;
+  final ReleaseQuerySpecs querySpecs;
 
   BarcodeScanState copyWith({
     BarcodeScanStatus? status,
@@ -44,6 +50,7 @@ class BarcodeScanState extends Equatable {
     String? error,
     int? releaseId,
     bool? canDelete,
+    ReleaseQuerySpecs? querySpecs,
   }) {
     return BarcodeScanState(
       status: status ?? this.status,
@@ -53,6 +60,7 @@ class BarcodeScanState extends Equatable {
       error: error ?? this.error,
       releaseId: releaseId ?? this.releaseId,
       canDelete: canDelete ?? this.canDelete,
+      querySpecs: querySpecs ?? this.querySpecs,
     );
   }
 

@@ -1,10 +1,23 @@
 import 'package:equatable/equatable.dart';
+import 'package:film_freak/persistence/query_specs/query_specs_enums.dart';
 import 'package:flutter/widgets.dart';
+
+import '../../../persistence/query_specs/release_query_specs.dart';
 
 abstract class BarcodeScanEvent extends Equatable {
   const BarcodeScanEvent();
   @override
   List<Object> get props => [];
+}
+
+class Initialize extends BarcodeScanEvent {
+  const Initialize({
+    this.querySpecs =
+        const ReleaseQuerySpecs(top: 10, orderBy: OrderByEnum.latest),
+  });
+  final ReleaseQuerySpecs querySpecs;
+  @override
+  List<Object> get props => [querySpecs];
 }
 
 class ScanBarcode extends BarcodeScanEvent {
@@ -15,10 +28,10 @@ class ScanBarcode extends BarcodeScanEvent {
 }
 
 class GetReleases extends BarcodeScanEvent {
-  const GetReleases(this.barcode);
-  final String barcode;
+  const GetReleases(this.querySpecs);
+  final ReleaseQuerySpecs querySpecs;
   @override
-  List<Object> get props => [barcode];
+  List<Object> get props => [querySpecs];
 }
 
 class AddRelease extends BarcodeScanEvent {
