@@ -1,15 +1,12 @@
+import 'package:film_freak/screens/barcode_scan/view/barcode_scan_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '/screens/view_releases/view/view_releases_page.dart';
 import '/services/collection_item_service.dart';
 import '/services/release_service.dart';
-import '/screens/barcode_scan/view/barcode_scan_view.dart';
 import '/widgets/confirm_dialog.dart';
 import '/persistence/db_provider.dart';
 import '/persistence/app_state.dart';
 import '/screens/view_about/about_view.dart';
-import '/screens/import_collection/import_view.dart';
-import '/services/file_importer.dart';
 
 class MainDrawer extends StatefulWidget {
   final ReleaseService releaseService;
@@ -70,14 +67,9 @@ class _MainDrawerState extends State<MainDrawer> {
             ListTile(
               title: const Text('Releases'),
               onTap: () =>
-                  _navigateFromDrawer(context, const ViewReleasesPage()),
+                  _navigateFromDrawer(context, const BarcodeScanPage()),
             ),
-            ListTile(
-              title: const Text('Scan'),
-              onTap: () =>
-                  _navigateFromDrawer(context, const BarcodeScanView()),
-            ),
-            ListTile(
+            /*ListTile(
               title: const Text('Import'),
               onTap: () => _navigateFromDrawer(
                   context,
@@ -85,7 +77,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     fileImporter: FileImporter(
                         dbProvider: DatabaseProviderSqflite.instance),
                   )),
-            ),
+            ),*/
             ListTile(
               title: const Text('Delete'),
               onTap: () {
