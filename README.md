@@ -15,7 +15,7 @@ One of the features I've been focusing from the start is using [Google ML Kit](h
 
 [Firebase Remote Config](https://firebase.google.com/docs/remote-config) is used for storing configurations such as API keys.
 
-[The Move Database API](https://developers.themoviedb.org) is used to fetch movie data for movie releases in collection.
+[The Movie Database API](https://developers.themoviedb.org) is used to fetch movie data for movie releases in collection.
 
 Currently developing this only for Android target since possible to test only with Android devices.
 
