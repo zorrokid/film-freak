@@ -8,12 +8,14 @@ class LogInState extends Equatable {
     this.username = "",
     this.password = "",
     this.token = "",
+    this.refreshToken = "",
     this.expirationTime,
   });
   final LogInStatus status;
   final String username;
   final String password;
   final String token;
+  final String refreshToken;
   final DateTime? expirationTime;
 
   LogInState copyWith({
@@ -21,6 +23,7 @@ class LogInState extends Equatable {
     String? username,
     String? password,
     String? token,
+    String? refreshToken,
     DateTime? expirationTime,
   }) {
     return LogInState(
@@ -28,6 +31,7 @@ class LogInState extends Equatable {
       username: username ?? this.username,
       password: password ?? this.password,
       token: token ?? this.token,
+      refreshToken: refreshToken ?? this.refreshToken,
       expirationTime: expirationTime ?? this.expirationTime,
     );
   }
@@ -37,6 +41,7 @@ class LogInState extends Equatable {
         status,
         username,
         password,
+        refreshToken,
         token,
         expirationTime,
       ];
