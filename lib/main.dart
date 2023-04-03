@@ -1,5 +1,6 @@
 import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/services/release_service.dart';
+import 'package:film_freak/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +32,10 @@ Future<void> main() async {
         ),
         RepositoryProvider<CollectionItemService>(
           create: (context) => initializeCollectionItemService(),
-        )
+        ),
+        RepositoryProvider<UserService>(
+          create: (context) => UserService(),
+        ),
       ],
       child: ChangeNotifierProvider(
         create: (context) => collectionModel,

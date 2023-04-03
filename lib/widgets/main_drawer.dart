@@ -1,6 +1,7 @@
 import 'package:film_freak/screens/barcode_scan/view/barcode_scan_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../screens/log_in/view/log_in_page.dart';
 import '/services/collection_item_service.dart';
 import '/services/release_service.dart';
 import '/widgets/confirm_dialog.dart';
@@ -68,6 +69,11 @@ class _MainDrawerState extends State<MainDrawer> {
               title: const Text('Releases'),
               onTap: () =>
                   _navigateFromDrawer(context, const BarcodeScanPage()),
+            ),
+            // TODO: if user hasn't logged in show "Log in" otherwise "User info"
+            ListTile(
+              title: const Text('Log in'),
+              onTap: () => _navigateFromDrawer(context, const LogInPage()),
             ),
             /*ListTile(
               title: const Text('Import'),
