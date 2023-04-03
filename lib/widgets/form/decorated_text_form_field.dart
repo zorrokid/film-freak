@@ -7,12 +7,14 @@ class DecoratedTextFormField extends StatelessWidget {
       required this.label,
       required this.required,
       this.maxLines,
-      this.validator});
+      this.validator,
+      this.obscureText = false});
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final String label;
   final bool required;
   final int? maxLines;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +22,7 @@ class DecoratedTextFormField extends StatelessWidget {
       validator: validator,
       controller: controller,
       maxLines: maxLines,
+      obscureText: obscureText,
       decoration: InputDecoration(
         label: Text.rich(
           TextSpan(
