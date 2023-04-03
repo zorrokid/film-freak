@@ -1,9 +1,12 @@
+import 'package:film_freak/bloc/user_event.dart';
+import 'package:film_freak/bloc/user_state.dart';
 import 'package:film_freak/screens/log_in/bloc/log_in_bloc.dart';
 import 'package:film_freak/screens/log_in/bloc/log_in_event.dart';
 import 'package:film_freak/screens/log_in/bloc/log_in_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../bloc/user_bloc.dart';
 import '../../../widgets/error_display_widget.dart';
 import '../../../widgets/form/decorated_text_form_field.dart';
 import '../../../widgets/spinner.dart';
@@ -45,7 +48,20 @@ class _LogInFormState extends State<LogInForm> {
       );
     }
 
-    return BlocConsumer<LogInBloc, LogInState>(
+    return BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+      final userBloc = context.read<UserBloc>();
+      return BlocConsumer<LogInBloc, LogInState>(
+        listener: (context, state) {
+          if (state.status == LogInStatus.loggedId) {
+            userBloc.add(
+              LogInUser(
+                token: state.token,
+                refreshToken: state.refreshToken,
+                expirationTime: state.expirationTime ?? DateTime.now(),
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           final bloc = context.read<LogInBloc>();
 
@@ -85,6 +101,7 @@ class _LogInFormState extends State<LogInForm> {
             ),
           );
         },
-        listener: (context, state) {});
+      );
+    });
   }
 }

@@ -1,4 +1,6 @@
+import 'package:film_freak/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'screens/barcode_scan/view/barcode_scan_page.dart';
 
@@ -7,9 +9,12 @@ class FilmFreakApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'film_freak',
-      home: BarcodeScanPage(),
+    return BlocProvider(
+      create: (_) => UserBloc(),
+      child: const MaterialApp(
+        title: 'film_freak',
+        home: BarcodeScanPage(),
+      ),
     );
   }
 }
