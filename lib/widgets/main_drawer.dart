@@ -1,6 +1,10 @@
 import 'package:film_freak/screens/barcode_scan/view/barcode_scan_page.dart';
+import 'package:film_freak/screens/data_sync/view/data_sync_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import '../bloc/user_bloc.dart';
+import '../bloc/user_state.dart';
 import '../screens/log_in/view/log_in_page.dart';
 import '/services/collection_item_service.dart';
 import '/services/release_service.dart';
@@ -57,25 +61,33 @@ class _MainDrawerState extends State<MainDrawer> {
   @override
   Widget build(BuildContext context) {
     return Consumer<AppState>(builder: (context, cart, child) {
-      return Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Text('Drawer header'),
-            ),
-            ListTile(
-              title: const Text('Releases'),
-              onTap: () =>
-                  _navigateFromDrawer(context, const BarcodeScanPage()),
-            ),
-            // TODO: if user hasn't logged in show "Log in" otherwise "User info"
-            ListTile(
-              title: const Text('Log in'),
-              onTap: () => _navigateFromDrawer(context, const LogInPage()),
-            ),
-            /*ListTile(
+      return BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+        final userBloc = context.read<UserBloc>();
+        return Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
+                child: Text('Drawer header'),
+              ),
+              ListTile(
+                title: const Text('Releases'),
+                onTap: () =>
+                    _navigateFromDrawer(context, const BarcodeScanPage()),
+              ),
+              userBloc.state.status == UserStatus.loggedOut
+                  ? ListTile(
+                      title: const Text('Log in'),
+                      onTap: () =>
+                          _navigateFromDrawer(context, const LogInPage()),
+                    )
+                  : ListTile(
+                      title: const Text('Data'),
+                      onTap: () =>
+                          _navigateFromDrawer(context, const DataSyncView()),
+                    ),
+              /*ListTile(
               title: const Text('Import'),
               onTap: () => _navigateFromDrawer(
                   context,
@@ -84,20 +96,21 @@ class _MainDrawerState extends State<MainDrawer> {
                         dbProvider: DatabaseProviderSqflite.instance),
                   )),
             ),*/
-            ListTile(
-              title: const Text('Delete'),
-              onTap: () {
-                Navigator.pop(context);
-                _showDeleteConfirmDialog(context, cart);
-              },
-            ),
-            ListTile(
-              title: const Text('About'),
-              onTap: () => _navigateFromDrawer(context, const AboutView()),
-            ),
-          ],
-        ),
-      );
+              ListTile(
+                title: const Text('Delete'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showDeleteConfirmDialog(context, cart);
+                },
+              ),
+              ListTile(
+                title: const Text('About'),
+                onTap: () => _navigateFromDrawer(context, const AboutView()),
+              ),
+            ],
+          ),
+        );
+      });
     });
   }
 }
