@@ -1,3 +1,4 @@
+import 'package:film_freak/screens/data_sync/service/data_sync_service.dart';
 import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/services/release_service.dart';
 import 'package:film_freak/services/user_service.dart';
@@ -28,17 +29,20 @@ Future<void> main() async {
     MultiRepositoryProvider(
       providers: [
         RepositoryProvider<ReleaseService>(
-          create: (context) => initializeReleaseService(),
+          create: (_) => initializeReleaseService(),
         ),
         RepositoryProvider<CollectionItemService>(
-          create: (context) => initializeCollectionItemService(),
+          create: (_) => initializeCollectionItemService(),
         ),
         RepositoryProvider<UserService>(
-          create: (context) => UserService(),
+          create: (_) => UserService(),
+        ),
+        RepositoryProvider<DataSyncService>(
+          create: (_) => DataSyncService(),
         ),
       ],
       child: ChangeNotifierProvider(
-        create: (context) => collectionModel,
+        create: (_) => collectionModel,
         child: const FilmFreakApp(),
       ),
     ),
