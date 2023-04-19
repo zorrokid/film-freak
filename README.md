@@ -2,14 +2,13 @@
 
 *film_freak* is WIP name for my collection management app which is mostly focusing on managing a movie collection but might support other types of media in future (games, music, books, comics etc).
 
-It is desgined to be an off-line first app and a synchronization support with cloud database will be added. 
-
+It is desgined to be an off-line first app with synchronization to an online database.
 
 ## Tech
 
 It's implemented with [Flutter SDK](https://flutter.dev/) using [Dart](https://dart.dev/) programming language and with [bloc-library](https://bloclibrary.dev) to implement BLoC pattern. This is my first serious attempt with Flutter and I must say I'm quite impressed with it. I really enjoy developing with Flutter and Dart.
 
-Currently data is saved to a local [SQLite](https://www.sqlite.org) database but I'm planning implementing a data synchronization with a cloud database (at that phase user accounts will be supported as well).
+Currently data is saved to a local [SQLite](https://www.sqlite.org) database and I'm implementing a data synchronization with online database and user accounts through REST API: https://github.com/zorrokid/film-freak-api
 
 One of the features I've been focusing from the start is using [Google ML Kit](https://developers.google.com/ml-kit) to recognize text from images and implementing a widget to fill textual form fields by selecting text directly from a image.
 
