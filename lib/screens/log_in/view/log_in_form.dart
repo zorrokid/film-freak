@@ -49,6 +49,7 @@ class _LogInFormState extends State<LogInForm> {
 
     return BlocBuilder<UserBloc, UserState>(builder: (context, state) {
       final userBloc = context.read<UserBloc>();
+      final loginBloc = context.read<LogInBloc>();
       return BlocConsumer<LogInBloc, LogInState>(
         listener: (context, state) {
           if (state.status == LogInStatus.loggedId) {
@@ -59,6 +60,7 @@ class _LogInFormState extends State<LogInForm> {
                 expirationTime: state.expirationTime ?? DateTime.now(),
               ),
             );
+            loginBloc.add(UserAdded(context));
           }
         },
         builder: (context, state) {
