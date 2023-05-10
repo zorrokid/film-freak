@@ -1,4 +1,6 @@
+import 'package:film_freak/screens/barcode_scan/view/barcode_scan_page.dart';
 import 'package:film_freak/screens/log_in/bloc/log_in_event.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../services/user_service.dart';
@@ -7,6 +9,7 @@ import 'log_in_state.dart';
 class LogInBloc extends Bloc<LogInEvent, LogInState> {
   LogInBloc(this.userService) : super(const LogInState()) {
     on<SubmitLogin>(_onLogInSubmitted);
+    on<UserAdded>(_onUserAdded);
   }
 
   final UserService userService;
@@ -20,6 +23,7 @@ class LogInBloc extends Bloc<LogInEvent, LogInState> {
     try {
       final response =
           await userService.processLogin(event.username, event.password);
+      if (response.token.isEmpty) throw Exception("Log in failed.");
       emit(state.copyWith(
         status: LogInStatus.loggedId,
         token: response.token,
@@ -34,5 +38,13 @@ class LogInBloc extends Bloc<LogInEvent, LogInState> {
         token: '',
       ));
     }
+  }
+
+  Future _onUserAdded(UserAdded event, Emitter<LogInState> emit) async {
+    await Navigator.push(event.context, MaterialPageRoute(
+      builder: (context) {
+        return const BarcodeScanPage();
+      },
+    ));
   }
 }

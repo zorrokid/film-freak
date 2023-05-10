@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../bloc/user_bloc.dart';
-import '../../../widgets/error_display_widget.dart';
 import '../../../widgets/form/decorated_text_form_field.dart';
 import '../../../widgets/spinner.dart';
 
@@ -50,6 +49,7 @@ class _LogInFormState extends State<LogInForm> {
 
     return BlocBuilder<UserBloc, UserState>(builder: (context, state) {
       final userBloc = context.read<UserBloc>();
+      final loginBloc = context.read<LogInBloc>();
       return BlocConsumer<LogInBloc, LogInState>(
         listener: (context, state) {
           if (state.status == LogInStatus.loggedId) {
@@ -60,18 +60,11 @@ class _LogInFormState extends State<LogInForm> {
                 expirationTime: state.expirationTime ?? DateTime.now(),
               ),
             );
+            loginBloc.add(UserAdded(context));
           }
         },
         builder: (context, state) {
           final bloc = context.read<LogInBloc>();
-
-          if (state.status == LogInStatus.failed) {
-            return const ErrorDisplayWidget("Log in failed");
-          }
-          if (state.status == LogInStatus.processing) {
-            return const Spinner();
-          }
-
           return Scaffold(
             appBar: AppBar(title: const Text('Log In')),
             body: Form(
@@ -83,6 +76,7 @@ class _LogInFormState extends State<LogInForm> {
                   required: true,
                   maxLines: 1,
                   validator: _textInputValidator,
+                  enabled: state.status != LogInStatus.processing,
                 ),
                 DecoratedTextFormField(
                   controller: _passwordController,
@@ -91,7 +85,11 @@ class _LogInFormState extends State<LogInForm> {
                   obscureText: true,
                   maxLines: 1,
                   validator: _textInputValidator,
+                  enabled: state.status != LogInStatus.processing,
                 ),
+                if (state.status == LogInStatus.processing) const Spinner(),
+                if (state.status == LogInStatus.failed)
+                  const Text("Log in failed"),
               ]),
             ),
             floatingActionButton: FloatingActionButton(
