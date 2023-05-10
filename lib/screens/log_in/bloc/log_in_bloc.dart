@@ -20,6 +20,7 @@ class LogInBloc extends Bloc<LogInEvent, LogInState> {
     try {
       final response =
           await userService.processLogin(event.username, event.password);
+      if (response.token.isEmpty) throw Exception("Log in failed.");
       emit(state.copyWith(
         status: LogInStatus.loggedId,
         token: response.token,
