@@ -74,6 +74,7 @@ dev_dependencies:
     test: 
     mockito: 
     build_runner: 
+    flutter_launcher_icons: "^0.13.1"
 
 
 # For information on the generic Dart part of this file, see the
@@ -87,7 +88,8 @@ flutter:
     uses-material-design: true
 
     # To add assets to your application, add an assets section, like this:
-    # assets:
+    assets:
+        - assets/launch_icon.png
     #   - images/a_dot_burr.jpeg
     #   - images/a_dot_ham.jpeg
 
@@ -116,3 +118,9 @@ flutter:
     #
     # For details regarding fonts from package dependencies,
     # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: false 
+  image_path: "assets/launc_icon.png"
+  min_sdk_android: 21 #
