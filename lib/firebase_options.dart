@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDIANgHmFI_eCRRmzDGeI5wFJqtxVRn5tY',
-    appId: '1:523641979067:android:df8b1c5b56064c6428e99e',
+    appId: '1:523641979067:android:133c7410590adc5a28e99e',
     messagingSenderId: '523641979067',
     projectId: 'filmfreak',
     storageBucket: 'filmfreak.appspot.com',
@@ -62,21 +62,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDNyw2pecyH2B6ixQ5GOFv1XhsFKVm-2Vw',
-    appId: '1:523641979067:ios:3976628891edee6328e99e',
+    appId: '1:523641979067:ios:19d81c454742f4ad28e99e',
     messagingSenderId: '523641979067',
     projectId: 'filmfreak',
     storageBucket: 'filmfreak.appspot.com',
-    iosClientId: '523641979067-v0h0cabp6e13i7fonqpqas9mvflj177o.apps.googleusercontent.com',
-    iosBundleId: 'com.example.startupNamer',
+    iosClientId:
+        '523641979067-rq04dic5dkves269og019cotp0mncv8d.apps.googleusercontent.com',
+    iosBundleId: 'com.zorrokid.film_freak',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDNyw2pecyH2B6ixQ5GOFv1XhsFKVm-2Vw',
-    appId: '1:523641979067:ios:3976628891edee6328e99e',
+    appId: '1:523641979067:ios:19d81c454742f4ad28e99e',
     messagingSenderId: '523641979067',
     projectId: 'filmfreak',
     storageBucket: 'filmfreak.appspot.com',
-    iosClientId: '523641979067-v0h0cabp6e13i7fonqpqas9mvflj177o.apps.googleusercontent.com',
-    iosBundleId: 'com.example.startupNamer',
+    iosClientId:
+        '523641979067-rq04dic5dkves269og019cotp0mncv8d.apps.googleusercontent.com',
+    iosBundleId: 'com.zorrokid.film_freak',
   );
 }
