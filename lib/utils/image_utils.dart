@@ -20,7 +20,7 @@ Future<void> cropToFile(
   final width = image!.width;
   final height = width * ratio;
 
-  final targetImage = img.Image(width, height.round());
+  final targetImage = img.Image(width: width, height: height.round());
 
   copyRectify(image,
       topLeft: imgPoints[0],
