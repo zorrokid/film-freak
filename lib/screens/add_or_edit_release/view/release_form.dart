@@ -318,7 +318,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => submit(bloc),
-          backgroundColor: Color.fromRGBO(76, 175, 80, 1),
+          backgroundColor: const Color.fromRGBO(76, 175, 80, 1),
           child: const Icon(Icons.save),
         ),
       );
