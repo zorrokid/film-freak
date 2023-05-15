@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:film_freak/screens/process_image/view/image_process_page.dart';
 import 'package:film_freak/screens/select_text_from_image/view/select_text_from_image_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,9 +17,7 @@ import '../../../domain/enums/picture_type.dart';
 import '../../../models/release_view_model.dart';
 import '../../../models/tmdb_movie_result.dart';
 import '../../barcode_scan/view/barcode_scanner_view.dart';
-import '../../process_image/image_process_view.dart';
 import '../../select_properties/property_selection_view.dart';
-import '../../select_text_from_image/view/image_text_selector.dart';
 import '../../tmdb_search/tmdb_movie_search_screen.dart';
 import '../view/widgets/media_selector.dart';
 import '../bloc/add_or_edit_release_state.dart';
@@ -240,7 +239,7 @@ class AddOrEditReleaseBloc
       event.context,
       MaterialPageRoute(
         builder: (context) {
-          return ImageProcessView(imagePath: imagePath);
+          return ImageProcessPage(imagePath: imagePath);
         },
       ),
     );
