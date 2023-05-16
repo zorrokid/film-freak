@@ -43,55 +43,54 @@ class ImageProcessView extends StatelessWidget {
         final bloc = BlocProvider.of<ProcessImageBloc>(context);
         return Scaffold(
           appBar: AppBar(title: const Text('Crop image')),
-          body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: state.image != null
-                    ? Expanded(
-                        child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: 0.75 * _getSafeHeight(context),
-                        ),
-                        child: FittedBox(
-                          child: GestureDetector(
-                            onPanStart: (details) {
-                              bloc.add(PanStart(details: details));
-                            },
-                            onPanEnd: (details) {
-                              bloc.add(const PanEnd());
-                            },
-                            onPanUpdate: (details) {
-                              bloc.add(Pan(details: details));
-                            },
-                            onDoubleTap: () => bloc.add(Crop(context: context)),
-                            child: SizedBox(
-                              width: state.image!.width.toDouble(),
-                              height: state.image!.height.toDouble(),
-                              child: CustomPaint(
-                                foregroundPainter: SelectionPainter(
-                                    down: state.isDown,
-                                    x: state.x,
-                                    y: state.y,
-                                    selectionPoints: state.selectionPoints),
-                                painter: ImagePainter(
-                                  image: state.image!,
+          body: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: state.image == null
+                      ? const Spinner()
+                      : ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 0.75 * _getSafeHeight(context),
+                          ),
+                          child: FittedBox(
+                            child: GestureDetector(
+                              onPanStart: (details) {
+                                bloc.add(PanStart(details: details));
+                              },
+                              onPanEnd: (details) {
+                                bloc.add(const PanEnd());
+                              },
+                              onPanUpdate: (details) {
+                                bloc.add(Pan(details: details));
+                              },
+                              onDoubleTap: () =>
+                                  bloc.add(Crop(context: context)),
+                              child: SizedBox(
+                                width: state.image!.width.toDouble(),
+                                height: state.image!.height.toDouble(),
+                                child: CustomPaint(
+                                  foregroundPainter: SelectionPainter(
+                                      down: state.isDown,
+                                      x: state.x,
+                                      y: state.y,
+                                      selectionPoints: state.selectionPoints),
+                                  painter: ImagePainter(
+                                    image: state.image!,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ))
-                    : const Center(child: Spinner()),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: CaseTypeSelection(
+                ),
+                CaseTypeSelection(
                   onValueChanged: onCaseTypeChanged,
                   caseType: state.caseType,
                 ),
-              )
-            ],
+              ],
+            ),
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () => bloc.add(Crop(context: context)),
