@@ -39,9 +39,7 @@ class ProcessImageBloc extends Bloc<ProcessImageEvent, ProcessImageState> {
     emit(state.copyWith(status: ProcessImageStatus.processing));
     await cropToFile(
         File(state.imagePath), state.selectionPoints, getRatio(state.caseType));
-    final image = state.image;
     emit(state.copyWith(image: null));
-    image?.dispose();
     emit(state.copyWith(status: ProcessImageStatus.cropped));
   }
 
