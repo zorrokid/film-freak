@@ -66,7 +66,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> submit(AddOrEditReleaseBloc bloc) async {
+    final bloc = BlocProvider.of<AddOrEditReleaseBloc>(context);
+    Future<void> submit() async {
       if (!_formKey.currentState!.validate()) return;
       bloc.add(Submit(context, _nameController.text, _barcodeController.text));
 
@@ -129,8 +130,9 @@ class _ReleaseFormState extends State<ReleaseForm> {
           bloc.add(const DeletePics());
           break;
         case AddOrEditReleaseStatus.picsDeleted:
-          // last form state so we can leave
-          Navigator.of(context).pop();
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
           break;
         case AddOrEditReleaseStatus.imageCropped:
           // TODO are these both needed and is there another way to refresh the image?
@@ -317,7 +319,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => submit(bloc),
+          onPressed: () => submit(),
           backgroundColor: const Color.fromRGBO(76, 175, 80, 1),
           child: const Icon(Icons.save),
         ),
