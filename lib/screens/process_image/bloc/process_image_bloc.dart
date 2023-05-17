@@ -29,7 +29,11 @@ class ProcessImageBloc extends Bloc<ProcessImageEvent, ProcessImageState> {
   Future _onLoadImage(LoadImage event, Emitter<ProcessImageState> emit) async {
     emit(state.copyWith(status: ProcessImageStatus.processing));
     final image = await loadImage(File(event.imagePath));
-    emit(state.copyWith(image: image));
+    emit(state.copyWith(
+      image: image,
+      imageWidth: image.width,
+      imageHeight: image.height,
+    ));
     final selectionPoints = _initSelectionPoints(image);
     emit(state.copyWith(selectionPoints: selectionPoints));
     emit(state.copyWith(status: ProcessImageStatus.imageLoaded));
@@ -46,14 +50,13 @@ class ProcessImageBloc extends Bloc<ProcessImageEvent, ProcessImageState> {
   void _onPanStart(PanStart event, Emitter<ProcessImageState> emit) {
     emit(state.copyWith(
       isDown: true,
-      x: event.details.localPosition.dx,
-      y: event.details.localPosition.dy,
+      x: event.x,
+      y: event.y,
     ));
   }
 
   void _onPan(Pan event, Emitter<ProcessImageState> emit) {
-    // TODO: add tests
-    if (state.image == null) return;
+    if (state.imageWidth == 0) return;
     if (state.isDown) {
       // check which handle was used
       int? selectionPointIndex;
@@ -68,17 +71,17 @@ class ProcessImageBloc extends Bloc<ProcessImageEvent, ProcessImageState> {
       if (selectionPointIndex == null) return;
 
       // get new location for handle
-      final newX = state.x + event.details.delta.dx;
-      final newY = state.y + event.details.delta.dy;
+      final newX = state.x + event.x;
+      final newY = state.y + event.y;
       if (newX < 0 ||
-          newX > state.image!.width ||
+          newX > state.imageWidth ||
           newY < 0 ||
-          newY > state.image!.height) {
+          newY > state.imageHeight) {
         return;
       }
 
       // update handle location
-      final selectionPoints = state.selectionPoints;
+      final selectionPoints = [...state.selectionPoints];
       selectionPoints[selectionPointIndex] = Point(newX, newY);
       emit(state.copyWith(x: newX, y: newY, selectionPoints: selectionPoints));
     }

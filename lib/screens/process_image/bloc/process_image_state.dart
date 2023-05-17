@@ -25,6 +25,8 @@ class ProcessImageState extends Equatable {
     this.caseType = CaseType.regularDvd,
     this.selectionPoints = const <Point<double>>[],
     this.imagePath = '',
+    this.imageHeight = 0,
+    this.imageWidth = 0,
   });
 
   final ProcessImageStatus status;
@@ -37,6 +39,8 @@ class ProcessImageState extends Equatable {
   final CaseType caseType;
   final List<Point<double>> selectionPoints;
   final String imagePath;
+  final int imageWidth;
+  final int imageHeight;
 
   ProcessImageState copyWith({
     ProcessImageStatus? status,
@@ -49,6 +53,8 @@ class ProcessImageState extends Equatable {
     CaseType? caseType,
     List<Point<double>>? selectionPoints,
     String? imagePath,
+    int? imageWidth,
+    int? imageHeight,
   }) =>
       ProcessImageState(
         status: status ?? this.status,
@@ -61,6 +67,8 @@ class ProcessImageState extends Equatable {
         caseType: caseType ?? this.caseType,
         selectionPoints: selectionPoints ?? this.selectionPoints,
         imagePath: imagePath ?? this.imagePath,
+        imageWidth: imageWidth ?? this.imageWidth,
+        imageHeight: imageHeight ?? this.imageHeight,
       );
 
   @override
@@ -75,5 +83,7 @@ class ProcessImageState extends Equatable {
         caseType,
         selectionPoints,
         imagePath,
+        imageWidth,
+        imageHeight,
       ];
 }

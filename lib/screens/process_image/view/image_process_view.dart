@@ -57,13 +57,19 @@ class ImageProcessView extends StatelessWidget {
                           child: FittedBox(
                             child: GestureDetector(
                               onPanStart: (details) {
-                                bloc.add(PanStart(details: details));
+                                bloc.add(PanStart(
+                                  x: details.localPosition.dx,
+                                  y: details.localPosition.dy,
+                                ));
                               },
                               onPanEnd: (details) {
                                 bloc.add(const PanEnd());
                               },
                               onPanUpdate: (details) {
-                                bloc.add(Pan(details: details));
+                                bloc.add(Pan(
+                                  x: details.localPosition.dx,
+                                  y: details.localPosition.dy,
+                                ));
                               },
                               onDoubleTap: () =>
                                   bloc.add(Crop(context: context)),

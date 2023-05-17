@@ -29,17 +29,19 @@ class Crop extends ProcessImageEvent {
 }
 
 class PanStart extends ProcessImageEvent {
-  const PanStart({required this.details});
-  final DragStartDetails details;
+  const PanStart({required this.x, required this.y});
+  final double x;
+  final double y;
   @override
-  List<Object?> get props => [details];
+  List<Object?> get props => [x, y];
 }
 
 class Pan extends ProcessImageEvent {
-  const Pan({required this.details});
-  final DragUpdateDetails details;
+  const Pan({required this.x, required this.y});
+  final double x;
+  final double y;
   @override
-  List<Object?> get props => [details];
+  List<Object?> get props => [x, y];
 }
 
 class PanEnd extends ProcessImageEvent {
