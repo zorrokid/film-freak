@@ -21,6 +21,7 @@ void main() {
         'x and y have correct values after PanStart event',
         build: () => processImageBloc,
         act: (bloc) => bloc.add(const PanStart(x: 1.0, y: 2.0)),
+        seed: () => const ProcessImageState(isDown: false, x: 0.0, y: 0.0),
         expect: () => <Matcher>[
               isA<ProcessImageState>()
                   .having((p0) => p0.isDown, "Selection isDown is true", true)
@@ -48,6 +49,16 @@ void main() {
               isA<ProcessImageState>()
                   .having((p0) => p0.x, 'x has correct value', 2.0)
                   .having((p0) => p0.y, 'y has correct value', 4.0)
+            ]);
+
+    blocTest<ProcessImageBloc, ProcessImageState>(
+        'isDown is false after PanEnd event',
+        build: () => processImageBloc,
+        act: (bloc) => bloc.add(const PanEnd()),
+        seed: () => const ProcessImageState(isDown: true),
+        expect: () => <Matcher>[
+              isA<ProcessImageState>()
+                  .having((p0) => p0.isDown, "Selection isDown is false", false)
             ]);
   });
 }
