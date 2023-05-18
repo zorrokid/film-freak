@@ -71,14 +71,10 @@ class ProcessImageBloc extends Bloc<ProcessImageEvent, ProcessImageState> {
       if (selectionPointIndex == null) return;
 
       // get new location for handle
-      final newX = state.x + event.x;
-      final newY = state.y + event.y;
-      if (newX < 0 ||
-          newX > state.imageWidth ||
-          newY < 0 ||
-          newY > state.imageHeight) {
-        return;
-      }
+      final newX =
+          event.x <= state.imageWidth && event.x >= 0 ? event.x : state.x;
+      final newY =
+          event.y <= state.imageHeight && event.y >= 0 ? event.y : state.y;
 
       // update handle location
       final selectionPoints = [...state.selectionPoints];
