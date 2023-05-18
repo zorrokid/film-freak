@@ -44,12 +44,52 @@ void main() {
                   Point(5.0, 6.0),
                   Point(7.0, 8.0),
                 ]),
-        act: (bloc) => bloc.add(const Pan(x: 1.0, y: 2.0)),
+        act: (bloc) => bloc.add(const Pan(x: 2.0, y: 3.0)),
         expect: () => <Matcher>[
               isA<ProcessImageState>()
-                  .having((p0) => p0.x, 'x has correct value', 2.0)
-                  .having((p0) => p0.y, 'y has correct value', 4.0)
+                  .having((p0) => p0.x, 'x has updated value', 2.0)
+                  .having((p0) => p0.y, 'y has updated value', 3.0)
+                  .having((p0) => p0.selectionPoints[0].x,
+                      'x has updated value', 2.0)
+                  .having((p0) => p0.selectionPoints[0].y,
+                      'y has updated value', 3.0)
             ]);
+
+    blocTest<ProcessImageBloc, ProcessImageState>(
+        'if the selection point y location goes beyond image height, y location remains unchanged (no need to set it to imageHeight)',
+        build: () => processImageBloc,
+        seed: () => const ProcessImageState(
+                isDown: true,
+                x: 1.0,
+                y: 2.0,
+                imageWidth: 10,
+                imageHeight: 10,
+                selectionPoints: [
+                  Point(1.0, 2.0),
+                  Point(3.0, 4.0),
+                  Point(5.0, 6.0),
+                  Point(7.0, 8.0),
+                ]),
+        act: (bloc) => bloc.add(const Pan(x: 1.0, y: 11.0)),
+        expect: () => <Matcher>[/* No new state is emitted */]);
+
+    blocTest<ProcessImageBloc, ProcessImageState>(
+        'if the selection point x location goes beyond image width, x location remains unchanged (no need to set it to imageWidth)',
+        build: () => processImageBloc,
+        seed: () => const ProcessImageState(
+                isDown: true,
+                x: 1.0,
+                y: 2.0,
+                imageWidth: 10,
+                imageHeight: 10,
+                selectionPoints: [
+                  Point(1.0, 2.0),
+                  Point(3.0, 4.0),
+                  Point(5.0, 6.0),
+                  Point(7.0, 8.0),
+                ]),
+        act: (bloc) => bloc.add(const Pan(x: 11.0, y: 2.0)),
+        expect: () => <Matcher>[/* No new state is emitted */]);
 
     blocTest<ProcessImageBloc, ProcessImageState>(
         'isDown is false after PanEnd event',
