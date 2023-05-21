@@ -112,7 +112,6 @@ class SelectTextFromImageBloc
     Emitter<SelectTextFromImageState> emit,
   ) {
     if (state.textBlocks.isEmpty) return;
-    // TODO: is emitting this status necessary?
     emit(state.copyWith(status: SelectTextFromImageStatus.selectingTextBlock));
     final textBlocks = [...state.textBlocks];
     final selectedBlock = _getSelectedBlock(event.localPosition, textBlocks);
