@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:film_freak/screens/select_text_from_image/bloc/select_text_from_image_bloc.dart';
 import 'package:film_freak/screens/select_text_from_image/bloc/select_text_from_image_event.dart';
@@ -131,5 +133,26 @@ void main() {
             ]),
         act: (bloc) => bloc.add(BuildSelectedText()),
         expect: () => <Matcher>[]);
+
+    blocTest(
+        "SelectTextBlock: selection is inside bounding box, select by words enabled.",
+        build: () => selectTextFromImageBloc,
+        seed: () =>
+            SelectTextFromImageState(showTextByWords: false, textBlocks: [
+              SelectableTextBlockBuilder(
+                text: "aaa",
+                isSelected: false,
+                boundingBox: const Rect.fromLTWH(0, 0, 2, 2),
+              ).build(),
+            ]),
+        act: (bloc) => bloc.add(SelectTextBlock(const Offset(1.0, 1.0))),
+        skip: 1,
+        expect: () => <Matcher>[
+              isA<SelectTextFromImageState>()
+                  .having((p0) => p0.status, "Correct status",
+                      SelectTextFromImageStatus.selectedTextBlock)
+                  .having((p0) => p0.textBlocks[0].isSelected,
+                      "isSelected should be true", true)
+            ]);
   });
 }

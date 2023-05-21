@@ -111,16 +111,15 @@ class SelectTextFromImageBloc
     SelectTextBlock event,
     Emitter<SelectTextFromImageState> emit,
   ) {
-    if (state.image == null || state.textBlocks.isEmpty) return;
+    if (state.textBlocks.isEmpty) return;
+    // TODO: is emitting this status necessary?
     emit(state.copyWith(status: SelectTextFromImageStatus.selectingTextBlock));
     // TODO: not actually a deep copy since multi dimensional list:
     final textBlocks = [...state.textBlocks];
-    final selectedBlock =
-        _getSelectedBlock(event.details.localPosition, textBlocks);
+    final selectedBlock = _getSelectedBlock(event.localPosition, textBlocks);
     if (selectedBlock == null) return;
     if (state.showTextByWords) {
-      final selectedWord =
-          _getSelectedWord(event.details.localPosition, selectedBlock);
+      final selectedWord = _getSelectedWord(event.localPosition, selectedBlock);
       if (selectedWord == null) return;
       selectedWord.isSelected = !selectedWord.isSelected;
     } else {

@@ -22,10 +22,6 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
 
   @override
   void dispose() {
-    // TODO: dispose from bloc state?
-    /*if (_image != null) {
-      _image!.dispose();
-    }*/
     _transformationController.dispose();
     super.dispose();
   }
@@ -70,8 +66,8 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
                               transformationController:
                                   _transformationController,
                               child: GestureDetector(
-                                onTapDown: (details) =>
-                                    bloc.add(SelectTextBlock(details, context)),
+                                onTapDown: (details) => bloc.add(
+                                    SelectTextBlock(details.localPosition)),
                                 child: SizedBox(
                                   width: state.image!.width.toDouble(),
                                   height: state.image!.height.toDouble(),

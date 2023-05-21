@@ -26,11 +26,10 @@ class BuildSelectedText extends SelectTextFromImageEvent {
 }
 
 class SelectTextBlock extends SelectTextFromImageEvent {
-  SelectTextBlock(this.details, this.context);
-  final TapDownDetails details;
-  final BuildContext context;
+  SelectTextBlock(this.localPosition);
+  final Offset localPosition;
   @override
-  List<Object?> get props => [details, context];
+  List<Object?> get props => [localPosition];
 }
 
 class SwitchSelectionMode extends SelectTextFromImageEvent {
