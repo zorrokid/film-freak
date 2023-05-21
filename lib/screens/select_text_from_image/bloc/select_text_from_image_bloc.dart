@@ -97,13 +97,10 @@ class SelectTextFromImageBloc
   }
 
   List<String> _getSelectedByBlocks() {
-    final selectedText = <String>[];
-    for (var i = 0; i < state.textBlocks.length; i++) {
-      if (state.textBlocks[i].isSelected) {
-        selectedText.add(state.textBlocks[i].text);
-      }
-    }
-    return selectedText;
+    return state.textBlocks
+        .where((element) => element.isSelected)
+        .map((e) => e.text)
+        .toList();
   }
 
   void _onSelectTextBlock(
