@@ -114,7 +114,6 @@ class SelectTextFromImageBloc
     if (state.textBlocks.isEmpty) return;
     // TODO: is emitting this status necessary?
     emit(state.copyWith(status: SelectTextFromImageStatus.selectingTextBlock));
-    // TODO: not actually a deep copy since multi dimensional list:
     final textBlocks = [...state.textBlocks];
     final selectedBlock = _getSelectedBlock(event.localPosition, textBlocks);
     if (selectedBlock == null) return;
