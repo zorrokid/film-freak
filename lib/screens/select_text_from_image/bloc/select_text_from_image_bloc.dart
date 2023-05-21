@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
-import '/extensions/offset_extensions.dart';
 import '/extensions/text_recognition_extensions.dart';
 import '/models/selectable_text_block.dart';
 import '/utils/image_utils.dart';
@@ -133,10 +132,10 @@ class SelectTextFromImageBloc
     if (textBlock.lines.isEmpty) return null;
     for (var i = 0; i < textBlock.lines.length; i++) {
       final line = textBlock.lines[i];
-      if (localPosition.isInside(line.boundingBox)) {
+      if (line.boundingBox.contains(localPosition)) {
         for (var j = 0; j < textBlock.lines[i].elements.length; j++) {
-          if (localPosition
-              .isInside(textBlock.lines[i].elements[j].boundingBox)) {
+          if (textBlock.lines[i].elements[j].boundingBox
+              .contains(localPosition)) {
             return textBlock.lines[i].elements[j];
           }
         }
@@ -148,7 +147,7 @@ class SelectTextFromImageBloc
   SelectableTextBlock? _getSelectedBlock(
       Offset localPosition, List<SelectableTextBlock> textBlocks) {
     for (var i = 0; i < textBlocks.length; i++) {
-      if (localPosition.isInside(textBlocks[i].boundingBox)) {
+      if (textBlocks[i].boundingBox.contains(localPosition)) {
         return textBlocks[i];
       }
     }
