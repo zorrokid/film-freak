@@ -21,12 +21,14 @@ class SelectableTextBlock {
   bool isSelected = false;
 
   /// Constructor to create an instance of [TextBlock].
-  SelectableTextBlock(
-      {required this.text,
-      required this.lines,
-      required this.boundingBox,
-      required this.recognizedLanguages,
-      required this.cornerPoints});
+  SelectableTextBlock({
+    required this.text,
+    required this.lines,
+    required this.boundingBox,
+    required this.recognizedLanguages,
+    required this.cornerPoints,
+    this.isSelected = false,
+  });
 }
 
 /// A text line recognized in an image that consists of a list of elements.
@@ -71,8 +73,10 @@ class SelectableTextElement {
   bool isSelected = false;
 
   /// Constructor to create an instance of [TextElement].
-  SelectableTextElement(
-      {required this.text,
-      required this.boundingBox,
-      required this.cornerPoints});
+  SelectableTextElement({
+    required this.text,
+    required this.boundingBox,
+    required this.cornerPoints,
+    this.isSelected = false,
+  });
 }
