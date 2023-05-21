@@ -75,6 +75,7 @@ class SelectTextFromImageBloc
     if (state.textBlocks.isEmpty) return;
     final selectedText =
         state.showTextByWords ? _getSelectedByWords() : _getSelectedByBlocks();
+    if (selectedText.isEmpty) return;
     final text = selectedText.join(" ");
     emit(state.copyWith(
       status: SelectTextFromImageStatus.selectionReady,
