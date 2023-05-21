@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
-import '/extensions/offset_extensions.dart';
 import '/extensions/text_recognition_extensions.dart';
 import '/models/selectable_text_block.dart';
 import '/utils/image_utils.dart';
@@ -112,11 +111,13 @@ class SelectTextFromImageBloc
     Emitter<SelectTextFromImageState> emit,
   ) {
     if (state.textBlocks.isEmpty) return;
-    // TODO: is emitting this status necessary?
     emit(state.copyWith(status: SelectTextFromImageStatus.selectingTextBlock));
-    // TODO: not actually a deep copy since multi dimensional list:
     final textBlocks = [...state.textBlocks];
-    final selectedBlock = _getSelectedBlock(event.localPosition, textBlocks);
+
+    final selectedBlock = textBlocks
+        .where((element) => element.boundingBox.contains(event.localPosition))
+        .singleOrNull;
+
     if (selectedBlock == null) return;
     if (state.showTextByWords) {
       final selectedWord = _getSelectedWord(event.localPosition, selectedBlock);
@@ -132,28 +133,14 @@ class SelectTextFromImageBloc
 
   SelectableTextElement? _getSelectedWord(
       Offset localPosition, SelectableTextBlock textBlock) {
-    if (textBlock.lines.isEmpty) return null;
-    for (var i = 0; i < textBlock.lines.length; i++) {
-      final line = textBlock.lines[i];
-      if (localPosition.isInside(line.boundingBox)) {
-        for (var j = 0; j < textBlock.lines[i].elements.length; j++) {
-          if (localPosition
-              .isInside(textBlock.lines[i].elements[j].boundingBox)) {
-            return textBlock.lines[i].elements[j];
-          }
-        }
-      }
-    }
-    return null;
-  }
+    final line = textBlock.lines
+        .where((element) => element.boundingBox.contains(localPosition))
+        .singleOrNull;
 
-  SelectableTextBlock? _getSelectedBlock(
-      Offset localPosition, List<SelectableTextBlock> textBlocks) {
-    for (var i = 0; i < textBlocks.length; i++) {
-      if (localPosition.isInside(textBlocks[i].boundingBox)) {
-        return textBlocks[i];
-      }
-    }
-    return null;
+    if (line == null) return null;
+
+    return line.elements
+        .where((element) => element.boundingBox.contains(localPosition))
+        .singleOrNull;
   }
 }

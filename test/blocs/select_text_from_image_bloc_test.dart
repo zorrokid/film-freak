@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../builders/selectable_text_builders.dart';
 
 void main() {
+  const startOffset = Offset(0.0, 0.0);
   group('Process text from image bloc tests', () {
     late SelectTextFromImageBloc selectTextFromImageBloc;
     setUp(() {
@@ -135,17 +136,18 @@ void main() {
         expect: () => <Matcher>[]);
 
     blocTest(
-        "SelectTextBlock: selection is inside bounding box, select by words enabled.",
+        "SelectTextBlock: selection is inside bounding box, select by words disabled.",
         build: () => selectTextFromImageBloc,
         seed: () =>
             SelectTextFromImageState(showTextByWords: false, textBlocks: [
               SelectableTextBlockBuilder(
                 text: "aaa",
                 isSelected: false,
-                boundingBox: const Rect.fromLTWH(0, 0, 2, 2),
+                boundingBox: startOffset & const Size(2.0, 2.0),
               ).build(),
             ]),
-        act: (bloc) => bloc.add(SelectTextBlock(const Offset(1.0, 1.0))),
+        act: (bloc) =>
+            bloc.add(SelectTextBlock(startOffset + const Offset(1.0, 1.0))),
         skip: 1,
         expect: () => <Matcher>[
               isA<SelectTextFromImageState>()
@@ -153,6 +155,68 @@ void main() {
                       SelectTextFromImageStatus.selectedTextBlock)
                   .having((p0) => p0.textBlocks[0].isSelected,
                       "isSelected should be true", true)
+            ]);
+
+    blocTest(
+        "SelectTextBlock: selection is outside bounding box, select by words disabled.",
+        build: () => selectTextFromImageBloc,
+        seed: () =>
+            SelectTextFromImageState(showTextByWords: false, textBlocks: [
+              SelectableTextBlockBuilder(
+                text: "aaa",
+                isSelected: false,
+                boundingBox: startOffset & const Size(2.0, 2.0),
+              ).build(),
+            ]),
+        act: (bloc) =>
+            bloc.add(SelectTextBlock(startOffset + const Offset(3.0, 3.0))),
+        skip: 1,
+        expect: () => <Matcher>[]);
+
+    blocTest(
+        "SelectTextBlock: selection is inside bounding box, select by words enabled.",
+        build: () => selectTextFromImageBloc,
+        seed: () =>
+            SelectTextFromImageState(showTextByWords: true, textBlocks: [
+              SelectableTextBlockBuilder(
+                      boundingBox: startOffset & const Size(4.0, 4.0))
+                  .withLine(SelectableTextLineBuilder(
+                          boundingBox: startOffset & const Size(4.0, 4.0))
+                      .withElement(SelectableTextElementBuilder(
+                        text: "aaa",
+                        isSelected: false,
+                        boundingBox: startOffset & const Size(2.0, 2.0),
+                      ).build())
+                      .withElement(SelectableTextElementBuilder(
+                        text: "bbb",
+                        isSelected: false,
+                        boundingBox: startOffset + const Offset(2.0, 2.0) &
+                            const Size(2.0, 2.0),
+                      ).build())
+                      .build())
+                  .build()
+            ]),
+        act: (bloc) =>
+            bloc.add(SelectTextBlock(startOffset + const Offset(3.0, 3.0))),
+        skip: 1,
+        expect: () => <Matcher>[
+              isA<SelectTextFromImageState>()
+                  .having((p0) => p0.status, "Correct status",
+                      SelectTextFromImageStatus.selectedTextBlock)
+                  .having(
+                      (p0) => p0.textBlocks[0].lines[0].elements
+                          .where((element) => element.text == "aaa")
+                          .first
+                          .isSelected,
+                      "isSelected should be false",
+                      false)
+                  .having(
+                      (p0) => p0.textBlocks[0].lines[0].elements
+                          .where((element) => element.text == "bbb")
+                          .first
+                          .isSelected,
+                      "isSelected should be true",
+                      true)
             ]);
   });
 }
