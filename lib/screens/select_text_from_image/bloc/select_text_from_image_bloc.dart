@@ -113,7 +113,11 @@ class SelectTextFromImageBloc
     if (state.textBlocks.isEmpty) return;
     emit(state.copyWith(status: SelectTextFromImageStatus.selectingTextBlock));
     final textBlocks = [...state.textBlocks];
-    final selectedBlock = _getSelectedBlock(event.localPosition, textBlocks);
+
+    final selectedBlock = textBlocks
+        .where((element) => element.boundingBox.contains(event.localPosition))
+        .singleOrNull;
+
     if (selectedBlock == null) return;
     if (state.showTextByWords) {
       final selectedWord = _getSelectedWord(event.localPosition, selectedBlock);
@@ -129,28 +133,14 @@ class SelectTextFromImageBloc
 
   SelectableTextElement? _getSelectedWord(
       Offset localPosition, SelectableTextBlock textBlock) {
-    if (textBlock.lines.isEmpty) return null;
-    for (var i = 0; i < textBlock.lines.length; i++) {
-      final line = textBlock.lines[i];
-      if (line.boundingBox.contains(localPosition)) {
-        for (var j = 0; j < textBlock.lines[i].elements.length; j++) {
-          if (textBlock.lines[i].elements[j].boundingBox
-              .contains(localPosition)) {
-            return textBlock.lines[i].elements[j];
-          }
-        }
-      }
-    }
-    return null;
-  }
+    final line = textBlock.lines
+        .where((element) => element.boundingBox.contains(localPosition))
+        .singleOrNull;
 
-  SelectableTextBlock? _getSelectedBlock(
-      Offset localPosition, List<SelectableTextBlock> textBlocks) {
-    for (var i = 0; i < textBlocks.length; i++) {
-      if (textBlocks[i].boundingBox.contains(localPosition)) {
-        return textBlocks[i];
-      }
-    }
-    return null;
+    if (line == null) return null;
+
+    return line.elements
+        .where((element) => element.boundingBox.contains(localPosition))
+        .singleOrNull;
   }
 }
