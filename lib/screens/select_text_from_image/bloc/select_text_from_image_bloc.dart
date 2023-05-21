@@ -82,28 +82,24 @@ class SelectTextFromImageBloc
     ));
   }
 
-  List<String> _getSelectedByWords() {
-    final selectedText = <String>[];
-    for (var i = 0; i < state.textBlocks.length; i++) {
-      for (var j = 0; j < state.textBlocks[i].lines.length; j++) {
-        for (var k = 0; k < state.textBlocks[i].lines[j].elements.length; k++) {
-          if (state.textBlocks[i].lines[j].elements[k].isSelected) {
-            selectedText.add(state.textBlocks[i].lines[j].elements[k].text);
-          }
-        }
-      }
-    }
-    return selectedText;
+  Iterable<String> _getSelectedByWords() {
+    return state.textBlocks
+        // collect all lines inside blocks
+        .map((e) => e.lines
+            // collect all elements containing words
+            // and map those which are selected
+            .map((e) => e.elements
+                .where((element) => element.isSelected)
+                .map((e) => e.text))
+            // and expand selected words to single iterable
+            .expand((element) => element))
+        .expand((element) => element);
   }
 
-  List<String> _getSelectedByBlocks() {
-    final selectedText = <String>[];
-    for (var i = 0; i < state.textBlocks.length; i++) {
-      if (state.textBlocks[i].isSelected) {
-        selectedText.add(state.textBlocks[i].text);
-      }
-    }
-    return selectedText;
+  Iterable<String> _getSelectedByBlocks() {
+    return state.textBlocks
+        .where((element) => element.isSelected)
+        .map((e) => e.text);
   }
 
   void _onSelectTextBlock(
