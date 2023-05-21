@@ -72,7 +72,7 @@ class SelectTextFromImageBloc
     BuildSelectedText event,
     Emitter<SelectTextFromImageState> emit,
   ) {
-    if (state.image == null || state.textBlocks.isEmpty) return;
+    if (state.textBlocks.isEmpty) return;
     final selectedText =
         state.showTextByWords ? _getSelectedByWords() : _getSelectedByBlocks();
     final text = selectedText.join(" ");
