@@ -1,3 +1,4 @@
+import 'package:film_freak/utils/snackbar_buillder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,12 +49,9 @@ class AddOrEditCollectionItemBloc
       properties: [],
     );
     ScaffoldMessenger.of(event.context).showSnackBar(
-      SnackBar(
-        content: state.collectionItemId != null
-            ? const Text('Updating collection item')
-            : const Text('Adding collection item'),
-      ),
-    );
+        SnackBarBuilder.buildSnackBar(state.collectionItemId != null
+            ? 'Updating collection item'
+            : 'Adding collection item'));
 
     final id = await collectionItemService.upsert(model);
     model.collectionItem.id = id;

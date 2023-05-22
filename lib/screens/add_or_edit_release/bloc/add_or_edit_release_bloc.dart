@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:film_freak/screens/process_image/view/image_process_page.dart';
 import 'package:film_freak/screens/select_text_from_image/view/select_text_from_image_page.dart';
+import 'package:film_freak/utils/snackbar_buillder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as p;
@@ -84,11 +85,9 @@ class AddOrEditReleaseBloc
     );
 
     ScaffoldMessenger.of(event.context).showSnackBar(
-      SnackBar(
-        content: state.id != null
-            ? Text('Updating ${model.release.name}')
-            : Text('Adding ${model.release.name}'),
-      ),
+      SnackBarBuilder.buildSnackBar(state.id != null
+          ? 'Updating ${model.release.name}'
+          : 'Adding ${model.release.name}'),
     );
 
     emit(state.copyWith(status: AddOrEditReleaseStatus.submitting));
