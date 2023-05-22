@@ -69,13 +69,11 @@ class ConfirmDelete extends BarcodeScanEvent {
 
 class DeleteRelease extends BarcodeScanEvent {
   const DeleteRelease(
-    this.context,
     this.releaseId,
   );
-  final BuildContext context;
   final int releaseId;
   @override
-  List<Object> get props => [context, releaseId];
+  List<Object> get props => [releaseId];
 }
 
 class EditRelease extends BarcodeScanEvent {

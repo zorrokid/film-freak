@@ -18,6 +18,7 @@ enum BarcodeScanStatus {
   deleteConfirmed,
   releaseDeleted,
   releaseEdited,
+  deleteFailed,
 }
 
 class BarcodeScanState extends Equatable {
@@ -28,7 +29,6 @@ class BarcodeScanState extends Equatable {
     this.barcodeExists = false,
     this.error = "",
     this.releaseId,
-    this.canDelete = false,
     this.querySpecs =
         const ReleaseQuerySpecs(top: 10, orderBy: OrderByEnum.latest),
   });
@@ -39,7 +39,6 @@ class BarcodeScanState extends Equatable {
   final bool barcodeExists;
   final String error;
   final int? releaseId;
-  final bool canDelete;
   final ReleaseQuerySpecs querySpecs;
 
   BarcodeScanState copyWith({
@@ -49,7 +48,6 @@ class BarcodeScanState extends Equatable {
     bool? barcodeExists,
     String? error,
     int? releaseId,
-    bool? canDelete,
     ReleaseQuerySpecs? querySpecs,
   }) {
     return BarcodeScanState(
@@ -59,7 +57,6 @@ class BarcodeScanState extends Equatable {
       barcodeExists: barcodeExists ?? this.barcodeExists,
       error: error ?? this.error,
       releaseId: releaseId ?? this.releaseId,
-      canDelete: canDelete ?? this.canDelete,
       querySpecs: querySpecs ?? this.querySpecs,
     );
   }

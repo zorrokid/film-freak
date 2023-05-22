@@ -1,3 +1,4 @@
+import 'package:film_freak/utils/snackbar_buillder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -32,13 +33,23 @@ class BarcodeScanView extends StatelessWidget {
       case BarcodeScanStatus.initialized: // fall through
       case BarcodeScanStatus.releaseAdded: // fall through
       case BarcodeScanStatus.releaseEdited: // fall through
-      case BarcodeScanStatus.releaseDeleted:
         bloc.add(GetReleases(state.querySpecs));
         break;
       case BarcodeScanStatus.deleteConfirmed:
-        if (state.releaseId != null) {
-          bloc.add(DeleteRelease(context, state.releaseId!));
-        }
+        bloc.add(DeleteRelease(state.releaseId!));
+        break;
+      case BarcodeScanStatus.releaseDeleted:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBarBuilder.buildSnackBar('Release deleted',
+              type: SnackBarType.success),
+        );
+        bloc.add(GetReleases(state.querySpecs));
+        break;
+      case BarcodeScanStatus.deleteFailed:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBarBuilder.buildSnackBar('Delete failed',
+              type: SnackBarType.error),
+        );
         break;
       default:
         // nothing to do here
@@ -76,7 +87,7 @@ class BarcodeScanView extends StatelessWidget {
                           onCreate: (int releaseId) => bloc
                               .add(CreateCollectionItem(context, releaseId)),
                           onDelete: (int releaseId) =>
-                              bloc.add(DeleteRelease(context, releaseId)),
+                              bloc.add(ConfirmDelete(context, releaseId)),
                           onEdit: (int releaseId) =>
                               bloc.add(EditRelease(context, releaseId)),
                           onTap: (int releaseId) =>

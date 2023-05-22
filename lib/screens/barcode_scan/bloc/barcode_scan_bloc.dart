@@ -110,8 +110,12 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
     DeleteRelease event,
     Emitter<BarcodeScanState> emit,
   ) async {
-    await releaseService.delete(event.releaseId);
-    emit(state.copyWith(status: BarcodeScanStatus.releaseDeleted));
+    final deleted = await releaseService.delete(event.releaseId);
+    if (deleted) {
+      emit(state.copyWith(status: BarcodeScanStatus.releaseDeleted));
+    } else {
+      emit(state.copyWith(status: BarcodeScanStatus.deleteFailed));
+    }
   }
 
   Future<void> _onConfirmDelete(
@@ -122,9 +126,9 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
         '''Are you really sure you want to delete the release? 
         Also the collection items created from this release 
         will be deleted!''');
+    if (!canDelete) return;
     emit(state.copyWith(
       status: BarcodeScanStatus.deleteConfirmed,
-      canDelete: canDelete,
       releaseId: event.releaseId,
     ));
   }
