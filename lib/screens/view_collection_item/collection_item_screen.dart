@@ -84,6 +84,7 @@ class _CollectionItemScreenState extends State<CollectionItemScreen> {
                   ReleaseDataCards(
                     saveDir: appState.saveDir,
                     viewModel: viewModel.releaseModel,
+                    onCollectionItemEdit: (collectionItemId) => edit(),
                   ),
                   CollectionItemDetailsCard(collectionItemViewModel: viewModel)
                 ],

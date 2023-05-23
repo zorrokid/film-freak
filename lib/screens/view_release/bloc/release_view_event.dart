@@ -21,3 +21,16 @@ class EditRelease extends ReleaseViewEvent {
   @override
   List<Object> get props => [context, releaseId];
 }
+
+class EditCollectionItem extends ReleaseViewEvent {
+  const EditCollectionItem(
+    this.context,
+    this.collectionItemId,
+    this.releaseId,
+  );
+  final BuildContext context;
+  final int collectionItemId;
+  final int releaseId;
+  @override
+  List<Object> get props => [context, collectionItemId, releaseId];
+}

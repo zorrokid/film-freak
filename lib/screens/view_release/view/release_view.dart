@@ -29,6 +29,10 @@ class ReleaseView extends StatelessWidget {
             ReleaseDataCards(
               saveDir: appState.saveDir,
               viewModel: state.release!,
+              onCollectionItemEdit: (collectionItemId) => context
+                  .read<ReleaseViewBloc>()
+                  .add(EditCollectionItem(
+                      context, collectionItemId, state.releaseId)),
             ),
           ],
         );
@@ -38,8 +42,13 @@ class ReleaseView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<AppState>(builder: (context, appState, child) {
-      return BlocBuilder<ReleaseViewBloc, ReleaseViewState>(
-          builder: (context, state) {
+      return BlocConsumer<ReleaseViewBloc, ReleaseViewState>(
+          listener: (context, state) {
+        final bloc = context.read<ReleaseViewBloc>();
+        if (state.status == ReleaseViewStatus.collectionItemEdited) {
+          bloc.add(LoadRelease(state.releaseId));
+        }
+      }, builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             title: Text(state.release != null
