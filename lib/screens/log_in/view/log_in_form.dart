@@ -94,7 +94,7 @@ class _LogInFormState extends State<LogInForm> {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () => submit(bloc),
-              backgroundColor: const Color.fromRGBO(76, 175, 80, 1),
+              backgroundColor: Colors.green,
               child: const Icon(Icons.check),
             ),
           );

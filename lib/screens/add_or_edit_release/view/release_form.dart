@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
-import '../../../domain/enums/media_type.dart';
 import '../../../domain/enums/picture_type.dart';
 import '../../../widgets/error_display_widget.dart';
 import '../../../widgets/picture_type_selection.dart';
@@ -20,7 +19,6 @@ import 'buttons/release_pic_delete.dart';
 import 'buttons/release_pic_selection.dart';
 import 'widgets/productions_list.dart';
 import 'widgets/release_media_widget.dart';
-import 'widgets/media_selector.dart';
 
 class ReleaseForm extends StatefulWidget {
   final String? barcode;
@@ -67,43 +65,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<AddOrEditReleaseBloc>(context);
+
     Future<void> submit() async {
       if (!_formKey.currentState!.validate()) return;
       bloc.add(Submit(context, _nameController.text, _barcodeController.text));
-
-      /*if (mounted) {
-        if (widget.addCollectionItem) {
-          await Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return CollectionItemForm(
-                  releaseId: id,
-                  releaseService: widget.releaseService,
-                  collectionItemService: initializeCollectionItemService(),
-                );
-              },
-            ),
-          );
-        } else {
-          Navigator.of(context).pop();
-        }
-      }*/
-      Navigator.of(context).pop();
-    }
-
-    void selectMedia(BuildContext context, AddOrEditReleaseBloc bloc) {
-      showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return MediaSelector(
-              onAddMedia: (int pcs, MediaType mediaType) {
-                bloc.add(AddMedia(pcs, mediaType));
-                Navigator.pop(context);
-              },
-              onCancel: () => Navigator.pop(context),
-            );
-          });
     }
 
     return BlocConsumer<AddOrEditReleaseBloc, AddOrEditReleaseState>(
@@ -130,9 +95,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
           bloc.add(const DeletePics());
           break;
         case AddOrEditReleaseStatus.picsDeleted:
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
+          Navigator.pop(context);
           break;
         case AddOrEditReleaseStatus.imageCropped:
           // TODO are these both needed and is there another way to refresh the image?
@@ -269,7 +232,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 releaseMedia: state.media,
               ),
               ElevatedButton(
-                onPressed: () => selectMedia(context, bloc),
+                onPressed: () => bloc.add(SelectMedia(context)),
                 child: const Text('Select media'),
               ),
               Row(
@@ -320,7 +283,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => submit(),
-          backgroundColor: const Color.fromRGBO(76, 175, 80, 1),
+          backgroundColor: Colors.green,
           child: const Icon(Icons.save),
         ),
       );
