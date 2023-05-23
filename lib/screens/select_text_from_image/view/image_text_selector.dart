@@ -44,70 +44,70 @@ class _ImageTextSelectorState extends State<ImageTextSelector> {
     }
   }
 
+  Widget buildContent(BuildContext context, SelectTextFromImageState state) {
+    if (state.status == SelectTextFromImageStatus.isProcessing ||
+        state.status == SelectTextFromImageStatus.loadingImage) {
+      return const Spinner();
+    }
+
+    final bloc = context.read<SelectTextFromImageBloc>();
+    return Column(
+      children: [
+        Expanded(
+          child: state.image != null
+              ? FittedBox(
+                  child: InteractiveViewer(
+                    transformationController: _transformationController,
+                    child: GestureDetector(
+                      onTapDown: (details) =>
+                          bloc.add(SelectTextBlock(details.localPosition)),
+                      child: SizedBox(
+                        width: state.image!.width.toDouble(),
+                        height: state.image!.height.toDouble(),
+                        child: CustomPaint(
+                          painter: ImageTextBlockPainter(
+                            image: state.image!,
+                            textBlocks: [...state.textBlocks],
+                            mode: state.showTextByWords
+                                ? TextBlockPainterMode.paintByWord
+                                : TextBlockPainterMode.paintByBlock,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : const Center(child: Text('No image')),
+        ),
+        Row(
+          children: [
+            const Text('Show text by words:'),
+            Switch(
+              value: state.showTextByWords,
+              onChanged: (bool value) => bloc.add(SwitchSelectionMode(value)),
+            )
+          ],
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SelectTextFromImageBloc, SelectTextFromImageState>(
-      listener: listener,
-      builder: (context, state) {
-        final bloc = context.read<SelectTextFromImageBloc>();
-        switch (state.status) {
-          case SelectTextFromImageStatus.isProcessing:
-          case SelectTextFromImageStatus.loadingImage:
-            return const Spinner();
-          default:
-            return Scaffold(
-              appBar: AppBar(title: const Text('Pick text')),
-              body: Column(
-                children: [
-                  Expanded(
-                    child: state.image != null
-                        ? FittedBox(
-                            child: InteractiveViewer(
-                              transformationController:
-                                  _transformationController,
-                              child: GestureDetector(
-                                onTapDown: (details) => bloc.add(
-                                    SelectTextBlock(details.localPosition)),
-                                child: SizedBox(
-                                  width: state.image!.width.toDouble(),
-                                  height: state.image!.height.toDouble(),
-                                  child: CustomPaint(
-                                    painter: ImageTextBlockPainter(
-                                      image: state.image!,
-                                      textBlocks: [...state.textBlocks],
-                                      mode: state.showTextByWords
-                                          ? TextBlockPainterMode.paintByWord
-                                          : TextBlockPainterMode.paintByBlock,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        : const Center(child: Text('No image')),
-                  ),
-                  Row(
-                    children: [
-                      const Text('Show text by words:'),
-                      Switch(
-                        value: state.showTextByWords,
-                        onChanged: (bool value) =>
-                            bloc.add(SwitchSelectionMode(value)),
-                      )
-                    ],
-                  )
-                ],
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () => context
-                    .read<SelectTextFromImageBloc>()
-                    .add(BuildSelectedText()),
-                backgroundColor: Colors.green,
-                child: const Icon(Icons.check),
-              ),
-            );
-        }
-      },
-    );
+        listener: listener,
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Pick text')),
+            body: buildContent(context, state),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => context
+                  .read<SelectTextFromImageBloc>()
+                  .add(BuildSelectedText()),
+              backgroundColor: Colors.green,
+              child: const Icon(Icons.check),
+            ),
+          );
+        });
   }
 }

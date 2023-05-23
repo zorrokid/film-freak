@@ -71,59 +71,63 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
     bloc.add(Submit(context));
   }
 
+  Widget buildContent(
+      BuildContext context, AddOrEditCollectionItemState state) {
+    if (state.status == AddOrEditCollectionItemStatus.error) {
+      return ErrorDisplayWidget(state.error);
+    }
+    if (state.status == AddOrEditCollectionItemStatus.loading) {
+      return const Spinner();
+    }
+    final bloc = context.read<AddOrEditCollectionItemBloc>();
+
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          DropdownFormField(
+            initialValue: state.condition,
+            values: conditionFormFieldValues,
+            onValueChange: (Condition? condition) =>
+                bloc.add(SelectCondition(condition ?? Condition.unknown)),
+            labelText: 'Condition',
+          ),
+          DropdownFormField(
+            initialValue: state.collectionStatus,
+            values: collectionStatusFieldValues,
+            onValueChange: (CollectionStatus? status) =>
+                bloc.add(SelectStatus(status ?? CollectionStatus.unknown)),
+            labelText: 'Status',
+          ),
+          ListView.builder(
+              shrinkWrap: true,
+              itemCount: state.media.length,
+              itemBuilder: (BuildContext context, int index) {
+                return CollectionItemMediaEditCard(
+                  index: index,
+                  viewModel: state.media[index],
+                  onUpdate: (int index, Condition condition) =>
+                      bloc.add(UpdateCollectionItemMedia(index, condition)),
+                );
+              }),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddOrEditCollectionItemBloc,
         AddOrEditCollectionItemState>(
       listener: collectionItemStateListener,
       builder: (context, state) {
-        if (state.status == AddOrEditCollectionItemStatus.error) {
-          return ErrorDisplayWidget(state.error);
-        }
-        if (state.status == AddOrEditCollectionItemStatus.loading) {
-          return const Spinner();
-        }
-
-        final bloc = context.read<AddOrEditCollectionItemBloc>();
-
         return Scaffold(
           appBar: AppBar(
             title: state.collectionItemId != null
                 ? const Text('Edit collection item')
                 : const Text('Add a collection item'),
           ),
-          body: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                DropdownFormField(
-                  initialValue: state.condition,
-                  values: conditionFormFieldValues,
-                  onValueChange: (Condition? condition) =>
-                      bloc.add(SelectCondition(condition ?? Condition.unknown)),
-                  labelText: 'Condition',
-                ),
-                DropdownFormField(
-                  initialValue: state.collectionStatus,
-                  values: collectionStatusFieldValues,
-                  onValueChange: (CollectionStatus? status) => bloc
-                      .add(SelectStatus(status ?? CollectionStatus.unknown)),
-                  labelText: 'Status',
-                ),
-                ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.media.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CollectionItemMediaEditCard(
-                        index: index,
-                        viewModel: state.media[index],
-                        onUpdate: (int index, Condition condition) => bloc
-                            .add(UpdateCollectionItemMedia(index, condition)),
-                      );
-                    }),
-              ],
-            ),
-          ),
+          body: buildContent(context, state),
           floatingActionButton: FloatingActionButton(
             onPressed: () => submit(context),
             backgroundColor: Colors.green,
