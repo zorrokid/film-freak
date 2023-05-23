@@ -27,7 +27,6 @@ enum AddOrEditReleaseStatus {
   productionRemoved,
   picAdded,
   picRemoved,
-  mediaSelected,
   mediaAdded,
 }
 

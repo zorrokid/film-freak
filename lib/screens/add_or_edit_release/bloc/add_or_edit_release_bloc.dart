@@ -45,7 +45,6 @@ class AddOrEditReleaseBloc
     on<RemoveProduction>(_onRemoveProduction);
     on<SelectPic>(_onSelectPic);
     on<RemovePic>(_onRemovePic);
-    on<AddMedia>(_onAddMedia);
     on<SelectMedia>(_onSelectMedia);
   }
 
@@ -345,37 +344,26 @@ class AddOrEditReleaseBloc
     ));
   }
 
-  void _onSelectMedia(
+  Future<void> _onSelectMedia(
     SelectMedia event,
     Emitter<AddOrEditReleaseState> emit,
-  ) {
-    showModalBottomSheet(
+  ) async {
+    await showModalBottomSheet(
       context: event.context,
       builder: (BuildContext context) {
         return MediaSelector(
           onAddMedia: (int pcs, MediaType mediaType) {
+            final media = [...state.media];
+            for (int i = 0; i < pcs; i++) {
+              media.add(ReleaseMedia(mediaType: mediaType));
+            }
             emit(state.copyWith(
-              status: AddOrEditReleaseStatus.mediaSelected,
-              addedMediaPcs: pcs,
-              addedMediaType: mediaType,
-            ));
+                status: AddOrEditReleaseStatus.mediaAdded, media: media));
             Navigator.pop(context);
           },
           onCancel: () => Navigator.pop(context),
         );
       },
     );
-  }
-
-  void _onAddMedia(
-    AddMedia event,
-    Emitter<AddOrEditReleaseState> emit,
-  ) {
-    final media = [...state.media];
-    for (int i = 0; i < event.pcs; i++) {
-      media.add(ReleaseMedia(mediaType: event.mediaType));
-    }
-    emit(state.copyWith(
-        status: AddOrEditReleaseStatus.mediaAdded, media: media));
   }
 }

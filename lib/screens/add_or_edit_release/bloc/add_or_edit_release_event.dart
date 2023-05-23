@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 import '../../../domain/enums/case_type.dart';
 import '../../../domain/enums/picture_type.dart';
-import '../../../domain/enums/media_type.dart';
 
 abstract class AddOrEditReleaseEvent extends Equatable {
   const AddOrEditReleaseEvent();
@@ -142,12 +141,4 @@ class SelectMedia extends AddOrEditReleaseEvent {
   final BuildContext context;
   @override
   List<Object> get props => [context];
-}
-
-class AddMedia extends AddOrEditReleaseEvent {
-  const AddMedia(this.pcs, this.mediaType);
-  final int pcs;
-  final MediaType mediaType;
-  @override
-  List<Object> get props => [pcs, mediaType];
 }
