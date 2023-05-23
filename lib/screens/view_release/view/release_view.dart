@@ -41,15 +41,21 @@ class ReleaseView extends StatelessWidget {
       return BlocBuilder<ReleaseViewBloc, ReleaseViewState>(
           builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(title: Text(state.release!.release.name)),
-          body: buildContent(context, state, appState),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => context
-                .read<ReleaseViewBloc>()
-                .add(EditRelease(context, state.releaseId)),
-            backgroundColor: Colors.green,
-            child: const Icon(Icons.edit),
+          appBar: AppBar(
+            title: Text(state.release != null
+                ? state.release!.release.name
+                : 'Loading...'),
           ),
+          body: buildContent(context, state, appState),
+          floatingActionButton: state.release != null
+              ? FloatingActionButton(
+                  onPressed: () => context
+                      .read<ReleaseViewBloc>()
+                      .add(EditRelease(context, state.releaseId)),
+                  backgroundColor: Colors.green,
+                  child: const Icon(Icons.edit),
+                )
+              : null,
         );
       });
     });
