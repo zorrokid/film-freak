@@ -2,7 +2,7 @@ import 'package:film_freak/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'screens/barcode_scan/view/barcode_scan_page.dart';
+import 'screens/releases/view/releases_page.dart';
 
 class FilmFreakApp extends StatelessWidget {
   const FilmFreakApp({super.key});
@@ -13,7 +13,7 @@ class FilmFreakApp extends StatelessWidget {
       create: (_) => UserBloc(),
       child: const MaterialApp(
         title: 'film_freak',
-        home: BarcodeScanPage(),
+        home: ReleasesPage(),
       ),
     );
   }

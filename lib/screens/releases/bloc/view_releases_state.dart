@@ -4,7 +4,7 @@ import 'package:film_freak/persistence/query_specs/query_specs_enums.dart';
 import '../../../models/list_models/release_list_model.dart';
 import '../../../persistence/query_specs/release_query_specs.dart';
 
-enum BarcodeScanStatus {
+enum ReleasesStatus {
   initial,
   initialized,
   scanning,
@@ -21,9 +21,9 @@ enum BarcodeScanStatus {
   deleteFailed,
 }
 
-class BarcodeScanState extends Equatable {
-  const BarcodeScanState({
-    this.status = BarcodeScanStatus.initial,
+class ReleasesState extends Equatable {
+  const ReleasesState({
+    this.status = ReleasesStatus.initial,
     this.items = const <ReleaseListModel>[],
     this.barcode = "",
     this.barcodeExists = false,
@@ -33,7 +33,7 @@ class BarcodeScanState extends Equatable {
         const ReleaseQuerySpecs(top: 10, orderBy: OrderByEnum.latest),
   });
 
-  final BarcodeScanStatus status;
+  final ReleasesStatus status;
   final List<ReleaseListModel> items;
   final String barcode;
   final bool barcodeExists;
@@ -41,8 +41,8 @@ class BarcodeScanState extends Equatable {
   final int? releaseId;
   final ReleaseQuerySpecs querySpecs;
 
-  BarcodeScanState copyWith({
-    BarcodeScanStatus? status,
+  ReleasesState copyWith({
+    ReleasesStatus? status,
     List<ReleaseListModel>? items,
     String? barcode,
     bool? barcodeExists,
@@ -50,7 +50,7 @@ class BarcodeScanState extends Equatable {
     int? releaseId,
     ReleaseQuerySpecs? querySpecs,
   }) {
-    return BarcodeScanState(
+    return ReleasesState(
       status: status ?? this.status,
       items: items ?? this.items,
       barcode: barcode ?? this.barcode,
