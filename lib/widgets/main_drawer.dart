@@ -1,4 +1,4 @@
-import 'package:film_freak/screens/barcode_scan/view/barcode_scan_page.dart';
+import 'package:film_freak/screens/releases/view/releases_page.dart';
 import 'package:film_freak/screens/data_sync/view/data_sync_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,8 +73,7 @@ class _MainDrawerState extends State<MainDrawer> {
               ),
               ListTile(
                 title: const Text('Releases'),
-                onTap: () =>
-                    _navigateFromDrawer(context, const BarcodeScanPage()),
+                onTap: () => _navigateFromDrawer(context, const ReleasesPage()),
               ),
               userBloc.state.status == UserStatus.loggedOut
                   ? ListTile(

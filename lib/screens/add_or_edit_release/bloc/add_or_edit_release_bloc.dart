@@ -17,7 +17,7 @@ import '../../../domain/enums/media_type.dart';
 import '../../../domain/enums/picture_type.dart';
 import '../../../models/release_view_model.dart';
 import '../../../models/tmdb_movie_result.dart';
-import '../../barcode_scan/view/barcode_scanner_view.dart';
+import '../../scan_barcode/barcode_scanner_view.dart';
 import '../../select_properties/property_selection_view.dart';
 import '../../tmdb_search/tmdb_movie_search_screen.dart';
 import '../view/widgets/media_selector.dart';

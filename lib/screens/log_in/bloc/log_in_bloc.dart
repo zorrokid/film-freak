@@ -1,4 +1,4 @@
-import 'package:film_freak/screens/barcode_scan/view/barcode_scan_page.dart';
+import 'package:film_freak/screens/releases/view/releases_page.dart';
 import 'package:film_freak/screens/log_in/bloc/log_in_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +43,7 @@ class LogInBloc extends Bloc<LogInEvent, LogInState> {
   Future _onUserAdded(UserAdded event, Emitter<LogInState> emit) async {
     await Navigator.push(event.context, MaterialPageRoute(
       builder: (context) {
-        return const BarcodeScanPage();
+        return const ReleasesPage();
       },
     ));
   }

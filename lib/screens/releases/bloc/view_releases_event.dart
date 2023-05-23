@@ -4,13 +4,13 @@ import 'package:flutter/widgets.dart';
 
 import '../../../persistence/query_specs/release_query_specs.dart';
 
-abstract class BarcodeScanEvent extends Equatable {
-  const BarcodeScanEvent();
+abstract class ReleasesEvent extends Equatable {
+  const ReleasesEvent();
   @override
   List<Object> get props => [];
 }
 
-class Initialize extends BarcodeScanEvent {
+class Initialize extends ReleasesEvent {
   const Initialize({
     this.querySpecs =
         const ReleaseQuerySpecs(top: 10, orderBy: OrderByEnum.latest),
@@ -20,21 +20,21 @@ class Initialize extends BarcodeScanEvent {
   List<Object> get props => [querySpecs];
 }
 
-class ScanBarcode extends BarcodeScanEvent {
+class ScanBarcode extends ReleasesEvent {
   const ScanBarcode(this.context);
   final BuildContext context;
   @override
   List<Object> get props => [context];
 }
 
-class GetReleases extends BarcodeScanEvent {
+class GetReleases extends ReleasesEvent {
   const GetReleases(this.querySpecs);
   final ReleaseQuerySpecs querySpecs;
   @override
   List<Object> get props => [querySpecs];
 }
 
-class AddRelease extends BarcodeScanEvent {
+class AddRelease extends ReleasesEvent {
   const AddRelease(
     this.context,
     this.barcode,
@@ -45,7 +45,7 @@ class AddRelease extends BarcodeScanEvent {
   List<Object> get props => [context, barcode];
 }
 
-class CreateCollectionItem extends BarcodeScanEvent {
+class CreateCollectionItem extends ReleasesEvent {
   const CreateCollectionItem(
     this.context,
     this.releaseId,
@@ -56,7 +56,7 @@ class CreateCollectionItem extends BarcodeScanEvent {
   List<Object> get props => [context, releaseId];
 }
 
-class ConfirmDelete extends BarcodeScanEvent {
+class ConfirmDelete extends ReleasesEvent {
   const ConfirmDelete(
     this.context,
     this.releaseId,
@@ -67,7 +67,7 @@ class ConfirmDelete extends BarcodeScanEvent {
   List<Object> get props => [context, releaseId];
 }
 
-class DeleteRelease extends BarcodeScanEvent {
+class DeleteRelease extends ReleasesEvent {
   const DeleteRelease(
     this.releaseId,
   );
@@ -76,7 +76,7 @@ class DeleteRelease extends BarcodeScanEvent {
   List<Object> get props => [releaseId];
 }
 
-class EditRelease extends BarcodeScanEvent {
+class EditRelease extends ReleasesEvent {
   const EditRelease(
     this.context,
     this.releaseId,
@@ -87,7 +87,7 @@ class EditRelease extends BarcodeScanEvent {
   List<Object> get props => [context, releaseId];
 }
 
-class ViewRelease extends BarcodeScanEvent {
+class ViewRelease extends ReleasesEvent {
   const ViewRelease(
     this.context,
     this.releaseId,

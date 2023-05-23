@@ -7,15 +7,15 @@ import '../../../utils/dialog_utls.dart';
 import '../../add_or_edit_release/view/add_or_edit_release_page.dart';
 import '../../add_or_edit_collection_item/view/add_or_edit_collection_item_page.dart';
 import '../../view_release/view/release_page.dart';
-import '../view/barcode_scanner_view.dart';
-import 'barcode_scan_event.dart';
-import 'barcode_scan_state.dart';
+import '../../scan_barcode/barcode_scanner_view.dart';
+import 'view_releases_event.dart';
+import 'view_releases_state.dart';
 
-class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
-  ScanBarcodeBloc({
+class ReleasesBloc extends Bloc<ReleasesEvent, ReleasesState> {
+  ReleasesBloc({
     required this.releaseService,
     required this.collectionItemService,
-  }) : super(const BarcodeScanState()) {
+  }) : super(const ReleasesState()) {
     on<Initialize>(_onInitialize);
     on<ScanBarcode>(_onScanBarcode);
     on<GetReleases>(_onGetReleases);
@@ -32,31 +32,31 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
 
   void _onInitialize(
     Initialize event,
-    Emitter<BarcodeScanState> emit,
+    Emitter<ReleasesState> emit,
   ) {
     emit(state.copyWith(
-      status: BarcodeScanStatus.initialized,
+      status: ReleasesStatus.initialized,
       querySpecs: event.querySpecs,
     ));
   }
 
   Future<void> _onScanBarcode(
     ScanBarcode event,
-    Emitter<BarcodeScanState> emit,
+    Emitter<ReleasesState> emit,
   ) async {
-    emit(state.copyWith(status: BarcodeScanStatus.scanning));
+    emit(state.copyWith(status: ReleasesStatus.scanning));
     final barcode = await Navigator.push<String>(event.context,
         MaterialPageRoute<String>(builder: (context) {
       return const BarcodeScannerView();
     }));
 
     if (barcode == null) {
-      emit(state.copyWith(status: BarcodeScanStatus.initial));
+      emit(state.copyWith(status: ReleasesStatus.initial));
     } else {
       final barcodeExists = await releaseService.barcodeExists(barcode);
       emit(
         state.copyWith(
-          status: BarcodeScanStatus.scanned,
+          status: ReleasesStatus.scanned,
           barcodeExists: barcodeExists,
           barcode: barcode,
         ),
@@ -66,23 +66,23 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
 
   Future<void> _onGetReleases(
     GetReleases event,
-    Emitter<BarcodeScanState> emit,
+    Emitter<ReleasesState> emit,
   ) async {
     emit(state.copyWith(
-      status: BarcodeScanStatus.loading,
+      status: ReleasesStatus.loading,
       querySpecs: event.querySpecs,
     ));
     final releases =
         (await releaseService.getListModels(filter: event.querySpecs)).toList();
     emit(state.copyWith(
-      status: BarcodeScanStatus.loaded,
+      status: ReleasesStatus.loaded,
       items: releases,
     ));
   }
 
   Future<void> _onAddRelease(
     AddRelease event,
-    Emitter<BarcodeScanState> emit,
+    Emitter<ReleasesState> emit,
   ) async {
     final route = MaterialPageRoute<String>(builder: (context) {
       return AddOrEditReleasePage(
@@ -91,36 +91,36 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
     });
 
     await Navigator.push(event.context, route);
-    emit(state.copyWith(status: BarcodeScanStatus.releaseAdded));
+    emit(state.copyWith(status: ReleasesStatus.releaseAdded));
   }
 
   Future<void> _onCreateCollectionItem(
     CreateCollectionItem event,
-    Emitter<BarcodeScanState> emit,
+    Emitter<ReleasesState> emit,
   ) async {
     await Navigator.push(event.context, MaterialPageRoute(
       builder: (context) {
         return AddOrEditCollectionItemPage(releaseId: event.releaseId);
       },
     ));
-    emit(state.copyWith(status: BarcodeScanStatus.collectionItemAdded));
+    emit(state.copyWith(status: ReleasesStatus.collectionItemAdded));
   }
 
   Future<void> _onDeleteRelease(
     DeleteRelease event,
-    Emitter<BarcodeScanState> emit,
+    Emitter<ReleasesState> emit,
   ) async {
     final deleted = await releaseService.delete(event.releaseId);
     if (deleted) {
-      emit(state.copyWith(status: BarcodeScanStatus.releaseDeleted));
+      emit(state.copyWith(status: ReleasesStatus.releaseDeleted));
     } else {
-      emit(state.copyWith(status: BarcodeScanStatus.deleteFailed));
+      emit(state.copyWith(status: ReleasesStatus.deleteFailed));
     }
   }
 
   Future<void> _onConfirmDelete(
     ConfirmDelete event,
-    Emitter<BarcodeScanState> emit,
+    Emitter<ReleasesState> emit,
   ) async {
     final canDelete = await confirm(event.context, 'Are you sure?',
         '''Are you really sure you want to delete the release? 
@@ -128,14 +128,14 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
         will be deleted!''');
     if (!canDelete) return;
     emit(state.copyWith(
-      status: BarcodeScanStatus.deleteConfirmed,
+      status: ReleasesStatus.deleteConfirmed,
       releaseId: event.releaseId,
     ));
   }
 
   Future<void> _onEditRelease(
     EditRelease event,
-    Emitter<BarcodeScanState> emit,
+    Emitter<ReleasesState> emit,
   ) async {
     await Navigator.push(event.context, MaterialPageRoute(
       builder: (context) {
@@ -144,12 +144,12 @@ class ScanBarcodeBloc extends Bloc<BarcodeScanEvent, BarcodeScanState> {
         );
       },
     ));
-    emit(state.copyWith(status: BarcodeScanStatus.releaseEdited));
+    emit(state.copyWith(status: ReleasesStatus.releaseEdited));
   }
 
   Future<void> _onViewRelease(
     ViewRelease event,
-    Emitter<BarcodeScanState> emit,
+    Emitter<ReleasesState> emit,
   ) async {
     Navigator.push(
       event.context,
