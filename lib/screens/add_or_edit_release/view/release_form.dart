@@ -62,6 +62,176 @@ class _ReleaseFormState extends State<ReleaseForm> {
     return null;
   }
 
+  Widget buildContent(BuildContext context, AddOrEditReleaseState state) {
+    if (state.errors.isNotEmpty) {
+      return ErrorDisplayWidget(state.errors.first);
+    }
+    if (state.status == AddOrEditReleaseStatus.loading) {
+      return const Spinner();
+    }
+
+    final bloc = BlocProvider.of<AddOrEditReleaseBloc>(context);
+
+    return Form(
+      key: _formKey,
+      child: ListView(
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                  width: 100,
+                  child: state.selectedPicIndex > 0
+                      ? PreviewPic(
+                          releasePicture:
+                              state.pictures[state.selectedPicIndex - 1],
+                          saveDirPath: state.saveDir,
+                          picTapped: () => bloc.add(const SetPrevPic()),
+                        )
+                      : null),
+              Expanded(
+                child: state.pictures.isNotEmpty
+                    ? PictureTypeSelection(
+                        onValueChanged: (PictureType pictureType) =>
+                            bloc.add(ChangePicType(pictureType)),
+                        releasePicture: state.pictures[state.selectedPicIndex],
+                        saveDirPath: state.saveDir,
+                      )
+                    : const Icon(
+                        Icons.image,
+                        size: 200,
+                      ),
+              ),
+              SizedBox(
+                width: 100,
+                child: state.pictures.length > 1 &&
+                        state.selectedPicIndex < state.pictures.length - 1
+                    ? PreviewPic(
+                        releasePicture:
+                            state.pictures[state.selectedPicIndex + 1],
+                        saveDirPath: state.saveDir,
+                        picTapped: () => bloc.add(const SetNextPic()),
+                      )
+                    : null,
+              ),
+            ],
+          ),
+          Row(children: [
+            Expanded(
+              child: state.pictures.isEmpty
+                  ? const Text('No pictures')
+                  : Text(
+                      '${state.selectedPicIndex + 1}/${state.pictures.length}'),
+            ),
+            ReleasePictureDelete(onDelete: () => bloc.add(const RemovePic())),
+            ReleasePictureCrop(onCropPressed: () => bloc.add(CropPic(context))),
+            ReleasePictureSelection(
+                onValueChanged: (String fileName) =>
+                    bloc.add(SelectPic(fileName)),
+                saveDir: state.saveDir)
+          ]),
+          Row(
+            children: [
+              Expanded(
+                child: DecoratedTextFormField(
+                  controller: _nameController,
+                  label: 'Release name',
+                  required: true,
+                ),
+              ),
+              IconButton(
+                onPressed: () =>
+                    bloc.add(GetImageText(context, _nameController, true)),
+                icon: const Icon(Icons.image),
+              )
+            ],
+          ),
+          ProductionsList(
+            productions: state.productions,
+            onDelete: (int tmdbId) => bloc.add(RemoveProduction(tmdbId)),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: DecoratedTextFormField(
+                  controller: _movieSearchTextController,
+                  label: 'Search movie',
+                  required: false,
+                ),
+              ),
+              IconButton(
+                onPressed: () => bloc.add(
+                    GetImageText(context, _movieSearchTextController, true)),
+                icon: const Icon(Icons.image),
+              ),
+              IconButton(
+                onPressed: () => bloc.add(
+                    SearchProduction(context, _movieSearchTextController.text)),
+                icon: const Icon(Icons.search),
+              ),
+            ],
+          ),
+          DropdownFormField(
+            initialValue: state.caseType,
+            values: caseTypeFormFieldValues,
+            onValueChange: (CaseType? caseType) =>
+                bloc.add(CaseTypeChanged(caseType)),
+            labelText: 'Case type',
+          ),
+          ReleaseMediaWidget(
+            releaseMedia: state.media,
+          ),
+          ElevatedButton(
+            onPressed: () => bloc.add(SelectMedia(context)),
+            child: const Text('Select media'),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: DecoratedTextFormField(
+                  validator: _textInputValidator,
+                  controller: _barcodeController,
+                  label: 'Barcode',
+                  required: true,
+                ),
+              ),
+              IconButton(
+                onPressed: () => bloc.add(ScanBarcode(context)),
+                icon: const Icon(Icons.camera),
+              ),
+            ],
+          ),
+          ReleaseProperties(
+            releaseProperties: state.properties,
+          ),
+          ElevatedButton(
+            onPressed: () => bloc.add(SelectProperties(context)),
+            child: const Text('Select properties'),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: DecoratedTextFormField(
+                  controller: _notesController,
+                  label: 'Notes',
+                  required: false,
+                  maxLines: 3,
+                ),
+              ),
+              IconButton(
+                onPressed: () =>
+                    bloc.add(GetImageText(context, _notesController, false)),
+                icon: const Icon(Icons.image),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 100,
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<AddOrEditReleaseBloc>(context);
@@ -71,8 +241,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
       bloc.add(Submit(context, _nameController.text, _barcodeController.text));
     }
 
-    return BlocConsumer<AddOrEditReleaseBloc, AddOrEditReleaseState>(
-        listener: (context, state) {
+    void stateListener(BuildContext context, AddOrEditReleaseState state) {
       final bloc = context.read<AddOrEditReleaseBloc>();
       switch (state.status) {
         case AddOrEditReleaseStatus.initialized:
@@ -105,188 +274,23 @@ class _ReleaseFormState extends State<ReleaseForm> {
         default:
         // Nothing to do
       }
-    }, builder: (context, state) {
-      if (state.errors.isNotEmpty) {
-        return ErrorDisplayWidget(state.errors.first);
-      }
-      if (state.status == AddOrEditReleaseStatus.loading) {
-        return const Spinner();
-      }
+    }
 
-      final bloc = context.read<AddOrEditReleaseBloc>();
-
-      return Scaffold(
-        appBar: AppBar(
-            title: state.id != null
-                ? const Text('Edit release')
-                : const Text('Add a new release')),
-        body: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              Row(
-                children: [
-                  SizedBox(
-                      width: 100,
-                      child: state.selectedPicIndex > 0
-                          ? PreviewPic(
-                              releasePicture:
-                                  state.pictures[state.selectedPicIndex - 1],
-                              saveDirPath: state.saveDir,
-                              picTapped: () => bloc.add(const SetPrevPic()),
-                            )
-                          : null),
-                  Expanded(
-                    child: state.pictures.isNotEmpty
-                        ? PictureTypeSelection(
-                            onValueChanged: (PictureType pictureType) =>
-                                bloc.add(ChangePicType(pictureType)),
-                            releasePicture:
-                                state.pictures[state.selectedPicIndex],
-                            saveDirPath: state.saveDir,
-                          )
-                        : const Icon(
-                            Icons.image,
-                            size: 200,
-                          ),
-                  ),
-                  SizedBox(
-                    width: 100,
-                    child: state.pictures.length > 1 &&
-                            state.selectedPicIndex < state.pictures.length - 1
-                        ? PreviewPic(
-                            releasePicture:
-                                state.pictures[state.selectedPicIndex + 1],
-                            saveDirPath: state.saveDir,
-                            picTapped: () => bloc.add(const SetNextPic()),
-                          )
-                        : null,
-                  ),
-                ],
-              ),
-              Row(children: [
-                Expanded(
-                  child: state.pictures.isEmpty
-                      ? const Text('No pictures')
-                      : Text(
-                          '${state.selectedPicIndex + 1}/${state.pictures.length}'),
-                ),
-                ReleasePictureDelete(
-                    onDelete: () => bloc.add(const RemovePic())),
-                ReleasePictureCrop(
-                    onCropPressed: () => bloc.add(CropPic(context))),
-                ReleasePictureSelection(
-                    onValueChanged: (String fileName) =>
-                        bloc.add(SelectPic(fileName)),
-                    saveDir: state.saveDir)
-              ]),
-              Row(
-                children: [
-                  Expanded(
-                    child: DecoratedTextFormField(
-                      controller: _nameController,
-                      label: 'Release name',
-                      required: true,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () =>
-                        bloc.add(GetImageText(context, _nameController, true)),
-                    icon: const Icon(Icons.image),
-                  )
-                ],
-              ),
-              ProductionsList(
-                productions: state.productions,
-                onDelete: (int tmdbId) => bloc.add(RemoveProduction(tmdbId)),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: DecoratedTextFormField(
-                      controller: _movieSearchTextController,
-                      label: 'Search movie',
-                      required: false,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => bloc.add(GetImageText(
-                        context, _movieSearchTextController, true)),
-                    icon: const Icon(Icons.image),
-                  ),
-                  IconButton(
-                    onPressed: () => bloc.add(SearchProduction(
-                        context, _movieSearchTextController.text)),
-                    icon: const Icon(Icons.search),
-                  ),
-                ],
-              ),
-              DropdownFormField(
-                initialValue: state.caseType,
-                values: caseTypeFormFieldValues,
-                onValueChange: (CaseType? caseType) =>
-                    bloc.add(CaseTypeChanged(caseType)),
-                labelText: 'Case type',
-              ),
-              ReleaseMediaWidget(
-                releaseMedia: state.media,
-              ),
-              ElevatedButton(
-                onPressed: () => bloc.add(SelectMedia(context)),
-                child: const Text('Select media'),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: DecoratedTextFormField(
-                      validator: _textInputValidator,
-                      controller: _barcodeController,
-                      label: 'Barcode',
-                      required: true,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => bloc.add(ScanBarcode(context)),
-                    icon: const Icon(Icons.camera),
-                  ),
-                ],
-              ),
-              ReleaseProperties(
-                releaseProperties: state.properties,
-              ),
-              ElevatedButton(
-                onPressed: () => bloc.add(SelectProperties(context)),
-                child: const Text('Select properties'),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: DecoratedTextFormField(
-                      controller: _notesController,
-                      label: 'Notes',
-                      required: false,
-                      maxLines: 3,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => bloc
-                        .add(GetImageText(context, _notesController, false)),
-                    icon: const Icon(Icons.image),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 100,
-              )
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => submit(),
-          backgroundColor: Colors.green,
-          child: const Icon(Icons.save),
-        ),
-      );
-    });
+    return BlocConsumer<AddOrEditReleaseBloc, AddOrEditReleaseState>(
+        listener: stateListener,
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+                title: state.id != null
+                    ? const Text('Edit release')
+                    : const Text('Add a new release')),
+            body: buildContent(context, state),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => submit(),
+              backgroundColor: Colors.green,
+              child: const Icon(Icons.save),
+            ),
+          );
+        });
   }
 }
