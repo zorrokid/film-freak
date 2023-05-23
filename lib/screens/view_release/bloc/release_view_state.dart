@@ -8,6 +8,7 @@ enum ReleaseViewStatus {
   loaded,
   loadFailed,
   edited,
+  collectionItemEdited,
 }
 
 class ReleaseViewState extends Equatable {

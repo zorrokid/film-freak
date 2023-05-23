@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../services/release_service.dart';
+import '../../add_or_edit_collection_item/view/add_or_edit_collection_item_page.dart';
 import 'release_view_event.dart';
 import 'release_view_state.dart';
 
@@ -11,6 +12,7 @@ class ReleaseViewBloc extends Bloc<ReleaseViewEvent, ReleaseViewState> {
       : super(const ReleaseViewState()) {
     on<LoadRelease>(_loadRelease);
     on<EditRelease>(_editRelease);
+    on<EditCollectionItem>(_editCollectionItem);
   }
   final ReleaseService releaseService;
 
@@ -37,5 +39,21 @@ class ReleaseViewBloc extends Bloc<ReleaseViewEvent, ReleaseViewState> {
       ),
     );
     emit(state.copyWith(status: ReleaseViewStatus.edited));
+  }
+
+  Future<void> _editCollectionItem(
+    EditCollectionItem event,
+    Emitter<ReleaseViewState> emit,
+  ) async {
+    await Navigator.push(
+      event.context,
+      MaterialPageRoute(
+        builder: (context) => AddOrEditCollectionItemPage(
+          collectionItemId: event.collectionItemId,
+          releaseId: event.releaseId,
+        ),
+      ),
+    );
+    emit(state.copyWith(status: ReleaseViewStatus.collectionItemEdited));
   }
 }

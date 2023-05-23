@@ -4,9 +4,13 @@ import '../domain/enums/condition.dart';
 import '../widgets/labelled_text.dart';
 import '../domain/entities/collection_item.dart';
 
+typedef OnCollectionItemEdit = void Function(int collectionItemId);
+
 class CollectionItemCard extends StatelessWidget {
-  const CollectionItemCard({super.key, required this.collectionItem});
+  const CollectionItemCard(
+      {super.key, required this.collectionItem, required this.onEdit});
   final CollectionItem collectionItem;
+  final OnCollectionItemEdit onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +30,10 @@ class CollectionItemCard extends StatelessWidget {
               value: collectionStatusFieldValues[collectionItem.status]!,
             ),
           ]),
+          TextButton(
+            onPressed: () => onEdit(collectionItem.id!),
+            child: const Text("Edit"),
+          )
         ],
       ),
     );

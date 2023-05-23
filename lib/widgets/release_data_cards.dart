@@ -10,8 +10,13 @@ import 'release_properties.dart';
 class ReleaseDataCards extends StatelessWidget {
   final ReleaseViewModel viewModel;
   final String saveDir;
-  const ReleaseDataCards(
-      {super.key, required this.viewModel, required this.saveDir});
+  final OnCollectionItemEdit onCollectionItemEdit;
+  const ReleaseDataCards({
+    super.key,
+    required this.viewModel,
+    required this.saveDir,
+    required this.onCollectionItemEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +58,10 @@ class ReleaseDataCards extends StatelessWidget {
               title: Text(
                   conditionFormFieldValues[collectionItems[index].condition]!),
               children: [
-                CollectionItemCard(collectionItem: collectionItems[index]),
+                CollectionItemCard(
+                  collectionItem: collectionItems[index],
+                  onEdit: onCollectionItemEdit,
+                ),
               ],
             );
           },
