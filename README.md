@@ -61,10 +61,26 @@ Some of the features currently implemented are:
         releaseMedia {
             int mediaType
         }
+        release ||--o{ releaseProperties : has
+        releaseProperties{
+            int propertyType
+        }
+        release ||--o{ releaseComments : has
+        releaseComments{
+            string comment 
+        }
         collectionItem ||--o{ collectionItemMedia : has
         collectionItemMedia }o--|| releaseMedia: isIstanceOf
         collectionItemMedia {
             int condition
+        }
+        collectionItem ||--o{ collectionItemProperties : has 
+        collectionItemProperties {
+            int propertyType
+        }
+        collectionItem ||--o{ collectionItemComments : has 
+        collectionItemComments {
+            string comment
         }
 ```
 
