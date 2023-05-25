@@ -113,9 +113,8 @@ class ReleaseService {
     return releaseRepository.barcodeExists(barcode);
   }
 
-  Future<bool> delete(int id) async {
-    // TODO
-    return false;
+  Future<int> delete(int id) async {
+    return await releaseRepository.delete(id);
   }
 
   Future<int> _upsertRelease(Release release) async {

@@ -125,8 +125,7 @@ class CollectionItemService {
     return id;
   }
 
-  Future<bool> delete(int collectionItemId) async {
-    final rows = await collectionItemRepository.delete(collectionItemId);
-    return rows > 0;
+  Future<int> delete(int collectionItemId) async {
+    return await collectionItemRepository.delete(collectionItemId);
   }
 }
