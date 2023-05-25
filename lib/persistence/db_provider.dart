@@ -26,15 +26,21 @@ class DatabaseProviderSqflite extends DatabaseProvider {
   Future<Database> _initialize() async {
     String path = join(await getDatabasesPath(), dbName);
 
+    // TODO: are these two if statements necessary?
     if (migrationScripts.isNotEmpty) {
       final dbVersion = migrationScripts.keys.last;
-      final database =
-          openDatabase(path, version: dbVersion, onUpgrade: _onUpgrade);
+      final database = openDatabase(path,
+          version: dbVersion, onUpgrade: _onUpgrade, onConfigure: _onConfigure);
       return database;
     } else {
-      final database = openDatabase(path, onCreate: _onCreate, version: 1);
+      final database = openDatabase(path,
+          onCreate: _onCreate, version: 1, onConfigure: _onConfigure);
       return database;
     }
+  }
+
+  Future<void> _onConfigure(Database db) async {
+    await db.execute('PRAGMA foreign_keys=ON');
   }
 
   Future<void> _onCreate(Database db, int version) async {
