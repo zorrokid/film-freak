@@ -1,5 +1,6 @@
 import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/list_models/collection_item_list_model.dart';
 import '../persistence/query_specs/collection_item_query_specs.dart';
 import '../screens/view_collection_item/collection_item_screen.dart';
@@ -11,13 +12,11 @@ import 'spinner.dart';
 class CollectionItemFilterList extends StatefulWidget {
   const CollectionItemFilterList({
     super.key,
-    required this.service,
     required this.specs,
     required this.saveDir,
     required this.onDelete,
     required this.onEdit,
   });
-  final CollectionItemService service;
   final CollectionItemQuerySpecs? specs;
   final String saveDir;
   final OnDeleteCallback onDelete;
@@ -65,8 +64,8 @@ class _CollectionItemFilterListState extends State<CollectionItemFilterList> {
       builder: (context) {
         return CollectionItemScreen(
           id: id,
-          collectionItemService: widget.service,
-          releaseService: initializeReleaseService(),
+          collectionItemService: context.read<CollectionItemService>(),
+          releaseService: context.read<ReleaseService>(),
         );
       },
     ));

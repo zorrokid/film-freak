@@ -1,3 +1,5 @@
+import 'package:film_freak/persistence/db_provider.dart';
+import 'package:film_freak/persistence/repositories/system_info_repository.dart';
 import 'package:film_freak/screens/data_sync/service/data_sync_service.dart';
 import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/services/release_service.dart';
@@ -29,16 +31,22 @@ Future<void> main() async {
     MultiRepositoryProvider(
       providers: [
         RepositoryProvider<ReleaseService>(
-          create: (_) => initializeReleaseService(),
+          create: (_) => initializeReleaseService(collectionModel.saveDir),
         ),
         RepositoryProvider<CollectionItemService>(
-          create: (_) => initializeCollectionItemService(),
+          create: (_) =>
+              initializeCollectionItemService(collectionModel.saveDir),
         ),
         RepositoryProvider<UserService>(
           create: (_) => UserService(),
         ),
         RepositoryProvider<DataSyncService>(
           create: (_) => DataSyncService(),
+        ),
+        RepositoryProvider<SystemInfoRepository>(
+          create: (_) => SystemInfoRepository(
+            DatabaseProviderSqflite.instance,
+          ),
         ),
       ],
       child: ChangeNotifierProvider(

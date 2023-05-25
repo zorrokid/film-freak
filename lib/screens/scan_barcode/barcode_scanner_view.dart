@@ -25,7 +25,7 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppState>(builder: (context, appState, child) {
+    return Consumer<AppStateOld>(builder: (context, appState, child) {
       return CameraWidget(
         title: 'Barcode Scanner',
         onImage: (inputImage) async {

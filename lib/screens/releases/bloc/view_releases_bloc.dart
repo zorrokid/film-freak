@@ -111,7 +111,7 @@ class ReleasesBloc extends Bloc<ReleasesEvent, ReleasesState> {
     Emitter<ReleasesState> emit,
   ) async {
     final deleted = await releaseService.delete(event.releaseId);
-    if (deleted) {
+    if (deleted > 0) {
       emit(state.copyWith(status: ReleasesStatus.releaseDeleted));
     } else {
       emit(state.copyWith(status: ReleasesStatus.deleteFailed));

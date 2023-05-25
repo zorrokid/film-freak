@@ -27,7 +27,8 @@ abstract class RepositoryBase<T extends Entity> {
 
   Future<int> delete(int id) async {
     final db = await databaseProvider.database;
-    return await db.delete(tableName, where: 'id = $id');
+    // need to be rawDelete to get cascade delete to work
+    return await db.rawDelete('DELETE FROM $tableName WHERE id = ?', [id]);
   }
 
   Future<int> deleteByIdColumn(int id, String columnName) async {

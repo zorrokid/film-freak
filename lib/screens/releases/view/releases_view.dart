@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '/persistence/query_specs/release_query_specs.dart';
-import '/services/collection_item_service.dart';
-import '/services/release_service.dart';
 import '/widgets/release_filter_list.dart';
 import '/persistence/app_state.dart';
 import '/widgets/error_display_widget.dart';
@@ -58,7 +56,7 @@ class ReleasesView extends StatelessWidget {
   }
 
   Widget buildContent(
-      BuildContext context, ReleasesState state, AppState appState) {
+      BuildContext context, ReleasesState state, AppStateOld appState) {
     switch (state.status) {
       case ReleasesStatus.loading:
         return const Spinner();
@@ -90,16 +88,13 @@ class ReleasesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppState>(builder: (context, appState, child) {
+    return Consumer<AppStateOld>(builder: (context, appState, child) {
       return BlocConsumer<ReleasesBloc, ReleasesState>(
           listener: releasesStateListener,
           builder: (context, state) {
             final bloc = context.read<ReleasesBloc>();
             return Scaffold(
-              drawer: MainDrawer(
-                releaseService: initializeReleaseService(),
-                collectionItemService: initializeCollectionItemService(),
-              ),
+              drawer: const MainDrawer(),
               appBar: AppBar(
                 title: const Text('Releases'),
               ),

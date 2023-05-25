@@ -1,5 +1,3 @@
-import 'package:film_freak/services/collection_item_service.dart';
-import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,10 +16,7 @@ class DataSyncView extends StatelessWidget {
           ? "Logged in"
           : "Not logged in";
       return Scaffold(
-        drawer: MainDrawer(
-          releaseService: initializeReleaseService(),
-          collectionItemService: initializeCollectionItemService(),
-        ),
+        drawer: const MainDrawer(),
         appBar: AppBar(
           title: const Text('Data sync'),
         ),

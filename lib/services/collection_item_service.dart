@@ -14,7 +14,7 @@ import '../models/collection_item_save_model.dart';
 import '../persistence/db_provider.dart';
 import '../persistence/repositories/collection_items_repository.dart';
 
-CollectionItemService initializeCollectionItemService() {
+CollectionItemService initializeCollectionItemService(String saveDir) {
   final dbProvider = DatabaseProviderSqflite.instance;
   return CollectionItemService(
     collectionItemRepository: CollectionItemsRepository(dbProvider),
@@ -24,7 +24,7 @@ CollectionItemService initializeCollectionItemService() {
         CollectionItemPropertiesRepository(dbProvider),
     collectionItemMediaRepository: CollectionItemMediaRepository(dbProvider),
     releaseMediasRepository: ReleaseMediasRepository(dbProvider),
-    releaseService: initializeReleaseService(),
+    releaseService: initializeReleaseService(saveDir),
   );
 }
 
@@ -125,8 +125,7 @@ class CollectionItemService {
     return id;
   }
 
-  Future<bool> delete(int collectionItemId) async {
-    final rows = await collectionItemRepository.delete(collectionItemId);
-    return rows > 0;
+  Future<int> delete(int collectionItemId) async {
+    return await collectionItemRepository.delete(collectionItemId);
   }
 }

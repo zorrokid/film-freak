@@ -61,10 +61,26 @@ Some of the features currently implemented are:
         releaseMedia {
             int mediaType
         }
+        release ||--o{ releaseProperties : has
+        releaseProperties{
+            int propertyType
+        }
+        release ||--o{ releaseComments : has
+        releaseComments{
+            string comment 
+        }
         collectionItem ||--o{ collectionItemMedia : has
         collectionItemMedia }o--|| releaseMedia: isIstanceOf
         collectionItemMedia {
             int condition
+        }
+        collectionItem ||--o{ collectionItemProperties : has 
+        collectionItemProperties {
+            int propertyType
+        }
+        collectionItem ||--o{ collectionItemComments : has 
+        collectionItemComments {
+            string comment
         }
 ```
 
@@ -75,3 +91,13 @@ To build, install and run this app you need to (more comprehensive instructions 
 - [Install Firebase related tools and register app to a Firebase account](https://firebase.google.com/docs/flutter/setup?platform=android)
 - [Install to your device](https://docs.flutter.dev/deployment/android#install-an-apk-on-a-device)
 - To run unit tests sqlite3 development libraries have to be installed.
+
+## Tests
+
+My goal is to test especially blocs. Unit tests can be found under test-folder and can be run with:
+
+    flutter test
+
+To update mockito-mocks:
+
+    dart run build_runner build
