@@ -31,10 +31,11 @@ Future<void> main() async {
     MultiRepositoryProvider(
       providers: [
         RepositoryProvider<ReleaseService>(
-          create: (_) => initializeReleaseService(),
+          create: (_) => initializeReleaseService(collectionModel.saveDir),
         ),
         RepositoryProvider<CollectionItemService>(
-          create: (_) => initializeCollectionItemService(),
+          create: (_) =>
+              initializeCollectionItemService(collectionModel.saveDir),
         ),
         RepositoryProvider<UserService>(
           create: (_) => UserService(),

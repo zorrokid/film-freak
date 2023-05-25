@@ -1,3 +1,4 @@
+import 'package:film_freak/utils/file_utils.dart';
 import 'package:logging/logging.dart';
 import '../persistence/repositories/collection_items_repository.dart';
 import '../services/production_service.dart';
@@ -18,7 +19,7 @@ import '../persistence/repositories/productions_repository.dart';
 import '../persistence/repositories/release_pictures_repository.dart';
 import '../persistence/repositories/release_properties_repository.dart';
 
-ReleaseService initializeReleaseService() {
+ReleaseService initializeReleaseService(String saveDir) {
   final dbProvider = DatabaseProviderSqflite.instance;
   return ReleaseService(
     releaseRepository: ReleasesRepository(dbProvider),
@@ -31,11 +32,13 @@ ReleaseService initializeReleaseService() {
     releaseMediasRepository: ReleaseMediasRepository(dbProvider),
     releaseCommentsRepository: ReleaseCommentsRepository(dbProvider),
     collectionItemsRepository: CollectionItemsRepository(dbProvider),
+    saveDir: saveDir,
   );
 }
 
 class ReleaseService {
   ReleaseService({
+    required this.saveDir,
     required this.releaseRepository,
     required this.releasePicturesRepository,
     required this.releasePropertiesRepository,
@@ -46,6 +49,7 @@ class ReleaseService {
   });
 
   final log = Logger('ReleaseService');
+  final String saveDir;
   final ReleasesRepository releaseRepository;
   final ReleasePicturesRepository releasePicturesRepository;
   final ReleasePropertiesRepository releasePropertiesRepository;
@@ -114,6 +118,11 @@ class ReleaseService {
   }
 
   Future<int> delete(int id) async {
+    // delete first related pictures
+    final releasePictures = await releasePicturesRepository.getByReleaseId(id);
+    final filenames = releasePictures.map((e) => e.filename).toList();
+    deleteFiles(filenames, saveDir);
+    // then delete the release and related entities
     return await releaseRepository.delete(id);
   }
 
