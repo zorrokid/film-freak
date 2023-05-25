@@ -1,5 +1,3 @@
-import 'package:film_freak/services/collection_item_service.dart';
-import 'package:film_freak/services/release_service.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import '../../services/file_importer.dart';
@@ -24,10 +22,7 @@ class ImportView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MainDrawer(
-        releaseService: initializeReleaseService(),
-        collectionItemService: initializeCollectionItemService(),
-      ),
+      drawer: const MainDrawer(),
       appBar: AppBar(title: const Text('Import')),
       body: Column(
         children: [

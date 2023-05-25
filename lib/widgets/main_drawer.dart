@@ -6,21 +6,13 @@ import 'package:provider/provider.dart';
 import '../bloc/user_bloc.dart';
 import '../bloc/user_state.dart';
 import '../screens/log_in/view/log_in_page.dart';
-import '/services/collection_item_service.dart';
-import '/services/release_service.dart';
 import '/widgets/confirm_dialog.dart';
 import '/persistence/db_provider.dart';
 import '/persistence/app_state.dart';
 import '/screens/view_about/about_view.dart';
 
 class MainDrawer extends StatefulWidget {
-  final ReleaseService releaseService;
-  final CollectionItemService collectionItemService;
-  const MainDrawer({
-    super.key,
-    required this.releaseService,
-    required this.collectionItemService,
-  });
+  const MainDrawer({super.key});
 
   @override
   State<StatefulWidget> createState() {
