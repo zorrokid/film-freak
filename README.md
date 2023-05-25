@@ -91,3 +91,13 @@ To build, install and run this app you need to (more comprehensive instructions 
 - [Install Firebase related tools and register app to a Firebase account](https://firebase.google.com/docs/flutter/setup?platform=android)
 - [Install to your device](https://docs.flutter.dev/deployment/android#install-an-apk-on-a-device)
 - To run unit tests sqlite3 development libraries have to be installed.
+
+## Tests
+
+My goal is to test especially blocs. Unit tests can be found under test-folder and can be run with:
+
+    flutter test
+
+To update mockito-mocks:
+
+    dart run build_runner build
