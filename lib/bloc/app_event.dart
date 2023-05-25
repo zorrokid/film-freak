@@ -10,3 +10,17 @@ class GetSqliteVersion extends AppEvent {
   @override
   List<Object?> get props => [];
 }
+
+class GetReleaseCount extends AppEvent {
+  const GetReleaseCount();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class GetCollectionItemCount extends AppEvent {
+  const GetCollectionItemCount();
+
+  @override
+  List<Object?> get props => [];
+}
