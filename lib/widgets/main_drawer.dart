@@ -30,7 +30,7 @@ class MainDrawer extends StatefulWidget {
 
 class _MainDrawerState extends State<MainDrawer> {
   Future<void> _showDeleteConfirmDialog(
-      BuildContext context, AppState cart) async {
+      BuildContext context, AppStateOld cart) async {
     var okToDelete = await showDialog<bool>(
             context: context,
             builder: (BuildContext context) {
@@ -60,7 +60,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppState>(builder: (context, cart, child) {
+    return Consumer<AppStateOld>(builder: (context, cart, child) {
       return BlocBuilder<UserBloc, UserState>(builder: (context, state) {
         final userBloc = context.read<UserBloc>();
         return Drawer(

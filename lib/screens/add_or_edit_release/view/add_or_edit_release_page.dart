@@ -15,7 +15,7 @@ class AddOrEditReleasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppState>(builder: (context, appState, child) {
+    return Consumer<AppStateOld>(builder: (context, appState, child) {
       return BlocProvider(
         create: (_) {
           final bloc = AddOrEditReleaseBloc(

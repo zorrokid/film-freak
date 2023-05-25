@@ -45,7 +45,7 @@ class _CollectionItemScreenState extends State<CollectionItemScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppState>(builder: (context, appState, child) {
+    return Consumer<AppStateOld>(builder: (context, appState, child) {
       return FutureBuilder(
           future: _futureModel,
           builder: (BuildContext context,

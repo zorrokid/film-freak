@@ -3,8 +3,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import '../domain/entities/release.dart';
 
-class AppState extends ChangeNotifier {
-  AppState({required this.saveDir, required this.cameras});
+class AppStateOld extends ChangeNotifier {
+  AppStateOld({required this.saveDir, required this.cameras});
   final List<CameraDescription> cameras;
   final List<Release> _movieReleases = [];
   final String saveDir;

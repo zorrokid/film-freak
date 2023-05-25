@@ -13,7 +13,7 @@ class ReleaseView extends StatelessWidget {
   const ReleaseView({super.key});
 
   Widget buildContent(
-      BuildContext context, ReleaseViewState state, AppState appState) {
+      BuildContext context, ReleaseViewState state, AppStateOld appState) {
     switch (state.status) {
       case ReleaseViewStatus.initial:
       case ReleaseViewStatus.loading:
@@ -41,7 +41,7 @@ class ReleaseView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppState>(builder: (context, appState, child) {
+    return Consumer<AppStateOld>(builder: (context, appState, child) {
       return BlocConsumer<ReleaseViewBloc, ReleaseViewState>(
           listener: (context, state) {
         final bloc = context.read<ReleaseViewBloc>();

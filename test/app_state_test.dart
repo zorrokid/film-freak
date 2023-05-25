@@ -7,7 +7,7 @@ void main() {
   test(
       'Movie releases total count should increase by one after adding a movie release.',
       () {
-    final model = AppState(saveDir: '', cameras: []);
+    final model = AppStateOld(saveDir: '', cameras: []);
 
     model.addListener(() {
       expect(model.totalMovieReleases, 1);

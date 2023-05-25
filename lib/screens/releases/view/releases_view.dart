@@ -58,7 +58,7 @@ class ReleasesView extends StatelessWidget {
   }
 
   Widget buildContent(
-      BuildContext context, ReleasesState state, AppState appState) {
+      BuildContext context, ReleasesState state, AppStateOld appState) {
     switch (state.status) {
       case ReleasesStatus.loading:
         return const Spinner();
@@ -90,7 +90,7 @@ class ReleasesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppState>(builder: (context, appState, child) {
+    return Consumer<AppStateOld>(builder: (context, appState, child) {
       return BlocConsumer<ReleasesBloc, ReleasesState>(
           listener: releasesStateListener,
           builder: (context, state) {
