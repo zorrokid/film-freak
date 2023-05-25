@@ -24,3 +24,17 @@ class GetCollectionItemCount extends AppEvent {
   @override
   List<Object?> get props => [];
 }
+
+class GetSaveDirectory extends AppEvent {
+  const GetSaveDirectory();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class GetFileCount extends AppEvent {
+  const GetFileCount();
+
+  @override
+  List<Object?> get props => [];
+}

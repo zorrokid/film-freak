@@ -1,7 +1,6 @@
 import 'package:film_freak/bloc/app_bloc.dart';
 import 'package:film_freak/bloc/app_state.dart';
-import 'package:film_freak/services/collection_item_service.dart';
-import 'package:film_freak/services/release_service.dart';
+import 'package:film_freak/widgets/labelled_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/app_event.dart';
@@ -18,16 +17,14 @@ class AboutView extends StatelessWidget {
       appBloc.add(const GetSqliteVersion());
       appBloc.add(const GetReleaseCount());
       appBloc.add(const GetCollectionItemCount());
+      appBloc.add(const GetFileCount());
       return BlocBuilder<UserBloc, UserState>(
           builder: (context, userBlocState) {
         final loggedInTxt = userBlocState.status == UserStatus.loggedIn
             ? "Logged in"
             : "Not logged in";
         return Scaffold(
-          drawer: MainDrawer(
-            releaseService: initializeReleaseService(),
-            collectionItemService: initializeCollectionItemService(),
-          ),
+          drawer: const MainDrawer(),
           appBar: AppBar(
             title: const Text('About film_freak'),
           ),
@@ -45,6 +42,9 @@ class AboutView extends StatelessWidget {
                 child: Text(
                     'Collection item count: ${appState.collectionItemCount}'),
               ),
+              LabelledText(
+                  label: 'Files in save folder:',
+                  value: appState.fileCount.toString()),
             ],
           ),
         );
