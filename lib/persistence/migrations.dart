@@ -5,6 +5,7 @@ final migrationScripts = <int, String>{
           name TEXT, 
           barcode TEXT, 
           caseType INTEGER,
+          notes TEXT,
           createdTime DATETIME,
           modifiedTime DATETIME
       )''',

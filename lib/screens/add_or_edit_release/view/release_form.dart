@@ -238,7 +238,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
 
     Future<void> submit() async {
       if (!_formKey.currentState!.validate()) return;
-      bloc.add(Submit(context, _nameController.text, _barcodeController.text));
+      bloc.add(Submit(context, _nameController.text, _barcodeController.text,
+          _notesController.text));
     }
 
     void stateListener(BuildContext context, AddOrEditReleaseState state) {
@@ -259,6 +260,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
           final viewModel = state.viewModel!;
           _nameController.text = viewModel.release.name;
           _barcodeController.text = viewModel.release.barcode;
+          _notesController.text = viewModel.release.notes;
           break;
         case AddOrEditReleaseStatus.submitted:
           bloc.add(const DeletePics());

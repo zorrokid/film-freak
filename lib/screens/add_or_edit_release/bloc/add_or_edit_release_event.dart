@@ -84,12 +84,13 @@ class SetPrevPic extends AddOrEditReleaseEvent {
 }
 
 class Submit extends AddOrEditReleaseEvent {
-  const Submit(this.context, this.name, this.barcode);
+  const Submit(this.context, this.name, this.barcode, this.notes);
   final BuildContext context;
   final String name;
   final String barcode;
+  final String notes;
   @override
-  List<Object> get props => [context, name, barcode];
+  List<Object> get props => [context, name, barcode, notes];
 }
 
 class DeletePics extends AddOrEditReleaseEvent {
