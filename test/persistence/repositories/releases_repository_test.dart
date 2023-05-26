@@ -23,6 +23,7 @@ Future main() async {
         name: 'test',
         barcode: '',
         caseType: CaseType.regularDvd,
+        notes: 'test',
       ),
     );
 
@@ -39,6 +40,7 @@ Future main() async {
         name: 'test2',
         barcode: '',
         caseType: CaseType.regularDvd,
+        notes: 'test',
       ),
     ));
     ids.add(await repository.insert(
@@ -46,6 +48,7 @@ Future main() async {
         name: 'test1',
         barcode: '',
         caseType: CaseType.regularDvd,
+        notes: 'test',
       ),
     ));
     final result = await repository.getByIds(ids);

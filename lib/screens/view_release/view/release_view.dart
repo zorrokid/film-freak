@@ -14,6 +14,7 @@ class ReleaseView extends StatelessWidget {
 
   Widget buildContent(
       BuildContext context, ReleaseViewState state, AppStateOld appState) {
+    final bloc = context.read<ReleaseViewBloc>();
     switch (state.status) {
       case ReleaseViewStatus.initial:
       case ReleaseViewStatus.loading:
@@ -29,10 +30,12 @@ class ReleaseView extends StatelessWidget {
             ReleaseDataCards(
               saveDir: appState.saveDir,
               viewModel: state.release!,
-              onCollectionItemEdit: (collectionItemId) => context
-                  .read<ReleaseViewBloc>()
-                  .add(EditCollectionItem(
-                      context, collectionItemId, state.releaseId)),
+              onCollectionItemEdit: (collectionItemId) => bloc.add(
+                EditCollectionItem(context, collectionItemId, state.releaseId),
+              ),
+              onCollectionItemDelete: (collectionItemId) => bloc.add(
+                DeleteCollectionItem(context, collectionItemId),
+              ),
             ),
           ],
         );
@@ -45,7 +48,8 @@ class ReleaseView extends StatelessWidget {
       return BlocConsumer<ReleaseViewBloc, ReleaseViewState>(
           listener: (context, state) {
         final bloc = context.read<ReleaseViewBloc>();
-        if (state.status == ReleaseViewStatus.collectionItemEdited) {
+        if (state.status == ReleaseViewStatus.collectionItemEdited ||
+            state.status == ReleaseViewStatus.collectionItemDeleted) {
           bloc.add(LoadRelease(state.releaseId));
         }
       }, builder: (context, state) {

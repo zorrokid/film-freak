@@ -75,6 +75,11 @@ class _CollectionItemScreenState extends State<CollectionItemScreen> {
               });
             }
 
+            Future<void> delete() async {
+              await widget.collectionItemService.delete(_id!);
+              if (context.mounted) Navigator.pop(context);
+            }
+
             return Scaffold(
               appBar: AppBar(title: Text(viewModel.releaseModel.release.name)),
               body: ListView(
@@ -85,6 +90,7 @@ class _CollectionItemScreenState extends State<CollectionItemScreen> {
                     saveDir: appState.saveDir,
                     viewModel: viewModel.releaseModel,
                     onCollectionItemEdit: (collectionItemId) => edit(),
+                    onCollectionItemDelete: (collectionItemId) => delete(),
                   ),
                   CollectionItemDetailsCard(collectionItemViewModel: viewModel)
                 ],
