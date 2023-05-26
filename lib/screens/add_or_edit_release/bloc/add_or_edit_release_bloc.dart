@@ -71,6 +71,7 @@ class AddOrEditReleaseBloc
       name: event.name,
       barcode: event.barcode,
       caseType: state.caseType,
+      notes: event.notes,
     );
 
     final model = ReleaseViewModel(
