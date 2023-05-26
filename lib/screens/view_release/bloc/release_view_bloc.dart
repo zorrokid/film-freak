@@ -2,19 +2,24 @@ import 'package:film_freak/screens/add_or_edit_release/view/add_or_edit_release_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../services/collection_item_service.dart';
 import '../../../services/release_service.dart';
 import '../../add_or_edit_collection_item/view/add_or_edit_collection_item_page.dart';
 import 'release_view_event.dart';
 import 'release_view_state.dart';
 
 class ReleaseViewBloc extends Bloc<ReleaseViewEvent, ReleaseViewState> {
-  ReleaseViewBloc({required this.releaseService})
-      : super(const ReleaseViewState()) {
+  ReleaseViewBloc({
+    required this.releaseService,
+    required this.collectionItemService,
+  }) : super(const ReleaseViewState()) {
     on<LoadRelease>(_loadRelease);
     on<EditRelease>(_editRelease);
     on<EditCollectionItem>(_editCollectionItem);
+    on<DeleteCollectionItem>(_deleteCollectionItem);
   }
   final ReleaseService releaseService;
+  final CollectionItemService collectionItemService;
 
   Future<void> _loadRelease(
     LoadRelease event,
@@ -55,5 +60,13 @@ class ReleaseViewBloc extends Bloc<ReleaseViewEvent, ReleaseViewState> {
       ),
     );
     emit(state.copyWith(status: ReleaseViewStatus.collectionItemEdited));
+  }
+
+  Future<void> _deleteCollectionItem(
+    DeleteCollectionItem event,
+    Emitter<ReleaseViewState> emit,
+  ) async {
+    await collectionItemService.delete(event.collectionItemId);
+    emit(state.copyWith(status: ReleaseViewStatus.collectionItemDeleted));
   }
 }

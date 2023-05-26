@@ -11,11 +11,13 @@ class ReleaseDataCards extends StatelessWidget {
   final ReleaseViewModel viewModel;
   final String saveDir;
   final OnCollectionItemEdit onCollectionItemEdit;
+  final OnCollectionItemDelete onCollectionItemDelete;
   const ReleaseDataCards({
     super.key,
     required this.viewModel,
     required this.saveDir,
     required this.onCollectionItemEdit,
+    required this.onCollectionItemDelete,
   });
 
   @override
@@ -61,6 +63,7 @@ class ReleaseDataCards extends StatelessWidget {
                 CollectionItemCard(
                   collectionItem: collectionItems[index],
                   onEdit: onCollectionItemEdit,
+                  onDelete: onCollectionItemDelete,
                 ),
               ],
             );

@@ -34,3 +34,14 @@ class EditCollectionItem extends ReleaseViewEvent {
   @override
   List<Object> get props => [context, collectionItemId, releaseId];
 }
+
+class DeleteCollectionItem extends ReleaseViewEvent {
+  const DeleteCollectionItem(
+    this.context,
+    this.collectionItemId,
+  );
+  final BuildContext context;
+  final int collectionItemId;
+  @override
+  List<Object> get props => [context, collectionItemId];
+}
