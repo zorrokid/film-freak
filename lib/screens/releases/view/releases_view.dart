@@ -28,10 +28,11 @@ class ReleasesView extends StatelessWidget {
           }
         }
         break;
-      case ReleasesStatus.initialized: // fall through
-      case ReleasesStatus.releaseAdded: // fall through
-      case ReleasesStatus.releaseEdited: // fall through
+      case ReleasesStatus.initialized:
         bloc.add(GetReleases(state.querySpecs));
+        break;
+      case ReleasesStatus.releaseAdded:
+        bloc.add(ViewRelease(context, state.releaseId!));
         break;
       case ReleasesStatus.deleteConfirmed:
         bloc.add(DeleteRelease(state.releaseId!));

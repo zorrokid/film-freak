@@ -22,6 +22,7 @@ class ReleaseView extends StatelessWidget {
       case ReleaseViewStatus.loadFailed:
         return ErrorDisplayWidget(state.error);
       case ReleaseViewStatus.loaded:
+      case ReleaseViewStatus.edited:
       default:
         return ListView(
           padding:
@@ -48,7 +49,8 @@ class ReleaseView extends StatelessWidget {
       return BlocConsumer<ReleaseViewBloc, ReleaseViewState>(
           listener: (context, state) {
         final bloc = context.read<ReleaseViewBloc>();
-        if (state.status == ReleaseViewStatus.collectionItemEdited ||
+        if (state.status == ReleaseViewStatus.edited ||
+            state.status == ReleaseViewStatus.collectionItemEdited ||
             state.status == ReleaseViewStatus.collectionItemDeleted) {
           bloc.add(LoadRelease(state.releaseId));
         }

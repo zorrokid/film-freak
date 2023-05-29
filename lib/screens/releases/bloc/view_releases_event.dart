@@ -97,3 +97,12 @@ class ViewRelease extends ReleasesEvent {
   @override
   List<Object> get props => [context, releaseId];
 }
+
+class ReloadRelease extends ReleasesEvent {
+  const ReloadRelease(
+    this.releaseId,
+  );
+  final int releaseId;
+  @override
+  List<Object> get props => [releaseId];
+}
