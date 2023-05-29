@@ -35,6 +35,7 @@ class ReleaseViewBloc extends Bloc<ReleaseViewEvent, ReleaseViewState> {
     EditRelease event,
     Emitter<ReleaseViewState> emit,
   ) async {
+    emit(state.copyWith(status: ReleaseViewStatus.startEditing));
     await Navigator.push(
       event.context,
       MaterialPageRoute(

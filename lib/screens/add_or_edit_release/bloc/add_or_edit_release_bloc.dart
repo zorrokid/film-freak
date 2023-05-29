@@ -38,7 +38,6 @@ class AddOrEditReleaseBloc
     on<SetNextPic>(_onSetNextPic);
     on<SetPrevPic>(_onSetPrevPic);
     on<Submit>(_onSubmit);
-    on<DeletePics>(_onDeletePics);
     on<CropPic>(_onCropPic);
     on<SelectProperties>(_onSelectProperties);
     on<SearchProduction>(_onSearchProduction);
@@ -94,6 +93,12 @@ class AddOrEditReleaseBloc
 
     final id = await releaseService.upsert(model);
     model.release.id = id;
+
+    for (final picToDelete in state.picturesToDelete) {
+      final imagePath = p.join(state.saveDir, picToDelete.filename);
+      final imageFile = File(imagePath);
+      await imageFile.delete();
+    }
 
     emit(state.copyWith(
       status: AddOrEditReleaseStatus.submitted,
@@ -210,20 +215,6 @@ class AddOrEditReleaseBloc
     emit(state.copyWith(
       status: AddOrEditReleaseStatus.edit,
       selectedPicIndex: state.selectedPicIndex - 1,
-    ));
-  }
-
-  Future<void> _onDeletePics(
-    DeletePics event,
-    Emitter<AddOrEditReleaseState> emit,
-  ) async {
-    for (final picToDelete in state.picturesToDelete) {
-      final imagePath = p.join(state.saveDir, picToDelete.filename);
-      final imageFile = File(imagePath);
-      await imageFile.delete();
-    }
-    emit(state.copyWith(
-      status: AddOrEditReleaseStatus.picsDeleted,
     ));
   }
 

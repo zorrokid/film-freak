@@ -1,3 +1,4 @@
+import 'package:film_freak/persistence/query_specs/release_query_specs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -84,14 +85,24 @@ class ReleasesBloc extends Bloc<ReleasesEvent, ReleasesState> {
     AddRelease event,
     Emitter<ReleasesState> emit,
   ) async {
-    final route = MaterialPageRoute<String>(builder: (context) {
+    final route = MaterialPageRoute<int>(builder: (context) {
       return AddOrEditReleasePage(
         barcode: event.barcode,
       );
     });
 
-    await Navigator.push(event.context, route);
-    emit(state.copyWith(status: ReleasesStatus.releaseAdded));
+    final releaseId = await Navigator.push(event.context, route);
+
+    if (releaseId == null) {
+      emit(state.copyWith(
+        status: ReleasesStatus.failure,
+        error: 'Adding release failed',
+      ));
+      return;
+    }
+
+    emit(state.copyWith(
+        status: ReleasesStatus.releaseAdded, releaseId: releaseId));
   }
 
   Future<void> _onCreateCollectionItem(
@@ -144,7 +155,23 @@ class ReleasesBloc extends Bloc<ReleasesEvent, ReleasesState> {
         );
       },
     ));
-    emit(state.copyWith(status: ReleasesStatus.releaseEdited));
+
+    // reload and replace the edited release
+    final querySpecs = ReleaseQuerySpecs(
+      ids: [event.releaseId],
+    );
+    final release = await releaseService.getListModels(filter: querySpecs);
+    final releaseInList = state.items.singleWhere(
+      (element) => element.id == event.releaseId,
+    );
+    final index = state.items.indexOf(releaseInList);
+    final releases = [...state.items];
+    releases[index] = release.single;
+
+    emit(state.copyWith(
+      status: ReleasesStatus.loaded,
+      items: releases,
+    ));
   }
 
   Future<void> _onViewRelease(

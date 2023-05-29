@@ -263,10 +263,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
           _notesController.text = viewModel.release.notes;
           break;
         case AddOrEditReleaseStatus.submitted:
-          bloc.add(const DeletePics());
-          break;
-        case AddOrEditReleaseStatus.picsDeleted:
-          Navigator.pop(context);
+          // Note: if editing a release we can return to either list view or release view.
+          // In both cases we need to pass the release id and update the release in calling view.
+          // When adding a release, we can only return to the list view.
+          Navigator.pop(context, state.viewModel!.release.id);
           break;
         case AddOrEditReleaseStatus.imageCropped:
           // TODO are these both needed and is there another way to refresh the image?

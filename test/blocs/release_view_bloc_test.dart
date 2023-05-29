@@ -9,6 +9,7 @@ import 'package:film_freak/models/release_view_model.dart';
 import 'package:film_freak/screens/view_release/bloc/release_view_bloc.dart';
 import 'package:film_freak/screens/view_release/bloc/release_view_event.dart';
 import 'package:film_freak/screens/view_release/bloc/release_view_state.dart';
+import 'package:film_freak/services/collection_item_service.dart';
 import 'package:film_freak/services/release_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -17,10 +18,12 @@ import 'package:bloc_test/bloc_test.dart';
 import 'release_view_bloc_test.mocks.dart';
 
 @GenerateMocks([ReleaseService])
+@GenerateMocks([CollectionItemService])
 void main() {
   group('ReleaseViewBloc', () {
     late ReleaseViewBloc releaseViewBloc;
     late MockReleaseService releaseService;
+    late CollectionItemService collectionItemService;
 
     Release release = Release.empty();
     release.id = 1;
@@ -36,7 +39,11 @@ void main() {
 
     setUp(() {
       releaseService = MockReleaseService();
-      releaseViewBloc = ReleaseViewBloc(releaseService: releaseService);
+      collectionItemService = MockCollectionItemService();
+      releaseViewBloc = ReleaseViewBloc(
+        releaseService: releaseService,
+        collectionItemService: collectionItemService,
+      );
     });
 
     test('initial state status is initial', () {

@@ -27,6 +27,10 @@ class QueryHelper {
       whereArgs.add(filter.barcode!);
     }
 
+    if (filter.ids.isNotEmpty) {
+      whereConditions.add('id IN (${filter.ids.join(', ')})');
+    }
+
     if (whereConditions.isEmpty) {
       return const Tuple2(null, null);
     }

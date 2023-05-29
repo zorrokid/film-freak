@@ -93,10 +93,6 @@ class Submit extends AddOrEditReleaseEvent {
   List<Object> get props => [context, name, barcode, notes];
 }
 
-class DeletePics extends AddOrEditReleaseEvent {
-  const DeletePics();
-}
-
 class CropPic extends AddOrEditReleaseEvent {
   const CropPic(this.context);
   final BuildContext context;

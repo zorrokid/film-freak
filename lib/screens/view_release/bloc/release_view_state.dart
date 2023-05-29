@@ -7,6 +7,7 @@ enum ReleaseViewStatus {
   loading,
   loaded,
   loadFailed,
+  startEditing,
   edited,
   collectionItemEdited,
   collectionItemDeleted,

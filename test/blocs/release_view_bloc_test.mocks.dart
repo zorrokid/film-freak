@@ -3,15 +3,25 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i12;
+import 'dart:async' as _i18;
 
-import 'package:film_freak/domain/entities/production.dart' as _i17;
-import 'package:film_freak/domain/entities/release_picture.dart' as _i15;
-import 'package:film_freak/domain/enums/media_type.dart' as _i16;
-import 'package:film_freak/models/list_models/release_list_model.dart' as _i13;
+import 'package:film_freak/domain/entities/collection_item.dart' as _i17;
+import 'package:film_freak/domain/entities/production.dart' as _i23;
+import 'package:film_freak/domain/entities/release_picture.dart' as _i21;
+import 'package:film_freak/domain/enums/media_type.dart' as _i22;
+import 'package:film_freak/models/collection_item_edit_view_model.dart' as _i16;
+import 'package:film_freak/models/collection_item_save_model.dart' as _i25;
+import 'package:film_freak/models/collection_item_view_model.dart' as _i15;
+import 'package:film_freak/models/list_models/release_list_model.dart' as _i19;
 import 'package:film_freak/models/release_view_model.dart' as _i10;
 import 'package:film_freak/persistence/query_specs/release_query_specs.dart'
-    as _i14;
+    as _i20;
+import 'package:film_freak/persistence/repositories/collection_item_comments_repository.dart'
+    as _i11;
+import 'package:film_freak/persistence/repositories/collection_item_media_repository.dart'
+    as _i13;
+import 'package:film_freak/persistence/repositories/collection_item_properties_repository.dart'
+    as _i12;
 import 'package:film_freak/persistence/repositories/collection_items_repository.dart'
     as _i9;
 import 'package:film_freak/persistence/repositories/release_comments_repository.dart'
@@ -24,8 +34,9 @@ import 'package:film_freak/persistence/repositories/release_properties_repositor
     as _i5;
 import 'package:film_freak/persistence/repositories/releases_repository.dart'
     as _i3;
+import 'package:film_freak/services/collection_item_service.dart' as _i24;
 import 'package:film_freak/services/production_service.dart' as _i6;
-import 'package:film_freak/services/release_service.dart' as _i11;
+import 'package:film_freak/services/release_service.dart' as _i14;
 import 'package:logging/logging.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -138,10 +149,87 @@ class _FakeReleaseViewModel_8 extends _i1.SmartFake
         );
 }
 
+class _FakeCollectionItemCommentsRepository_9 extends _i1.SmartFake
+    implements _i11.CollectionItemCommentsRepository {
+  _FakeCollectionItemCommentsRepository_9(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeCollectionItemPropertiesRepository_10 extends _i1.SmartFake
+    implements _i12.CollectionItemPropertiesRepository {
+  _FakeCollectionItemPropertiesRepository_10(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeCollectionItemMediaRepository_11 extends _i1.SmartFake
+    implements _i13.CollectionItemMediaRepository {
+  _FakeCollectionItemMediaRepository_11(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeReleaseService_12 extends _i1.SmartFake
+    implements _i14.ReleaseService {
+  _FakeReleaseService_12(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeCollectionItemViewModel_13 extends _i1.SmartFake
+    implements _i15.CollectionItemViewModel {
+  _FakeCollectionItemViewModel_13(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeCollectionItemEditViewModel_14 extends _i1.SmartFake
+    implements _i16.CollectionItemEditViewModel {
+  _FakeCollectionItemEditViewModel_14(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeCollectionItem_15 extends _i1.SmartFake
+    implements _i17.CollectionItem {
+  _FakeCollectionItem_15(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [ReleaseService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockReleaseService extends _i1.Mock implements _i11.ReleaseService {
+class MockReleaseService extends _i1.Mock implements _i14.ReleaseService {
   MockReleaseService() {
     _i1.throwOnMissingStub(this);
   }
@@ -235,89 +323,243 @@ class MockReleaseService extends _i1.Mock implements _i11.ReleaseService {
         ),
       ) as _i10.ReleaseViewModel);
   @override
-  _i12.Future<_i10.ReleaseViewModel> getModel(int? releaseId) =>
+  _i18.Future<_i10.ReleaseViewModel> getModel(int? releaseId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getModel,
           [releaseId],
         ),
         returnValue:
-            _i12.Future<_i10.ReleaseViewModel>.value(_FakeReleaseViewModel_8(
+            _i18.Future<_i10.ReleaseViewModel>.value(_FakeReleaseViewModel_8(
           this,
           Invocation.method(
             #getModel,
             [releaseId],
           ),
         )),
-      ) as _i12.Future<_i10.ReleaseViewModel>);
+      ) as _i18.Future<_i10.ReleaseViewModel>);
   @override
-  _i12.Future<int> upsert(_i10.ReleaseViewModel? viewModel) =>
+  _i18.Future<int> upsert(_i10.ReleaseViewModel? viewModel) =>
       (super.noSuchMethod(
         Invocation.method(
           #upsert,
           [viewModel],
         ),
-        returnValue: _i12.Future<int>.value(0),
-      ) as _i12.Future<int>);
+        returnValue: _i18.Future<int>.value(0),
+      ) as _i18.Future<int>);
   @override
-  _i12.Future<bool> barcodeExists(String? barcode) => (super.noSuchMethod(
+  _i18.Future<bool> barcodeExists(String? barcode) => (super.noSuchMethod(
         Invocation.method(
           #barcodeExists,
           [barcode],
         ),
-        returnValue: _i12.Future<bool>.value(false),
-      ) as _i12.Future<bool>);
+        returnValue: _i18.Future<bool>.value(false),
+      ) as _i18.Future<bool>);
   @override
-  _i12.Future<int> delete(int? id) => (super.noSuchMethod(
+  _i18.Future<int> delete(int? id) => (super.noSuchMethod(
         Invocation.method(
           #delete,
           [id],
         ),
-        returnValue: _i12.Future<int>.value(0),
-      ) as _i12.Future<int>);
+        returnValue: _i18.Future<int>.value(0),
+      ) as _i18.Future<int>);
   @override
-  _i12.Future<Iterable<_i13.ReleaseListModel>> getListModels(
-          {_i14.ReleaseQuerySpecs? filter}) =>
+  _i18.Future<Iterable<_i19.ReleaseListModel>> getListModels(
+          {_i20.ReleaseQuerySpecs? filter}) =>
       (super.noSuchMethod(
         Invocation.method(
           #getListModels,
           [],
           {#filter: filter},
         ),
-        returnValue: _i12.Future<Iterable<_i13.ReleaseListModel>>.value(
-            <_i13.ReleaseListModel>[]),
-      ) as _i12.Future<Iterable<_i13.ReleaseListModel>>);
+        returnValue: _i18.Future<Iterable<_i19.ReleaseListModel>>.value(
+            <_i19.ReleaseListModel>[]),
+      ) as _i18.Future<Iterable<_i19.ReleaseListModel>>);
   @override
-  _i12.Future<Map<int, List<_i15.ReleasePicture>>> getPicsByReleaseMap(
+  _i18.Future<Map<int, List<_i21.ReleasePicture>>> getPicsByReleaseMap(
           Iterable<int>? releaseIds) =>
       (super.noSuchMethod(
         Invocation.method(
           #getPicsByReleaseMap,
           [releaseIds],
         ),
-        returnValue: _i12.Future<Map<int, List<_i15.ReleasePicture>>>.value(
-            <int, List<_i15.ReleasePicture>>{}),
-      ) as _i12.Future<Map<int, List<_i15.ReleasePicture>>>);
+        returnValue: _i18.Future<Map<int, List<_i21.ReleasePicture>>>.value(
+            <int, List<_i21.ReleasePicture>>{}),
+      ) as _i18.Future<Map<int, List<_i21.ReleasePicture>>>);
   @override
-  _i12.Future<Map<int, Set<_i16.MediaType>>> getMediaTypesByReleaseMap(
+  _i18.Future<Map<int, Set<_i22.MediaType>>> getMediaTypesByReleaseMap(
           Iterable<int>? releaseIds) =>
       (super.noSuchMethod(
         Invocation.method(
           #getMediaTypesByReleaseMap,
           [releaseIds],
         ),
-        returnValue: _i12.Future<Map<int, Set<_i16.MediaType>>>.value(
-            <int, Set<_i16.MediaType>>{}),
-      ) as _i12.Future<Map<int, Set<_i16.MediaType>>>);
+        returnValue: _i18.Future<Map<int, Set<_i22.MediaType>>>.value(
+            <int, Set<_i22.MediaType>>{}),
+      ) as _i18.Future<Map<int, Set<_i22.MediaType>>>);
   @override
-  _i12.Future<Map<int, List<_i17.Production>>> getProductionsByReleaseMap(
+  _i18.Future<Map<int, List<_i23.Production>>> getProductionsByReleaseMap(
           Iterable<int>? releaseIds) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProductionsByReleaseMap,
           [releaseIds],
         ),
-        returnValue: _i12.Future<Map<int, List<_i17.Production>>>.value(
-            <int, List<_i17.Production>>{}),
-      ) as _i12.Future<Map<int, List<_i17.Production>>>);
+        returnValue: _i18.Future<Map<int, List<_i23.Production>>>.value(
+            <int, List<_i23.Production>>{}),
+      ) as _i18.Future<Map<int, List<_i23.Production>>>);
+}
+
+/// A class which mocks [CollectionItemService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockCollectionItemService extends _i1.Mock
+    implements _i24.CollectionItemService {
+  MockCollectionItemService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.Logger get log => (super.noSuchMethod(
+        Invocation.getter(#log),
+        returnValue: _FakeLogger_0(
+          this,
+          Invocation.getter(#log),
+        ),
+      ) as _i2.Logger);
+  @override
+  _i9.CollectionItemsRepository get collectionItemRepository =>
+      (super.noSuchMethod(
+        Invocation.getter(#collectionItemRepository),
+        returnValue: _FakeCollectionItemsRepository_7(
+          this,
+          Invocation.getter(#collectionItemRepository),
+        ),
+      ) as _i9.CollectionItemsRepository);
+  @override
+  _i11.CollectionItemCommentsRepository get collectionItemCommentsRepository =>
+      (super.noSuchMethod(
+        Invocation.getter(#collectionItemCommentsRepository),
+        returnValue: _FakeCollectionItemCommentsRepository_9(
+          this,
+          Invocation.getter(#collectionItemCommentsRepository),
+        ),
+      ) as _i11.CollectionItemCommentsRepository);
+  @override
+  _i12.CollectionItemPropertiesRepository
+      get collectionItemPropertiesRepository => (super.noSuchMethod(
+            Invocation.getter(#collectionItemPropertiesRepository),
+            returnValue: _FakeCollectionItemPropertiesRepository_10(
+              this,
+              Invocation.getter(#collectionItemPropertiesRepository),
+            ),
+          ) as _i12.CollectionItemPropertiesRepository);
+  @override
+  _i13.CollectionItemMediaRepository get collectionItemMediaRepository =>
+      (super.noSuchMethod(
+        Invocation.getter(#collectionItemMediaRepository),
+        returnValue: _FakeCollectionItemMediaRepository_11(
+          this,
+          Invocation.getter(#collectionItemMediaRepository),
+        ),
+      ) as _i13.CollectionItemMediaRepository);
+  @override
+  _i7.ReleaseMediasRepository get releaseMediasRepository =>
+      (super.noSuchMethod(
+        Invocation.getter(#releaseMediasRepository),
+        returnValue: _FakeReleaseMediasRepository_5(
+          this,
+          Invocation.getter(#releaseMediasRepository),
+        ),
+      ) as _i7.ReleaseMediasRepository);
+  @override
+  _i14.ReleaseService get releaseService => (super.noSuchMethod(
+        Invocation.getter(#releaseService),
+        returnValue: _FakeReleaseService_12(
+          this,
+          Invocation.getter(#releaseService),
+        ),
+      ) as _i14.ReleaseService);
+  @override
+  _i18.Future<_i15.CollectionItemViewModel> getModel(int? id) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getModel,
+          [id],
+        ),
+        returnValue: _i18.Future<_i15.CollectionItemViewModel>.value(
+            _FakeCollectionItemViewModel_13(
+          this,
+          Invocation.method(
+            #getModel,
+            [id],
+          ),
+        )),
+      ) as _i18.Future<_i15.CollectionItemViewModel>);
+  @override
+  _i18.Future<_i16.CollectionItemEditViewModel> getEditModel(
+          int? collectionItemId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getEditModel,
+          [collectionItemId],
+        ),
+        returnValue: _i18.Future<_i16.CollectionItemEditViewModel>.value(
+            _FakeCollectionItemEditViewModel_14(
+          this,
+          Invocation.method(
+            #getEditModel,
+            [collectionItemId],
+          ),
+        )),
+      ) as _i18.Future<_i16.CollectionItemEditViewModel>);
+  @override
+  _i18.Future<_i16.CollectionItemEditViewModel> initializeAddModel(
+          int? releaseId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #initializeAddModel,
+          [releaseId],
+        ),
+        returnValue: _i18.Future<_i16.CollectionItemEditViewModel>.value(
+            _FakeCollectionItemEditViewModel_14(
+          this,
+          Invocation.method(
+            #initializeAddModel,
+            [releaseId],
+          ),
+        )),
+      ) as _i18.Future<_i16.CollectionItemEditViewModel>);
+  @override
+  _i18.Future<_i17.CollectionItem> get(int? id) => (super.noSuchMethod(
+        Invocation.method(
+          #get,
+          [id],
+        ),
+        returnValue:
+            _i18.Future<_i17.CollectionItem>.value(_FakeCollectionItem_15(
+          this,
+          Invocation.method(
+            #get,
+            [id],
+          ),
+        )),
+      ) as _i18.Future<_i17.CollectionItem>);
+  @override
+  _i18.Future<int> upsert(_i25.CollectionItemSaveModel? saveModel) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #upsert,
+          [saveModel],
+        ),
+        returnValue: _i18.Future<int>.value(0),
+      ) as _i18.Future<int>);
+  @override
+  _i18.Future<int> delete(int? collectionItemId) => (super.noSuchMethod(
+        Invocation.method(
+          #delete,
+          [collectionItemId],
+        ),
+        returnValue: _i18.Future<int>.value(0),
+      ) as _i18.Future<int>);
 }
