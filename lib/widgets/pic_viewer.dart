@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
-import '../../domain/entities/release_picture.dart';
-import '../../domain/enums/picture_type.dart';
-import '../../widgets/preview_pic.dart';
+import '../domain/entities/release_picture.dart';
+import '../domain/enums/picture_type.dart';
+import 'preview_pic.dart';
 
 typedef OnSetSelectedPicIndex = void Function(int selectedPicIndex);
 

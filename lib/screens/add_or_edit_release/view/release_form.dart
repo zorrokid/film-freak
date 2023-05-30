@@ -1,4 +1,4 @@
-import 'package:film_freak/screens/add_or_edit_release/pic_viewer.dart';
+import 'package:film_freak/widgets/pic_viewer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
