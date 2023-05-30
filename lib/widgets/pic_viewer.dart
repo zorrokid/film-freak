@@ -52,15 +52,20 @@ class PicViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
-            width: 100,
-            child: selectedPicIndex > 0
-                ? PreviewPic(
-                    releasePicture: pictures[selectedPicIndex - 1],
-                    saveDirPath: saveDir,
-                    picTapped: prevPic,
-                  )
-                : null),
+        GestureDetector(
+          onPanEnd: (details) {
+            prevPic();
+          },
+          child: SizedBox(
+              width: 100,
+              child: selectedPicIndex > 0
+                  ? PreviewPic(
+                      releasePicture: pictures[selectedPicIndex - 1],
+                      saveDirPath: saveDir,
+                      picTapped: prevPic,
+                    )
+                  : null),
+        ),
         Expanded(
             child: Column(
           children: [
@@ -89,15 +94,20 @@ class PicViewer extends StatelessWidget {
                 : Container(),
           ],
         )),
-        SizedBox(
-          width: 100,
-          child: pictures.length > 1 && selectedPicIndex < pictures.length - 1
-              ? PreviewPic(
-                  releasePicture: pictures[selectedPicIndex + 1],
-                  saveDirPath: saveDir,
-                  picTapped: nextPic,
-                )
-              : null,
+        GestureDetector(
+          onPanEnd: (details) {
+            nextPic();
+          },
+          child: SizedBox(
+            width: 100,
+            child: pictures.length > 1 && selectedPicIndex < pictures.length - 1
+                ? PreviewPic(
+                    releasePicture: pictures[selectedPicIndex + 1],
+                    saveDirPath: saveDir,
+                    picTapped: nextPic,
+                  )
+                : null,
+          ),
         ),
       ],
     );
