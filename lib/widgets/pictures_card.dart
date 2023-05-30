@@ -36,7 +36,7 @@ class _PicturesCardState extends State<PicturesCard> {
               setSelectedPicIndex: (int index) => setState(() {
                     _selectedPicIndex = index;
                   }),
-              onPictureTypeChanged: (PictureType pictureType) {}),
+              onPictureTypeChanged: (PictureType? pictureType) {}),
           Row(
             children: [
               widget.pictures.isNotEmpty

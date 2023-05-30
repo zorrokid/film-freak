@@ -83,6 +83,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 bloc.add(SetSelectedPicIndex(index)),
             onPictureTypeChanged: (PictureType pictureType) =>
                 bloc.add(ChangePicType(pictureType)),
+            enableEditing: true,
           ),
           Row(children: [
             Expanded(

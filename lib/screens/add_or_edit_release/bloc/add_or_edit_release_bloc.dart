@@ -147,7 +147,7 @@ class AddOrEditReleaseBloc
     Emitter<AddOrEditReleaseState> emit,
   ) {
     emit(state.copyWith(
-        caseType: event.caseType, status: AddOrEditReleaseStatus.edit));
+        caseType: event.caseType, status: AddOrEditReleaseStatus.editDone));
   }
 
   void _onInitRelease(
@@ -191,10 +191,11 @@ class AddOrEditReleaseBloc
     ChangePicType event,
     Emitter<AddOrEditReleaseState> emit,
   ) {
+    emit(state.copyWith(status: AddOrEditReleaseStatus.editStart));
     final pictures = <ReleasePicture>[...state.pictures];
     pictures[state.selectedPicIndex].pictureType = event.pictureType;
     emit(state.copyWith(
-        status: AddOrEditReleaseStatus.edit, pictures: pictures));
+        status: AddOrEditReleaseStatus.editDone, pictures: pictures));
   }
 
   Future<void> _onCropPic(
