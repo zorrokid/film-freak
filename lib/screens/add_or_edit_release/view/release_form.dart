@@ -1,15 +1,14 @@
+import 'package:film_freak/screens/add_or_edit_release/pic_viewer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/enums/picture_type.dart';
 import '../../../widgets/error_display_widget.dart';
-import '../../../widgets/picture_type_selection.dart';
 import '../../../widgets/spinner.dart';
 import '../../../domain/enums/case_type.dart';
 import '../../../services/release_service.dart';
 import '../../../widgets/form/decorated_text_form_field.dart';
 import '../../../widgets/form/dropdown_form_field.dart';
-import '../../../widgets/preview_pic.dart';
 import '../../../widgets/release_properties.dart';
 import '../bloc/add_or_edit_release_bloc.dart';
 import '../bloc/add_or_edit_release_event.dart';
@@ -76,51 +75,21 @@ class _ReleaseFormState extends State<ReleaseForm> {
       key: _formKey,
       child: ListView(
         children: [
-          Row(
-            children: [
-              SizedBox(
-                  width: 100,
-                  child: state.selectedPicIndex > 0
-                      ? PreviewPic(
-                          releasePicture:
-                              state.pictures[state.selectedPicIndex - 1],
-                          saveDirPath: state.saveDir,
-                          picTapped: () => bloc.add(const SetPrevPic()),
-                        )
-                      : null),
-              Expanded(
-                child: state.pictures.isNotEmpty
-                    ? PictureTypeSelection(
-                        onValueChanged: (PictureType pictureType) =>
-                            bloc.add(ChangePicType(pictureType)),
-                        releasePicture: state.pictures[state.selectedPicIndex],
-                        saveDirPath: state.saveDir,
-                      )
-                    : const Icon(
-                        Icons.image,
-                        size: 200,
-                      ),
-              ),
-              SizedBox(
-                width: 100,
-                child: state.pictures.length > 1 &&
-                        state.selectedPicIndex < state.pictures.length - 1
-                    ? PreviewPic(
-                        releasePicture:
-                            state.pictures[state.selectedPicIndex + 1],
-                        saveDirPath: state.saveDir,
-                        picTapped: () => bloc.add(const SetNextPic()),
-                      )
-                    : null,
-              ),
-            ],
+          PicViewer(
+            selectedPicIndex: state.selectedPicIndex,
+            pictures: state.pictures,
+            saveDir: state.saveDir,
+            setSelectedPicIndex: (int index) =>
+                bloc.add(SetSelectedPicIndex(index)),
+            onPictureTypeChanged: (PictureType pictureType) =>
+                bloc.add(ChangePicType(pictureType)),
           ),
           Row(children: [
             Expanded(
-              child: state.pictures.isEmpty
-                  ? const Text('No pictures')
-                  : Text(
-                      '${state.selectedPicIndex + 1}/${state.pictures.length}'),
+              child: state.pictures.isNotEmpty
+                  ? Text(
+                      '${state.selectedPicIndex + 1}/${state.pictures.length}')
+                  : Container(),
             ),
             ReleasePictureDelete(onDelete: () => bloc.add(const RemovePic())),
             ReleasePictureCrop(onCropPressed: () => bloc.add(CropPic(context))),

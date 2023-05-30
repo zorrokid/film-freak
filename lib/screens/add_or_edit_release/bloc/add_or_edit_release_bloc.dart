@@ -35,8 +35,6 @@ class AddOrEditReleaseBloc
     on<ScanBarcode>(_onScanBarcode);
     on<GetImageText>(_onGetImageText);
     on<InitState>(_onInitState);
-    on<SetNextPic>(_onSetNextPic);
-    on<SetPrevPic>(_onSetPrevPic);
     on<Submit>(_onSubmit);
     on<CropPic>(_onCropPic);
     on<SelectProperties>(_onSelectProperties);
@@ -45,6 +43,7 @@ class AddOrEditReleaseBloc
     on<SelectPic>(_onSelectPic);
     on<RemovePic>(_onRemovePic);
     on<SelectMedia>(_onSelectMedia);
+    on<SetSelectedPicIndex>(_onSetSelectedPicIndex);
   }
 
   final ReleaseService releaseService;
@@ -198,26 +197,6 @@ class AddOrEditReleaseBloc
         status: AddOrEditReleaseStatus.edit, pictures: pictures));
   }
 
-  void _onSetNextPic(
-    SetNextPic event,
-    Emitter<AddOrEditReleaseState> emit,
-  ) {
-    emit(state.copyWith(
-      status: AddOrEditReleaseStatus.edit,
-      selectedPicIndex: state.selectedPicIndex + 1,
-    ));
-  }
-
-  void _onSetPrevPic(
-    SetPrevPic event,
-    Emitter<AddOrEditReleaseState> emit,
-  ) {
-    emit(state.copyWith(
-      status: AddOrEditReleaseStatus.edit,
-      selectedPicIndex: state.selectedPicIndex - 1,
-    ));
-  }
-
   Future<void> _onCropPic(
     CropPic event,
     Emitter<AddOrEditReleaseState> emit,
@@ -357,5 +336,14 @@ class AddOrEditReleaseBloc
         );
       },
     );
+  }
+
+  void _onSetSelectedPicIndex(
+    SetSelectedPicIndex event,
+    Emitter<AddOrEditReleaseState> emit,
+  ) {
+    emit(state.copyWith(
+      selectedPicIndex: event.selectedPicIndex,
+    ));
   }
 }

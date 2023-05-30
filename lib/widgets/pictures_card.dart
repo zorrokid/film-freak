@@ -66,7 +66,7 @@ class _PicturesCardState extends State<PicturesCard> {
                       )
                     : const Icon(
                         Icons.image,
-                        size: 200,
+                        size: 150,
                       ),
               ),
               Expanded(
@@ -84,9 +84,9 @@ class _PicturesCardState extends State<PicturesCard> {
           ),
           Row(
             children: [
-              widget.pictures.isEmpty
-                  ? const Text('No pictures')
-                  : Text('${_selectedPicIndex + 1}/${widget.pictures.length}'),
+              widget.pictures.isNotEmpty
+                  ? Text('${_selectedPicIndex + 1}/${widget.pictures.length}')
+                  : Container()
             ],
           ),
         ],

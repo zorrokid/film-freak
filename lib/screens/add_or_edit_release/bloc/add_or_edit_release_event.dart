@@ -75,14 +75,6 @@ class InitState extends AddOrEditReleaseEvent {
   List<Object> get props => [saveDir, id ?? 0, barcode ?? ''];
 }
 
-class SetNextPic extends AddOrEditReleaseEvent {
-  const SetNextPic();
-}
-
-class SetPrevPic extends AddOrEditReleaseEvent {
-  const SetPrevPic();
-}
-
 class Submit extends AddOrEditReleaseEvent {
   const Submit(this.context, this.name, this.barcode, this.notes);
   final BuildContext context;
@@ -138,4 +130,11 @@ class SelectMedia extends AddOrEditReleaseEvent {
   final BuildContext context;
   @override
   List<Object> get props => [context];
+}
+
+class SetSelectedPicIndex extends AddOrEditReleaseEvent {
+  const SetSelectedPicIndex(this.selectedPicIndex);
+  final int selectedPicIndex;
+  @override
+  List<Object> get props => [selectedPicIndex];
 }
