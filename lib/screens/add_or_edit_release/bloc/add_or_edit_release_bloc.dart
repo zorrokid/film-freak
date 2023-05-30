@@ -35,8 +35,6 @@ class AddOrEditReleaseBloc
     on<ScanBarcode>(_onScanBarcode);
     on<GetImageText>(_onGetImageText);
     on<InitState>(_onInitState);
-    on<SetNextPic>(_onSetNextPic);
-    on<SetPrevPic>(_onSetPrevPic);
     on<Submit>(_onSubmit);
     on<CropPic>(_onCropPic);
     on<SelectProperties>(_onSelectProperties);
@@ -45,6 +43,7 @@ class AddOrEditReleaseBloc
     on<SelectPic>(_onSelectPic);
     on<RemovePic>(_onRemovePic);
     on<SelectMedia>(_onSelectMedia);
+    on<SetSelectedPicIndex>(_onSetSelectedPicIndex);
   }
 
   final ReleaseService releaseService;
@@ -148,7 +147,7 @@ class AddOrEditReleaseBloc
     Emitter<AddOrEditReleaseState> emit,
   ) {
     emit(state.copyWith(
-        caseType: event.caseType, status: AddOrEditReleaseStatus.edit));
+        caseType: event.caseType, status: AddOrEditReleaseStatus.editDone));
   }
 
   void _onInitRelease(
@@ -192,30 +191,11 @@ class AddOrEditReleaseBloc
     ChangePicType event,
     Emitter<AddOrEditReleaseState> emit,
   ) {
+    emit(state.copyWith(status: AddOrEditReleaseStatus.editStart));
     final pictures = <ReleasePicture>[...state.pictures];
     pictures[state.selectedPicIndex].pictureType = event.pictureType;
     emit(state.copyWith(
-        status: AddOrEditReleaseStatus.edit, pictures: pictures));
-  }
-
-  void _onSetNextPic(
-    SetNextPic event,
-    Emitter<AddOrEditReleaseState> emit,
-  ) {
-    emit(state.copyWith(
-      status: AddOrEditReleaseStatus.edit,
-      selectedPicIndex: state.selectedPicIndex + 1,
-    ));
-  }
-
-  void _onSetPrevPic(
-    SetPrevPic event,
-    Emitter<AddOrEditReleaseState> emit,
-  ) {
-    emit(state.copyWith(
-      status: AddOrEditReleaseStatus.edit,
-      selectedPicIndex: state.selectedPicIndex - 1,
-    ));
+        status: AddOrEditReleaseStatus.editDone, pictures: pictures));
   }
 
   Future<void> _onCropPic(
@@ -357,5 +337,14 @@ class AddOrEditReleaseBloc
         );
       },
     );
+  }
+
+  void _onSetSelectedPicIndex(
+    SetSelectedPicIndex event,
+    Emitter<AddOrEditReleaseState> emit,
+  ) {
+    emit(state.copyWith(
+      selectedPicIndex: event.selectedPicIndex,
+    ));
   }
 }

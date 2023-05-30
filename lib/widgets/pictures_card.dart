@@ -1,6 +1,6 @@
+import 'package:film_freak/widgets/pic_viewer.dart';
 import 'package:flutter/material.dart';
-import '../widgets/picture_type_viewer.dart';
-import '../widgets/preview_pic.dart';
+import '../domain/enums/picture_type.dart';
 import '../domain/entities/release_picture.dart';
 
 class PicturesCard extends StatefulWidget {
@@ -24,69 +24,24 @@ class _PicturesCardState extends State<PicturesCard> {
     _selectedPicIndex = 0;
   }
 
-  void prevPic() {
-    if (_selectedPicIndex == 0) return;
-    setState(() {
-      _selectedPicIndex--;
-    });
-  }
-
-  void nextPic() {
-    if (_selectedPicIndex == widget.pictures.length - 1) {
-      return;
-    }
-    setState(() {
-      _selectedPicIndex++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
         children: [
+          PicViewer(
+              selectedPicIndex: _selectedPicIndex,
+              pictures: widget.pictures,
+              saveDir: widget.saveDir,
+              setSelectedPicIndex: (int index) => setState(() {
+                    _selectedPicIndex = index;
+                  }),
+              onPictureTypeChanged: (PictureType? pictureType) {}),
           Row(
             children: [
-              Expanded(
-                  flex: 1,
-                  child: _selectedPicIndex > 0
-                      ? PreviewPic(
-                          releasePicture:
-                              widget.pictures[_selectedPicIndex - 1],
-                          saveDirPath: widget.saveDir,
-                          picTapped: prevPic,
-                        )
-                      : Container()),
-              Expanded(
-                flex: 2,
-                child: widget.pictures.isNotEmpty
-                    ? PictureTypeViewer(
-                        releasePicture: widget.pictures[_selectedPicIndex],
-                        saveDirPath: widget.saveDir,
-                      )
-                    : const Icon(
-                        Icons.image,
-                        size: 200,
-                      ),
-              ),
-              Expanded(
-                flex: 1,
-                child: widget.pictures.length > 1 &&
-                        _selectedPicIndex < widget.pictures.length - 1
-                    ? PreviewPic(
-                        releasePicture: widget.pictures[_selectedPicIndex + 1],
-                        saveDirPath: widget.saveDir,
-                        picTapped: nextPic,
-                      )
-                    : Container(),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              widget.pictures.isEmpty
-                  ? const Text('No pictures')
-                  : Text('${_selectedPicIndex + 1}/${widget.pictures.length}'),
+              widget.pictures.isNotEmpty
+                  ? Text('${_selectedPicIndex + 1}/${widget.pictures.length}')
+                  : Container()
             ],
           ),
         ],
