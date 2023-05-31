@@ -38,3 +38,10 @@ class GetFileCount extends AppEvent {
   @override
   List<Object?> get props => [];
 }
+
+class ResetDb extends AppEvent {
+  const ResetDb();
+
+  @override
+  List<Object?> get props => [];
+}
