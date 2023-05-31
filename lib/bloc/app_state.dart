@@ -2,6 +2,12 @@ import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 
+enum AppStatus {
+  initial,
+  dbResetStart,
+  dbResetDone,
+}
+
 class AppState extends Equatable {
   const AppState({
     this.sqliteVersion = "",
@@ -9,12 +15,14 @@ class AppState extends Equatable {
     this.releaseCount = 0,
     this.fileCount = 0,
     this.saveDirectory,
+    this.status = AppStatus.initial,
   });
   final String sqliteVersion;
   final int collectionItemCount;
   final int releaseCount;
   final Directory? saveDirectory;
   final int fileCount;
+  final AppStatus status;
 
   AppState copyWith({
     String? sqliteVersion,
@@ -22,6 +30,7 @@ class AppState extends Equatable {
     int? releaseCount,
     Directory? saveDirectory,
     int? fileCount,
+    AppStatus? status,
   }) =>
       AppState(
         sqliteVersion: sqliteVersion ?? this.sqliteVersion,
@@ -29,6 +38,7 @@ class AppState extends Equatable {
         releaseCount: releaseCount ?? this.releaseCount,
         saveDirectory: saveDirectory ?? this.saveDirectory,
         fileCount: fileCount ?? this.fileCount,
+        status: status ?? this.status,
       );
   @override
   List<Object?> get props => [
@@ -37,5 +47,6 @@ class AppState extends Equatable {
         releaseCount,
         saveDirectory,
         fileCount,
+        status
       ];
 }

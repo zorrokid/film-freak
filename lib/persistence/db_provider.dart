@@ -63,14 +63,20 @@ class DatabaseProviderSqflite extends DatabaseProvider {
 
   @override
   Future<bool> truncateDb() async {
-    await _database?.close();
-    final path = join(await getDatabasesPath(), dbName);
-    final file = File(path);
-    if (await file.exists()) {
-      await file.delete();
-      _database = null;
-      return true;
+    if (_database == null) {
+      return false;
     }
-    return false;
+
+    final dbPath = await getDatabasesPath();
+    final dbExists = await databaseExists(join(dbPath, dbName));
+    if (!dbExists) {
+      return false;
+    }
+
+    await _database!.close();
+    _database = null;
+
+    await deleteDatabase(join(dbPath, dbName));
+    return true;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:film_freak/persistence/repositories/system_info_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../persistence/db_provider.dart';
 import '../utils/directory_utils.dart';
 import 'app_event.dart';
 import 'app_state.dart';
@@ -12,6 +13,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<GetCollectionItemCount>(_onGetCollectionItemCount);
     on<GetSaveDirectory>(_onGetSaveDirectory);
     on<GetFileCount>(_onGetFileCount);
+    on<ResetDb>(_onResetDb);
   }
   final SystemInfoRepository systemInfoRepository;
 
@@ -55,6 +57,18 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     final fileCount = saveDirectory.listSync(recursive: true).length;
     emit(state.copyWith(
       fileCount: fileCount,
+    ));
+  }
+
+  Future<void> _onResetDb(ResetDb event, Emitter<AppState> emit) async {
+    emit(state.copyWith(
+      status: AppStatus.dbResetStart,
+    ));
+    await DatabaseProviderSqflite.instance.truncateDb();
+    // trigger initialize by calling database getter
+    await DatabaseProviderSqflite.instance.database;
+    emit(state.copyWith(
+      status: AppStatus.dbResetDone,
     ));
   }
 }
