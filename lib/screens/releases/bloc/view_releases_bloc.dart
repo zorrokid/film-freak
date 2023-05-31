@@ -133,10 +133,13 @@ class ReleasesBloc extends Bloc<ReleasesEvent, ReleasesState> {
     ConfirmDelete event,
     Emitter<ReleasesState> emit,
   ) async {
-    final canDelete = await confirm(event.context, 'Are you sure?',
-        '''Are you really sure you want to delete the release? 
+    final canDelete = await confirm(
+      context: event.context,
+      title: 'Are you sure?',
+      message: '''Are you really sure you want to delete the release? 
         Also the collection items created from this release 
-        will be deleted!''');
+        will be deleted!''',
+    );
     if (!canDelete) return;
     emit(state.copyWith(
       status: ReleasesStatus.deleteConfirmed,

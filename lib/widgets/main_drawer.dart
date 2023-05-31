@@ -1,6 +1,7 @@
 import 'package:film_freak/bloc/app_event.dart';
 import 'package:film_freak/screens/releases/view/releases_page.dart';
 import 'package:film_freak/screens/data_sync/view/data_sync_view.dart';
+import 'package:film_freak/utils/dialog_utls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,6 @@ import '../bloc/app_state.dart';
 import '../bloc/user_bloc.dart';
 import '../bloc/user_state.dart';
 import '../screens/log_in/view/log_in_page.dart';
-import '/widgets/confirm_dialog.dart';
 import '/persistence/app_state.dart';
 import '/screens/view_about/about_view.dart';
 
@@ -20,27 +20,6 @@ class MainDrawer extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _MainDrawerState();
   }
-}
-
-typedef OnConfirmDelete = void Function();
-Future<void> _showDeleteConfirmDialog(
-    BuildContext context, OnConfirmDelete onConfirmDelete) async {
-  await showDialog<bool>(
-    context: context,
-    builder: (BuildContext context) {
-      return ConfirmDialog(
-          title: 'Are you sure?',
-          message:
-              'Are you really sure you want to delete all the data in database?',
-          onContinue: () {
-            Navigator.pop(context, true);
-            onConfirmDelete();
-          },
-          onCancel: () {
-            Navigator.pop(context, false);
-          });
-    },
-  );
 }
 
 void _navigateFromDrawer(BuildContext context, Widget widget) {
@@ -105,9 +84,13 @@ class _MainDrawerState extends State<MainDrawer> {
                   ListTile(
                     title: const Text('Delete'),
                     onTap: () {
-                      _showDeleteConfirmDialog(
-                        context,
-                        () => context.read<AppBloc>().add(const ResetDb()),
+                      confirm(
+                        context: context,
+                        title: 'Confirm DB delete',
+                        message:
+                            'Are you really sure you want to delete all the data in database?',
+                        onConfirm: () =>
+                            context.read<AppBloc>().add(const ResetDb()),
                       );
                     },
                   ),
