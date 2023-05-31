@@ -31,13 +31,13 @@ class PicViewer extends StatelessWidget {
   final bool enableEditing;
 
   void prevPic() {
-    if (setSelectedPicIndex != null) {
+    if (setSelectedPicIndex != null && selectedPicIndex > 0) {
       setSelectedPicIndex!(selectedPicIndex - 1);
     }
   }
 
   void nextPic() {
-    if (setSelectedPicIndex != null) {
+    if (setSelectedPicIndex != null && selectedPicIndex < pictures.length - 1) {
       setSelectedPicIndex!(selectedPicIndex + 1);
     }
   }
@@ -50,13 +50,17 @@ class PicViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        GestureDetector(
-          onPanEnd: (details) {
-            prevPic();
-          },
-          child: SizedBox(
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        if (details.primaryVelocity! > 0) {
+          prevPic();
+        } else {
+          nextPic();
+        }
+      },
+      child: Row(
+        children: [
+          SizedBox(
               width: 100,
               child: selectedPicIndex > 0
                   ? PreviewPic(
@@ -65,40 +69,35 @@ class PicViewer extends StatelessWidget {
                       picTapped: prevPic,
                     )
                   : null),
-        ),
-        Expanded(
-            child: Column(
-          children: [
-            SizedBox(
-                height: 200,
-                width: 200,
-                child: pictures.isNotEmpty
-                    ? Image.file(_loadImage())
-                    : const Icon(
-                        Icons.image,
-                        size: 150,
-                      )),
-            pictures.isNotEmpty
-                ? enableEditing && onPictureTypeChanged != null
-                    ? DropdownButton(
-                        items: _listItems,
-                        onChanged: (PictureType? pictureType) {
-                          if (pictureType != null) {
-                            onPictureTypeChanged!(pictureType);
-                          }
-                        },
-                        value: pictures[selectedPicIndex].pictureType,
-                      )
-                    : Text(pictureTypeFormFieldValues[
-                        pictures[selectedPicIndex].pictureType]!)
-                : Container(),
-          ],
-        )),
-        GestureDetector(
-          onPanEnd: (details) {
-            nextPic();
-          },
-          child: SizedBox(
+          Expanded(
+              child: Column(
+            children: [
+              SizedBox(
+                  height: 200,
+                  width: 200,
+                  child: pictures.isNotEmpty
+                      ? Image.file(_loadImage())
+                      : const Icon(
+                          Icons.image,
+                          size: 150,
+                        )),
+              pictures.isNotEmpty
+                  ? enableEditing && onPictureTypeChanged != null
+                      ? DropdownButton(
+                          items: _listItems,
+                          onChanged: (PictureType? pictureType) {
+                            if (pictureType != null) {
+                              onPictureTypeChanged!(pictureType);
+                            }
+                          },
+                          value: pictures[selectedPicIndex].pictureType,
+                        )
+                      : Text(pictureTypeFormFieldValues[
+                          pictures[selectedPicIndex].pictureType]!)
+                  : Container(),
+            ],
+          )),
+          SizedBox(
             width: 100,
             child: pictures.length > 1 && selectedPicIndex < pictures.length - 1
                 ? PreviewPic(
@@ -108,8 +107,8 @@ class PicViewer extends StatelessWidget {
                   )
                 : null,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
