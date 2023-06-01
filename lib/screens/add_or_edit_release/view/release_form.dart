@@ -3,9 +3,6 @@ import 'dart:io';
 import 'package:film_freak/widgets/pic_viewer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-
-import '../../../bloc/app_bloc.dart';
-import '../../../bloc/app_state.dart';
 import '../../../domain/enums/picture_type.dart';
 import '../../../widgets/error_display_widget.dart';
 import '../../../widgets/spinner.dart';
@@ -28,9 +25,11 @@ class ReleaseForm extends StatefulWidget {
   final int? id;
   final bool addCollectionItem;
   final ReleaseService releaseService;
+  final Directory saveDir;
 
   const ReleaseForm({
     required this.releaseService,
+    required this.saveDir,
     this.barcode,
     this.id,
     super.key,
@@ -68,7 +67,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
   Widget buildContent(
     BuildContext context,
     AddOrEditReleaseState state,
-    Directory saveDir,
   ) {
     if (state.errors.isNotEmpty) {
       return ErrorDisplayWidget(state.errors.first);
@@ -86,7 +84,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
           PicViewer(
             selectedPicIndex: state.selectedPicIndex,
             pictures: state.pictures,
-            saveDir: saveDir,
+            saveDir: widget.saveDir,
             setSelectedPicIndex: (int index) =>
                 bloc.add(SetSelectedPicIndex(index)),
             onPictureTypeChanged: (PictureType pictureType) =>
@@ -104,12 +102,12 @@ class _ReleaseFormState extends State<ReleaseForm> {
               onDelete: () => bloc.add(const RemovePic()),
             ),
             ReleasePictureCrop(
-              onCropPressed: () => bloc.add(CropPic(context, saveDir)),
+              onCropPressed: () => bloc.add(CropPic(context, widget.saveDir)),
             ),
             ReleasePictureSelection(
               onValueChanged: (String fileName) =>
                   bloc.add(SelectPic(fileName)),
-              saveDir: saveDir,
+              saveDir: widget.saveDir,
             )
           ]),
           Row(
@@ -122,8 +120,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 ),
               ),
               IconButton(
-                onPressed: () => bloc
-                    .add(GetImageText(context, _nameController, true, saveDir)),
+                onPressed: () => bloc.add(GetImageText(
+                    context, _nameController, true, widget.saveDir)),
                 icon: const Icon(Icons.image),
               )
             ],
@@ -143,7 +141,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
               ),
               IconButton(
                 onPressed: () => bloc.add(GetImageText(
-                    context, _movieSearchTextController, true, saveDir)),
+                    context, _movieSearchTextController, true, widget.saveDir)),
                 icon: const Icon(Icons.image),
               ),
               IconButton(
@@ -201,8 +199,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 ),
               ),
               IconButton(
-                onPressed: () => bloc.add(
-                    GetImageText(context, _notesController, false, saveDir)),
+                onPressed: () => bloc.add(GetImageText(
+                    context, _notesController, false, widget.saveDir)),
                 icon: const Icon(Icons.image),
               ),
             ],
@@ -266,23 +264,21 @@ class _ReleaseFormState extends State<ReleaseForm> {
       ));
     }
 
-    return BlocBuilder<AppBloc, AppState>(builder: (context, appState) {
-      return BlocConsumer<AddOrEditReleaseBloc, AddOrEditReleaseState>(
-          listener: stateListener,
-          builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                  title: state.id != null
-                      ? const Text('Edit release')
-                      : const Text('Add a new release')),
-              body: buildContent(context, state, appState.saveDirectory!),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () => submit(appState.saveDirectory!),
-                backgroundColor: Colors.green,
-                child: const Icon(Icons.save),
-              ),
-            );
-          });
-    });
+    return BlocConsumer<AddOrEditReleaseBloc, AddOrEditReleaseState>(
+        listener: stateListener,
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+                title: state.id != null
+                    ? const Text('Edit release')
+                    : const Text('Add a new release')),
+            body: buildContent(context, state),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => submit(widget.saveDir),
+              backgroundColor: Colors.green,
+              child: const Icon(Icons.save),
+            ),
+          );
+        });
   }
 }
