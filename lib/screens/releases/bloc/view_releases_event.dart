@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:film_freak/persistence/query_specs/query_specs_enums.dart';
 import 'package:flutter/widgets.dart';
@@ -70,10 +72,15 @@ class ConfirmDelete extends ReleasesEvent {
 class DeleteRelease extends ReleasesEvent {
   const DeleteRelease(
     this.releaseId,
+    this.saveDir,
   );
   final int releaseId;
+  final Directory saveDir;
   @override
-  List<Object> get props => [releaseId];
+  List<Object> get props => [
+        releaseId,
+        saveDir,
+      ];
 }
 
 class EditRelease extends ReleasesEvent {

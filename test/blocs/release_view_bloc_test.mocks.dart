@@ -243,11 +243,6 @@ class MockReleaseService extends _i1.Mock implements _i14.ReleaseService {
         ),
       ) as _i2.Logger);
   @override
-  String get saveDir => (super.noSuchMethod(
-        Invocation.getter(#saveDir),
-        returnValue: '',
-      ) as String);
-  @override
   _i3.ReleasesRepository get releaseRepository => (super.noSuchMethod(
         Invocation.getter(#releaseRepository),
         returnValue: _FakeReleasesRepository_1(
@@ -356,10 +351,17 @@ class MockReleaseService extends _i1.Mock implements _i14.ReleaseService {
         returnValue: _i18.Future<bool>.value(false),
       ) as _i18.Future<bool>);
   @override
-  _i18.Future<int> delete(int? id) => (super.noSuchMethod(
+  _i18.Future<int> delete(
+    int? id,
+    dynamic saveDir,
+  ) =>
+      (super.noSuchMethod(
         Invocation.method(
           #delete,
-          [id],
+          [
+            id,
+            saveDir,
+          ],
         ),
         returnValue: _i18.Future<int>.value(0),
       ) as _i18.Future<int>);

@@ -1,13 +1,14 @@
+import 'package:film_freak/bloc/app_bloc.dart';
+import 'package:film_freak/bloc/app_state.dart';
 import 'package:film_freak/screens/add_or_edit_collection_item/view/add_or_edit_collection_item_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../services/collection_item_service.dart';
 import '../../services/release_service.dart';
 import '../../models/collection_item_view_model.dart';
 import '../../widgets/error_display_widget.dart';
 import '../../widgets/release_data_cards.dart';
 import '../../widgets/spinner.dart';
-import '../../persistence/app_state.dart';
 import 'collection_item_details_card.dart';
 
 class CollectionItemScreen extends StatefulWidget {
@@ -45,7 +46,7 @@ class _CollectionItemScreenState extends State<CollectionItemScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppStateOld>(builder: (context, appState, child) {
+    return BlocBuilder<AppBloc, AppState>(builder: (context, appState) {
       return FutureBuilder(
           future: _futureModel,
           builder: (BuildContext context,
@@ -87,7 +88,7 @@ class _CollectionItemScreenState extends State<CollectionItemScreen> {
                     bottom: kFloatingActionButtonMargin + 48),
                 children: [
                   ReleaseDataCards(
-                    saveDir: appState.saveDir,
+                    saveDir: appState.saveDirectory!,
                     viewModel: viewModel.releaseModel,
                     onCollectionItemEdit: (collectionItemId) => edit(),
                     onCollectionItemDelete: (collectionItemId) => delete(),

@@ -45,3 +45,10 @@ class ResetDb extends AppEvent {
   @override
   List<Object?> get props => [];
 }
+
+class InitAppState extends AppEvent {
+  const InitAppState();
+
+  @override
+  List<Object?> get props => [];
+}

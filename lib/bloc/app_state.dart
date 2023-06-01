@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
 
 enum AppStatus {
   initial,
+  initializing,
+  initialized,
   dbResetStart,
   dbResetDone,
 }
@@ -16,6 +19,7 @@ class AppState extends Equatable {
     this.fileCount = 0,
     this.saveDirectory,
     this.status = AppStatus.initial,
+    this.cameras = const [],
   });
   final String sqliteVersion;
   final int collectionItemCount;
@@ -23,6 +27,7 @@ class AppState extends Equatable {
   final Directory? saveDirectory;
   final int fileCount;
   final AppStatus status;
+  final List<CameraDescription> cameras;
 
   AppState copyWith({
     String? sqliteVersion,
@@ -31,6 +36,7 @@ class AppState extends Equatable {
     Directory? saveDirectory,
     int? fileCount,
     AppStatus? status,
+    List<CameraDescription>? cameras,
   }) =>
       AppState(
         sqliteVersion: sqliteVersion ?? this.sqliteVersion,
@@ -39,7 +45,9 @@ class AppState extends Equatable {
         saveDirectory: saveDirectory ?? this.saveDirectory,
         fileCount: fileCount ?? this.fileCount,
         status: status ?? this.status,
+        cameras: cameras ?? this.cameras,
       );
+
   @override
   List<Object?> get props => [
         sqliteVersion,
@@ -47,6 +55,7 @@ class AppState extends Equatable {
         releaseCount,
         saveDirectory,
         fileCount,
-        status
+        status,
+        cameras,
       ];
 }

@@ -25,7 +25,7 @@ class PicViewer extends StatelessWidget {
   });
   final int selectedPicIndex;
   final List<ReleasePicture> pictures;
-  final String saveDir;
+  final Directory saveDir;
   final OnSetSelectedPicIndex? setSelectedPicIndex;
   final ValueChanged<PictureType>? onPictureTypeChanged;
   final bool enableEditing;
@@ -43,7 +43,7 @@ class PicViewer extends StatelessWidget {
   }
 
   File _loadImage() {
-    final imagePath = join(saveDir, pictures[selectedPicIndex].filename);
+    final imagePath = join(saveDir.path, pictures[selectedPicIndex].filename);
     final imageFile = File(imagePath);
     return imageFile;
   }
@@ -65,7 +65,7 @@ class PicViewer extends StatelessWidget {
               child: selectedPicIndex > 0
                   ? PreviewPic(
                       releasePicture: pictures[selectedPicIndex - 1],
-                      saveDirPath: saveDir,
+                      saveDir: saveDir,
                       picTapped: prevPic,
                     )
                   : null),
@@ -102,7 +102,7 @@ class PicViewer extends StatelessWidget {
             child: pictures.length > 1 && selectedPicIndex < pictures.length - 1
                 ? PreviewPic(
                     releasePicture: pictures[selectedPicIndex + 1],
-                    saveDirPath: saveDir,
+                    saveDir: saveDir,
                     picTapped: nextPic,
                   )
                 : null,

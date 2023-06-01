@@ -1,11 +1,12 @@
+import 'dart:io';
+
+import 'package:film_freak/bloc/app_state.dart';
 import 'package:film_freak/utils/snackbar_buillder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
-
+import '../../../bloc/app_bloc.dart';
 import '/persistence/query_specs/release_query_specs.dart';
 import '/widgets/release_filter_list.dart';
-import '/persistence/app_state.dart';
 import '/widgets/error_display_widget.dart';
 import '/widgets/main_drawer.dart';
 import '/widgets/spinner.dart';
@@ -14,7 +15,8 @@ import '../bloc/view_releases_state.dart';
 import '../bloc/view_releases_event.dart';
 
 class ReleasesView extends StatelessWidget {
-  const ReleasesView({super.key});
+  const ReleasesView({super.key, required this.saveDir});
+  final Directory saveDir;
 
   void releasesStateListener(BuildContext context, ReleasesState state) {
     final bloc = context.read<ReleasesBloc>();
@@ -35,7 +37,7 @@ class ReleasesView extends StatelessWidget {
         bloc.add(ViewRelease(context, state.releaseId!));
         break;
       case ReleasesStatus.deleteConfirmed:
-        bloc.add(DeleteRelease(state.releaseId!));
+        bloc.add(DeleteRelease(state.releaseId!, saveDir));
         break;
       case ReleasesStatus.releaseDeleted:
         ScaffoldMessenger.of(context).showSnackBar(
@@ -57,7 +59,10 @@ class ReleasesView extends StatelessWidget {
   }
 
   Widget buildContent(
-      BuildContext context, ReleasesState state, AppStateOld appState) {
+    BuildContext context,
+    ReleasesState state,
+    Directory saveDir,
+  ) {
     switch (state.status) {
       case ReleasesStatus.loading:
         return const Spinner();
@@ -68,7 +73,7 @@ class ReleasesView extends StatelessWidget {
             ? const Center(child: Text('No results'))
             : ReleaseFilterList(
                 releases: state.items,
-                saveDir: appState.saveDir,
+                saveDir: saveDir,
                 onCreate: (int releaseId) => context
                     .read<ReleasesBloc>()
                     .add(CreateCollectionItem(context, releaseId)),
@@ -89,7 +94,7 @@ class ReleasesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppStateOld>(builder: (context, appState, child) {
+    return BlocBuilder<AppBloc, AppState>(builder: (context, appState) {
       return BlocConsumer<ReleasesBloc, ReleasesState>(
           listener: releasesStateListener,
           builder: (context, state) {
@@ -99,7 +104,7 @@ class ReleasesView extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('Releases'),
               ),
-              body: buildContent(context, state, appState),
+              body: buildContent(context, state, appState.saveDirectory!),
               floatingActionButton: FloatingActionButton(
                 onPressed: () => bloc.add(ScanBarcode(context)),
                 backgroundColor: Colors.green,

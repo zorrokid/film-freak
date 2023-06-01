@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../domain/enums/condition.dart';
 import '../models/release_view_model.dart';
@@ -9,7 +11,7 @@ import 'release_properties.dart';
 
 class ReleaseDataCards extends StatelessWidget {
   final ReleaseViewModel viewModel;
-  final String saveDir;
+  final Directory saveDir;
   final OnCollectionItemEdit onCollectionItemEdit;
   final OnCollectionItemDelete onCollectionItemDelete;
   const ReleaseDataCards({

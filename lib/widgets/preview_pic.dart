@@ -7,15 +7,15 @@ class PreviewPic extends StatelessWidget {
   const PreviewPic(
       {super.key,
       required this.releasePicture,
-      required this.saveDirPath,
+      required this.saveDir,
       required this.picTapped});
 
   final ReleasePicture releasePicture;
-  final String saveDirPath;
+  final Directory saveDir;
   final VoidCallback picTapped;
 
   File _loadImage() {
-    final imagePath = join(saveDirPath, releasePicture.filename);
+    final imagePath = join(saveDir.path, releasePicture.filename);
     final imageFile = File(imagePath);
     return imageFile;
   }

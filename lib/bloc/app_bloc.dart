@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:film_freak/persistence/repositories/system_info_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,6 +15,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<GetSaveDirectory>(_onGetSaveDirectory);
     on<GetFileCount>(_onGetFileCount);
     on<ResetDb>(_onResetDb);
+    on<InitAppState>(_onInitAppState);
   }
   final SystemInfoRepository systemInfoRepository;
 
@@ -70,5 +72,21 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     emit(state.copyWith(
       status: AppStatus.dbResetDone,
     ));
+  }
+
+  Future<void> _onInitAppState(
+      InitAppState event, Emitter<AppState> emit) async {
+    emit(state.copyWith(
+      status: AppStatus.initializing,
+    ));
+    final cameras = await availableCameras();
+    final saveDir = await getReleasePicsSaveDir();
+    emit(
+      state.copyWith(
+        status: AppStatus.initialized,
+        cameras: cameras,
+        saveDirectory: saveDir,
+      ),
+    );
   }
 }

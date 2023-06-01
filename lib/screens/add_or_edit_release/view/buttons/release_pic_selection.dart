@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
@@ -7,14 +9,14 @@ class ReleasePictureSelection extends StatelessWidget {
       {required this.onValueChanged, required this.saveDir, super.key});
   final ValueChanged<String> onValueChanged;
   final ImagePicker imagePicker = ImagePicker();
-  final String saveDir;
+  final Directory saveDir;
 
   Future<void> _processPickedFile(XFile? pickedFile) async {
     final path = pickedFile?.path;
     if (path == null) {
       return;
     }
-    final String newPath = p.join(saveDir, pickedFile!.name);
+    final String newPath = p.join(saveDir.path, pickedFile!.name);
 
     await pickedFile.saveTo(newPath);
     onValueChanged(pickedFile.name);

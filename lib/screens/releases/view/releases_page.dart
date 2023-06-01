@@ -1,7 +1,10 @@
+import 'package:film_freak/bloc/app_bloc.dart';
 import 'package:film_freak/screens/releases/view/releases_view.dart';
+import 'package:film_freak/widgets/spinner.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../bloc/app_state.dart';
 import '../../../services/collection_item_service.dart';
 import '../../../services/release_service.dart';
 import '../bloc/view_releases_bloc.dart';
@@ -21,7 +24,16 @@ class ReleasesPage extends StatelessWidget {
         bloc.add(const Initialize());
         return bloc;
       },
-      child: const ReleasesView(),
+      child: BlocBuilder<AppBloc, AppState>(
+        builder: (context, state) {
+          if (state.status != AppStatus.initialized) {
+            return const Spinner();
+          }
+          return ReleasesView(
+            saveDir: state.saveDirectory!,
+          );
+        },
+      ),
     );
   }
 }

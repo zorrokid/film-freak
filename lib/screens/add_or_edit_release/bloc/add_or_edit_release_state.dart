@@ -45,7 +45,6 @@ class AddOrEditReleaseState extends Equatable {
     this.selectedPicIndex = 0,
     this.status = AddOrEditReleaseStatus.initial,
     this.errors = const <String>[],
-    this.saveDir = "",
     this.selectedImageText = "",
     this.addedMediaPcs = 0,
     this.addedMediaType = MediaType.unknown,
@@ -63,7 +62,6 @@ class AddOrEditReleaseState extends Equatable {
   final List<ReleaseMedia> media;
   final int selectedPicIndex;
   final List<String> errors;
-  final String saveDir;
   final String selectedImageText;
   final MediaType addedMediaType;
   final int addedMediaPcs;
@@ -81,7 +79,6 @@ class AddOrEditReleaseState extends Equatable {
     List<ReleaseMedia>? media,
     int? selectedPicIndex,
     List<String>? errors,
-    String? saveDir,
     String? selectedImageText,
     int? addedMediaPcs,
     MediaType? addedMediaType,
@@ -99,7 +96,6 @@ class AddOrEditReleaseState extends Equatable {
       media: media ?? this.media,
       selectedPicIndex: selectedPicIndex ?? this.selectedPicIndex,
       errors: errors ?? this.errors,
-      saveDir: saveDir ?? this.saveDir,
       selectedImageText: selectedImageText ?? this.selectedImageText,
       addedMediaPcs: addedMediaPcs ?? this.addedMediaPcs,
       addedMediaType: addedMediaType ?? this.addedMediaType,
@@ -118,7 +114,6 @@ class AddOrEditReleaseState extends Equatable {
         media,
         selectedPicIndex,
         errors,
-        saveDir,
         selectedImageText,
         addedMediaPcs,
         addedMediaType,
