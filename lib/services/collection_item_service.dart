@@ -14,7 +14,7 @@ import '../models/collection_item_save_model.dart';
 import '../persistence/db_provider.dart';
 import '../persistence/repositories/collection_items_repository.dart';
 
-CollectionItemService initializeCollectionItemService(String saveDir) {
+CollectionItemService initializeCollectionItemService() {
   final dbProvider = DatabaseProviderSqflite.instance;
   return CollectionItemService(
     collectionItemRepository: CollectionItemsRepository(dbProvider),
@@ -24,7 +24,7 @@ CollectionItemService initializeCollectionItemService(String saveDir) {
         CollectionItemPropertiesRepository(dbProvider),
     collectionItemMediaRepository: CollectionItemMediaRepository(dbProvider),
     releaseMediasRepository: ReleaseMediasRepository(dbProvider),
-    releaseService: initializeReleaseService(saveDir),
+    releaseService: initializeReleaseService(),
   );
 }
 

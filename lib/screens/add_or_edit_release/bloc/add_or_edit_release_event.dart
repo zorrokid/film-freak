@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import 'package:equatable/equatable.dart';
 
@@ -56,40 +58,64 @@ class ScanBarcode extends AddOrEditReleaseEvent {
 }
 
 class GetImageText extends AddOrEditReleaseEvent {
-  const GetImageText(this.context, this.controller, this.capitalizeWords);
+  const GetImageText(
+    this.context,
+    this.controller,
+    this.capitalizeWords,
+    this.saveDir,
+  );
   final BuildContext context;
   final bool capitalizeWords;
   final TextEditingController controller;
+  final Directory saveDir;
 
   @override
-  List<Object> get props => [context, controller, capitalizeWords];
+  List<Object> get props => [
+        context,
+        controller,
+        capitalizeWords,
+        saveDir,
+      ];
 }
 
 class InitState extends AddOrEditReleaseEvent {
-  const InitState(this.saveDir, this.id, this.barcode);
-  final String saveDir;
+  const InitState(this.id, this.barcode);
   final int? id;
   final String? barcode;
 
   @override
-  List<Object> get props => [saveDir, id ?? 0, barcode ?? ''];
+  List<Object> get props => [id ?? 0, barcode ?? ''];
 }
 
 class Submit extends AddOrEditReleaseEvent {
-  const Submit(this.context, this.name, this.barcode, this.notes);
+  const Submit(
+    this.context,
+    this.name,
+    this.barcode,
+    this.notes,
+    this.saveDir,
+  );
   final BuildContext context;
   final String name;
   final String barcode;
   final String notes;
+  final Directory saveDir;
   @override
-  List<Object> get props => [context, name, barcode, notes];
+  List<Object> get props => [
+        context,
+        name,
+        barcode,
+        notes,
+        saveDir,
+      ];
 }
 
 class CropPic extends AddOrEditReleaseEvent {
-  const CropPic(this.context);
+  const CropPic(this.context, this.saveDir);
   final BuildContext context;
+  final Directory saveDir;
   @override
-  List<Object> get props => [context];
+  List<Object> get props => [context, saveDir];
 }
 
 class SelectProperties extends AddOrEditReleaseEvent {

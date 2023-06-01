@@ -56,7 +56,6 @@ class AddOrEditReleaseBloc
       status: AddOrEditReleaseStatus.initialized,
       id: event.id,
       barcode: event.barcode,
-      saveDir: event.saveDir,
     ));
   }
 
@@ -94,7 +93,7 @@ class AddOrEditReleaseBloc
     model.release.id = id;
 
     for (final picToDelete in state.picturesToDelete) {
-      final imagePath = p.join(state.saveDir, picToDelete.filename);
+      final imagePath = p.join(event.saveDir.path, picToDelete.filename);
       final imageFile = File(imagePath);
       await imageFile.delete();
     }
@@ -126,7 +125,7 @@ class AddOrEditReleaseBloc
     if (state.pictures.isEmpty) return;
     if (state.selectedPicIndex > state.pictures.length - 1) return;
     final selectedPic = state.pictures[state.selectedPicIndex];
-    final imagePath = p.join(state.saveDir, selectedPic.filename);
+    final imagePath = p.join(event.saveDir.path, selectedPic.filename);
     var selectedText = await Navigator.push(event.context,
         MaterialPageRoute<String>(builder: (context) {
       return SelectTextFromImagePage(imagePath: imagePath);
@@ -204,7 +203,7 @@ class AddOrEditReleaseBloc
   ) async {
     if (state.pictures.isEmpty) return;
     final picToCrop = state.pictures[state.selectedPicIndex];
-    final imagePath = p.join(state.saveDir, picToCrop.filename);
+    final imagePath = p.join(event.saveDir.path, picToCrop.filename);
     await Navigator.push(
       event.context,
       MaterialPageRoute(

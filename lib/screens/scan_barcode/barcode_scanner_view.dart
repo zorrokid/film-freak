@@ -1,8 +1,9 @@
+import 'package:film_freak/bloc/app_bloc.dart';
+import 'package:film_freak/bloc/app_state.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 
-import '../../persistence/app_state.dart';
 import '../../widgets/camera_widget.dart';
 
 class BarcodeScannerView extends StatefulWidget {
@@ -25,13 +26,13 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppStateOld>(builder: (context, appState, child) {
+    return BlocBuilder<AppBloc, AppState>(builder: (context, state) {
       return CameraWidget(
         title: 'Barcode Scanner',
         onImage: (inputImage) async {
           processImage(inputImage);
         },
-        cameras: appState.cameras,
+        cameras: state.cameras,
       );
     });
   }

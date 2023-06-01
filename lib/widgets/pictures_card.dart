@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:film_freak/widgets/pic_viewer.dart';
 import 'package:flutter/material.dart';
 import '../domain/enums/picture_type.dart';
@@ -7,7 +9,7 @@ class PicturesCard extends StatefulWidget {
   const PicturesCard(
       {super.key, required this.pictures, required this.saveDir});
   final List<ReleasePicture> pictures;
-  final String saveDir;
+  final Directory saveDir;
 
   @override
   State<PicturesCard> createState() {

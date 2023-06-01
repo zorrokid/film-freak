@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/app_bloc.dart';
+import 'bloc/app_event.dart';
 import 'screens/releases/view/releases_page.dart';
 
 class FilmFreakApp extends StatelessWidget {
@@ -17,9 +18,10 @@ class FilmFreakApp extends StatelessWidget {
           create: (_) => UserBloc(),
         ),
         BlocProvider<AppBloc>(
-            create: (_) => AppBloc(
-                  systemInfoRepository: context.read<SystemInfoRepository>(),
-                )),
+          create: (_) => AppBloc(
+            systemInfoRepository: context.read<SystemInfoRepository>(),
+          )..add(const InitAppState()),
+        ),
       ],
       child: const MaterialApp(
         title: 'film_freak',

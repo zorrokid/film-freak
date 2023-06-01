@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../models/list_models/release_list_model.dart';
 import 'release_list_tile.dart';
@@ -17,7 +19,7 @@ class ReleaseFilterList extends StatelessWidget {
     required this.onTap,
     required this.releases,
   });
-  final String saveDir;
+  final Directory saveDir;
   final OnCreateCallback onCreate;
   final OnEditCallback onEdit;
   final OnDeleteCallback onDelete;

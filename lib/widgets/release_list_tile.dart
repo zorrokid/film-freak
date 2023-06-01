@@ -21,7 +21,7 @@ class ReleaseListTile extends StatelessWidget {
   final OnEditCallback onEdit;
   final OnDeleteCallback onDelete;
   final OnTapCallback onTap;
-  final String saveDir;
+  final Directory saveDir;
 
   void menuItemSelected(String? value) {
     switch (value) {
@@ -49,7 +49,7 @@ class ReleaseListTile extends StatelessWidget {
       // ),
       leading: item.picFileName != null
           ? Image.file(
-              File(join(saveDir, item.picFileName)),
+              File(join(saveDir.path, item.picFileName)),
               height: 50,
             )
           : const Icon(Icons.image),

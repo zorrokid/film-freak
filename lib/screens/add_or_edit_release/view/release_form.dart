@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:film_freak/widgets/pic_viewer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-
 import '../../../domain/enums/picture_type.dart';
 import '../../../widgets/error_display_widget.dart';
 import '../../../widgets/spinner.dart';
@@ -24,9 +25,11 @@ class ReleaseForm extends StatefulWidget {
   final int? id;
   final bool addCollectionItem;
   final ReleaseService releaseService;
+  final Directory saveDir;
 
   const ReleaseForm({
     required this.releaseService,
+    required this.saveDir,
     this.barcode,
     this.id,
     super.key,
@@ -61,7 +64,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
     return null;
   }
 
-  Widget buildContent(BuildContext context, AddOrEditReleaseState state) {
+  Widget buildContent(
+    BuildContext context,
+    AddOrEditReleaseState state,
+  ) {
     if (state.errors.isNotEmpty) {
       return ErrorDisplayWidget(state.errors.first);
     }
@@ -78,7 +84,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
           PicViewer(
             selectedPicIndex: state.selectedPicIndex,
             pictures: state.pictures,
-            saveDir: state.saveDir,
+            saveDir: widget.saveDir,
             setSelectedPicIndex: (int index) =>
                 bloc.add(SetSelectedPicIndex(index)),
             onPictureTypeChanged: (PictureType pictureType) =>
@@ -92,12 +98,17 @@ class _ReleaseFormState extends State<ReleaseForm> {
                       '${state.selectedPicIndex + 1}/${state.pictures.length}')
                   : Container(),
             ),
-            ReleasePictureDelete(onDelete: () => bloc.add(const RemovePic())),
-            ReleasePictureCrop(onCropPressed: () => bloc.add(CropPic(context))),
+            ReleasePictureDelete(
+              onDelete: () => bloc.add(const RemovePic()),
+            ),
+            ReleasePictureCrop(
+              onCropPressed: () => bloc.add(CropPic(context, widget.saveDir)),
+            ),
             ReleasePictureSelection(
-                onValueChanged: (String fileName) =>
-                    bloc.add(SelectPic(fileName)),
-                saveDir: state.saveDir)
+              onValueChanged: (String fileName) =>
+                  bloc.add(SelectPic(fileName)),
+              saveDir: widget.saveDir,
+            )
           ]),
           Row(
             children: [
@@ -109,8 +120,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 ),
               ),
               IconButton(
-                onPressed: () =>
-                    bloc.add(GetImageText(context, _nameController, true)),
+                onPressed: () => bloc.add(GetImageText(
+                    context, _nameController, true, widget.saveDir)),
                 icon: const Icon(Icons.image),
               )
             ],
@@ -129,8 +140,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 ),
               ),
               IconButton(
-                onPressed: () => bloc.add(
-                    GetImageText(context, _movieSearchTextController, true)),
+                onPressed: () => bloc.add(GetImageText(
+                    context, _movieSearchTextController, true, widget.saveDir)),
                 icon: const Icon(Icons.image),
               ),
               IconButton(
@@ -188,8 +199,8 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 ),
               ),
               IconButton(
-                onPressed: () =>
-                    bloc.add(GetImageText(context, _notesController, false)),
+                onPressed: () => bloc.add(GetImageText(
+                    context, _notesController, false, widget.saveDir)),
                 icon: const Icon(Icons.image),
               ),
             ],
@@ -202,50 +213,55 @@ class _ReleaseFormState extends State<ReleaseForm> {
     );
   }
 
+  void stateListener(BuildContext context, AddOrEditReleaseState state) {
+    final bloc = context.read<AddOrEditReleaseBloc>();
+    switch (state.status) {
+      case AddOrEditReleaseStatus.initialized:
+        if (state.id != null) {
+          bloc.add(LoadRelease(state.id!));
+        } else {
+          bloc.add(InitRelease(state.barcode));
+        }
+        break;
+      case AddOrEditReleaseStatus.scanned:
+        _barcodeController.text = state.barcode;
+        break;
+      case AddOrEditReleaseStatus.loaded:
+        if (state.viewModel == null) return;
+        final viewModel = state.viewModel!;
+        _nameController.text = viewModel.release.name;
+        _barcodeController.text = viewModel.release.barcode;
+        _notesController.text = viewModel.release.notes;
+        break;
+      case AddOrEditReleaseStatus.submitted:
+        // Note: if editing a release we can return to either list view or release view.
+        // In both cases we need to pass the release id and update the release in calling view.
+        // When adding a release, we can only return to the list view.
+        Navigator.pop(context, state.viewModel!.release.id);
+        break;
+      case AddOrEditReleaseStatus.imageCropped:
+        // TODO are these both needed and is there another way to refresh the image?
+        imageCache.clear();
+        imageCache.clearLiveImages;
+        break;
+      default:
+      // Nothing to do
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<AddOrEditReleaseBloc>(context);
 
-    Future<void> submit() async {
+    Future<void> submit(Directory saveDir) async {
       if (!_formKey.currentState!.validate()) return;
-      bloc.add(Submit(context, _nameController.text, _barcodeController.text,
-          _notesController.text));
-    }
-
-    void stateListener(BuildContext context, AddOrEditReleaseState state) {
-      final bloc = context.read<AddOrEditReleaseBloc>();
-      switch (state.status) {
-        case AddOrEditReleaseStatus.initialized:
-          if (state.id != null) {
-            bloc.add(LoadRelease(state.id!));
-          } else {
-            bloc.add(InitRelease(state.barcode));
-          }
-          break;
-        case AddOrEditReleaseStatus.scanned:
-          _barcodeController.text = state.barcode;
-          break;
-        case AddOrEditReleaseStatus.loaded:
-          if (state.viewModel == null) return;
-          final viewModel = state.viewModel!;
-          _nameController.text = viewModel.release.name;
-          _barcodeController.text = viewModel.release.barcode;
-          _notesController.text = viewModel.release.notes;
-          break;
-        case AddOrEditReleaseStatus.submitted:
-          // Note: if editing a release we can return to either list view or release view.
-          // In both cases we need to pass the release id and update the release in calling view.
-          // When adding a release, we can only return to the list view.
-          Navigator.pop(context, state.viewModel!.release.id);
-          break;
-        case AddOrEditReleaseStatus.imageCropped:
-          // TODO are these both needed and is there another way to refresh the image?
-          imageCache.clear();
-          imageCache.clearLiveImages;
-          break;
-        default:
-        // Nothing to do
-      }
+      bloc.add(Submit(
+        context,
+        _nameController.text,
+        _barcodeController.text,
+        _notesController.text,
+        saveDir,
+      ));
     }
 
     return BlocConsumer<AddOrEditReleaseBloc, AddOrEditReleaseState>(
@@ -258,7 +274,7 @@ class _ReleaseFormState extends State<ReleaseForm> {
                     : const Text('Add a new release')),
             body: buildContent(context, state),
             floatingActionButton: FloatingActionButton(
-              onPressed: () => submit(),
+              onPressed: () => submit(widget.saveDir),
               backgroundColor: Colors.green,
               child: const Icon(Icons.save),
             ),
