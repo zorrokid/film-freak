@@ -8,17 +8,16 @@ abstract class ProcessImageEvent extends Equatable {
 }
 
 class InitState extends ProcessImageEvent {
-  const InitState({required this.imagePath});
-  final String imagePath;
+  const InitState({required this.imageFilename});
+  final String imageFilename;
   @override
-  List<Object?> get props => [imagePath];
+  List<Object?> get props => [imageFilename];
 }
 
 class LoadImage extends ProcessImageEvent {
-  const LoadImage({required this.imagePath});
-  final String imagePath;
+  const LoadImage();
   @override
-  List<Object?> get props => [imagePath];
+  List<Object?> get props => [];
 }
 
 class Crop extends ProcessImageEvent {

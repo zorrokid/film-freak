@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'package:film_freak/infrastructure/filesystem_service.dart';
 import 'package:film_freak/screens/process_image/view/image_process_page.dart';
 import 'package:film_freak/screens/select_text_from_image/view/select_text_from_image_page.dart';
 import 'package:film_freak/utils/snackbar_buillder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
+import 'package:uuid/uuid.dart';
 
 import '../../../extensions/string_extensions.dart';
 import '../../../services/release_service.dart';
@@ -17,6 +20,7 @@ import '../../../domain/enums/media_type.dart';
 import '../../../domain/enums/picture_type.dart';
 import '../../../models/release_view_model.dart';
 import '../../../models/tmdb_movie_result.dart';
+import '../../../utils/image_utils.dart';
 import '../../scan_barcode/barcode_scanner_view.dart';
 import '../../select_properties/property_selection_view.dart';
 import '../../tmdb_search/tmdb_movie_search_screen.dart';
@@ -92,10 +96,16 @@ class AddOrEditReleaseBloc
     final id = await releaseService.upsert(model);
     model.release.id = id;
 
+    final releasePicsDir = await FilesystemService.releasePicsDir;
+    final releasePicsThumbnailDir =
+        await FilesystemService.releasePicsThumbnailDir;
+
     for (final picToDelete in state.picturesToDelete) {
-      final imagePath = p.join(event.saveDir.path, picToDelete.filename);
-      final imageFile = File(imagePath);
+      final imageFile = File(p.join(releasePicsDir.path, picToDelete.filename));
       await imageFile.delete();
+      final imageThumbFile =
+          File(p.join(releasePicsThumbnailDir.path, picToDelete.filename));
+      await imageThumbFile.delete();
     }
 
     emit(state.copyWith(
@@ -203,12 +213,11 @@ class AddOrEditReleaseBloc
   ) async {
     if (state.pictures.isEmpty) return;
     final picToCrop = state.pictures[state.selectedPicIndex];
-    final imagePath = p.join(event.saveDir.path, picToCrop.filename);
     await Navigator.push(
       event.context,
       MaterialPageRoute(
         builder: (context) {
-          return ImageProcessPage(imagePath: imagePath);
+          return ImageProcessPage(imageFilename: picToCrop.filename);
         },
       ),
     );
@@ -275,13 +284,22 @@ class AddOrEditReleaseBloc
     ));
   }
 
-  void _onSelectPic(
+  Future<void> _onSelectPic(
     SelectPic event,
     Emitter<AddOrEditReleaseState> emit,
-  ) {
+  ) async {
+    final ImagePicker imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile == null) {
+      return;
+    }
+
+    final fileName = await _processPickedFile(pickedFile);
+
     final newPic = ReleasePicture(
         releaseId: state.id,
-        filename: event.fileName,
+        filename: fileName,
         pictureType: PictureType.coverFront);
     final pics = [...state.pictures, newPic];
     emit(state.copyWith(
@@ -289,6 +307,22 @@ class AddOrEditReleaseBloc
       pictures: pics,
       selectedPicIndex: pics.length - 1,
     ));
+  }
+
+  Future<String> _processPickedFile(XFile pickedFile) async {
+    final path = pickedFile.path;
+    var uuid = const Uuid();
+    var fileExtension = p.extension(path);
+    var fileName = uuid.v4() + fileExtension;
+    final saveDir = await FilesystemService.releasePicsDir;
+    final String newPath = p.join(saveDir.path, fileName);
+
+    await pickedFile.saveTo(newPath);
+    final file = File(newPath);
+    final thumbnailDir = await FilesystemService.releasePicsThumbnailDir;
+    await scaleToFile(file,
+        targetDirectory: thumbnailDir, targetFilename: fileName);
+    return fileName;
   }
 
   void _onRemovePic(

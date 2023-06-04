@@ -13,7 +13,7 @@ class ReleaseListTile extends StatelessWidget {
     required this.onDelete,
     required this.onEdit,
     required this.onTap,
-    required this.saveDir,
+    required this.thumbnailDirectory,
     super.key,
   });
   final ReleaseListModel item;
@@ -21,7 +21,7 @@ class ReleaseListTile extends StatelessWidget {
   final OnEditCallback onEdit;
   final OnDeleteCallback onDelete;
   final OnTapCallback onTap;
-  final Directory saveDir;
+  final Directory thumbnailDirectory;
 
   void menuItemSelected(String? value) {
     switch (value) {
@@ -37,6 +37,22 @@ class ReleaseListTile extends StatelessWidget {
     }
   }
 
+  Widget createThumbnail(ReleaseListModel item) {
+    if (item.picFileName == null) {
+      return const Icon(Icons.image);
+    }
+    final thumbnailPath = join(
+      thumbnailDirectory.path,
+      item.picFileName,
+    );
+    final thumbnailFile = File(thumbnailPath);
+    if (thumbnailFile.existsSync()) {
+      return Image.file(thumbnailFile);
+    } else {
+      return const Icon(Icons.image);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -47,12 +63,7 @@ class ReleaseListTile extends StatelessWidget {
       //     Expanded(child: Text(mediaTypeFormFieldValues[item.mediaType] ?? "")),
       //   ],
       // ),
-      leading: item.picFileName != null
-          ? Image.file(
-              File(join(saveDir.path, item.picFileName)),
-              height: 50,
-            )
-          : const Icon(Icons.image),
+      leading: createThumbnail(item),
       trailing: PopupMenuButton(
         itemBuilder: (context) {
           return [

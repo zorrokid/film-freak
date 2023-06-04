@@ -2,8 +2,8 @@ import 'package:camera/camera.dart';
 import 'package:film_freak/persistence/repositories/system_info_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../infrastructure/filesystem_service.dart';
 import '../persistence/db_provider.dart';
-import '../utils/directory_utils.dart';
 import 'app_event.dart';
 import 'app_state.dart';
 
@@ -46,8 +46,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   Future<void> _onGetSaveDirectory(
       GetSaveDirectory event, Emitter<AppState> emit) async {
-    final saveDirectory = await getReleasePicsSaveDir();
-
+    final saveDirectory = await FilesystemService.releasePicsDir;
     emit(state.copyWith(
       saveDirectory: saveDirectory,
     ));
@@ -55,7 +54,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   Future<void> _onGetFileCount(
       GetFileCount event, Emitter<AppState> emit) async {
-    final saveDirectory = await getReleasePicsSaveDir();
+    final saveDirectory = await FilesystemService.releasePicsDir;
     final fileCount = saveDirectory.listSync(recursive: true).length;
     emit(state.copyWith(
       fileCount: fileCount,
@@ -80,12 +79,14 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       status: AppStatus.initializing,
     ));
     final cameras = await availableCameras();
-    final saveDir = await getReleasePicsSaveDir();
+    final saveDir = await FilesystemService.releasePicsDir;
+    final thumbnailDir = await FilesystemService.releasePicsThumbnailDir;
     emit(
       state.copyWith(
         status: AppStatus.initialized,
         cameras: cameras,
         saveDirectory: saveDir,
+        thumbnailDirectory: thumbnailDir,
       ),
     );
   }

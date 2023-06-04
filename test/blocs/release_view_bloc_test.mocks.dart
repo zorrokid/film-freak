@@ -4,18 +4,19 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i18;
+import 'dart:io' as _i19;
 
 import 'package:film_freak/domain/entities/collection_item.dart' as _i17;
-import 'package:film_freak/domain/entities/production.dart' as _i23;
-import 'package:film_freak/domain/entities/release_picture.dart' as _i21;
-import 'package:film_freak/domain/enums/media_type.dart' as _i22;
+import 'package:film_freak/domain/entities/production.dart' as _i24;
+import 'package:film_freak/domain/entities/release_picture.dart' as _i22;
+import 'package:film_freak/domain/enums/media_type.dart' as _i23;
 import 'package:film_freak/models/collection_item_edit_view_model.dart' as _i16;
-import 'package:film_freak/models/collection_item_save_model.dart' as _i25;
+import 'package:film_freak/models/collection_item_save_model.dart' as _i26;
 import 'package:film_freak/models/collection_item_view_model.dart' as _i15;
-import 'package:film_freak/models/list_models/release_list_model.dart' as _i19;
+import 'package:film_freak/models/list_models/release_list_model.dart' as _i20;
 import 'package:film_freak/models/release_view_model.dart' as _i10;
 import 'package:film_freak/persistence/query_specs/release_query_specs.dart'
-    as _i20;
+    as _i21;
 import 'package:film_freak/persistence/repositories/collection_item_comments_repository.dart'
     as _i11;
 import 'package:film_freak/persistence/repositories/collection_item_media_repository.dart'
@@ -34,7 +35,7 @@ import 'package:film_freak/persistence/repositories/release_properties_repositor
     as _i5;
 import 'package:film_freak/persistence/repositories/releases_repository.dart'
     as _i3;
-import 'package:film_freak/services/collection_item_service.dart' as _i24;
+import 'package:film_freak/services/collection_item_service.dart' as _i25;
 import 'package:film_freak/services/production_service.dart' as _i6;
 import 'package:film_freak/services/release_service.dart' as _i14;
 import 'package:logging/logging.dart' as _i2;
@@ -353,70 +354,72 @@ class MockReleaseService extends _i1.Mock implements _i14.ReleaseService {
   @override
   _i18.Future<int> delete(
     int? id,
-    dynamic saveDir,
+    _i19.Directory? releasePicDir,
+    _i19.Directory? releasePicThumbnailDir,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
           #delete,
           [
             id,
-            saveDir,
+            releasePicDir,
+            releasePicThumbnailDir,
           ],
         ),
         returnValue: _i18.Future<int>.value(0),
       ) as _i18.Future<int>);
   @override
-  _i18.Future<Iterable<_i19.ReleaseListModel>> getListModels(
-          {_i20.ReleaseQuerySpecs? filter}) =>
+  _i18.Future<Iterable<_i20.ReleaseListModel>> getListModels(
+          {_i21.ReleaseQuerySpecs? filter}) =>
       (super.noSuchMethod(
         Invocation.method(
           #getListModels,
           [],
           {#filter: filter},
         ),
-        returnValue: _i18.Future<Iterable<_i19.ReleaseListModel>>.value(
-            <_i19.ReleaseListModel>[]),
-      ) as _i18.Future<Iterable<_i19.ReleaseListModel>>);
+        returnValue: _i18.Future<Iterable<_i20.ReleaseListModel>>.value(
+            <_i20.ReleaseListModel>[]),
+      ) as _i18.Future<Iterable<_i20.ReleaseListModel>>);
   @override
-  _i18.Future<Map<int, List<_i21.ReleasePicture>>> getPicsByReleaseMap(
+  _i18.Future<Map<int, List<_i22.ReleasePicture>>> getPicsByReleaseMap(
           Iterable<int>? releaseIds) =>
       (super.noSuchMethod(
         Invocation.method(
           #getPicsByReleaseMap,
           [releaseIds],
         ),
-        returnValue: _i18.Future<Map<int, List<_i21.ReleasePicture>>>.value(
-            <int, List<_i21.ReleasePicture>>{}),
-      ) as _i18.Future<Map<int, List<_i21.ReleasePicture>>>);
+        returnValue: _i18.Future<Map<int, List<_i22.ReleasePicture>>>.value(
+            <int, List<_i22.ReleasePicture>>{}),
+      ) as _i18.Future<Map<int, List<_i22.ReleasePicture>>>);
   @override
-  _i18.Future<Map<int, Set<_i22.MediaType>>> getMediaTypesByReleaseMap(
+  _i18.Future<Map<int, Set<_i23.MediaType>>> getMediaTypesByReleaseMap(
           Iterable<int>? releaseIds) =>
       (super.noSuchMethod(
         Invocation.method(
           #getMediaTypesByReleaseMap,
           [releaseIds],
         ),
-        returnValue: _i18.Future<Map<int, Set<_i22.MediaType>>>.value(
-            <int, Set<_i22.MediaType>>{}),
-      ) as _i18.Future<Map<int, Set<_i22.MediaType>>>);
+        returnValue: _i18.Future<Map<int, Set<_i23.MediaType>>>.value(
+            <int, Set<_i23.MediaType>>{}),
+      ) as _i18.Future<Map<int, Set<_i23.MediaType>>>);
   @override
-  _i18.Future<Map<int, List<_i23.Production>>> getProductionsByReleaseMap(
+  _i18.Future<Map<int, List<_i24.Production>>> getProductionsByReleaseMap(
           Iterable<int>? releaseIds) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProductionsByReleaseMap,
           [releaseIds],
         ),
-        returnValue: _i18.Future<Map<int, List<_i23.Production>>>.value(
-            <int, List<_i23.Production>>{}),
-      ) as _i18.Future<Map<int, List<_i23.Production>>>);
+        returnValue: _i18.Future<Map<int, List<_i24.Production>>>.value(
+            <int, List<_i24.Production>>{}),
+      ) as _i18.Future<Map<int, List<_i24.Production>>>);
 }
 
 /// A class which mocks [CollectionItemService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockCollectionItemService extends _i1.Mock
-    implements _i24.CollectionItemService {
+    implements _i25.CollectionItemService {
   MockCollectionItemService() {
     _i1.throwOnMissingStub(this);
   }
@@ -548,7 +551,7 @@ class MockCollectionItemService extends _i1.Mock
         )),
       ) as _i18.Future<_i17.CollectionItem>);
   @override
-  _i18.Future<int> upsert(_i25.CollectionItemSaveModel? saveModel) =>
+  _i18.Future<int> upsert(_i26.CollectionItemSaveModel? saveModel) =>
       (super.noSuchMethod(
         Invocation.method(
           #upsert,

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:film_freak/screens/process_image/bloc/process_image_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +10,7 @@ import '../painters/selection_painter.dart';
 import 'case_type_selection.dart';
 
 class ImageProcessView extends StatelessWidget {
-  const ImageProcessView({super.key, required this.saveDirectory});
-  final Directory saveDirectory;
+  const ImageProcessView({super.key});
 
   double _getSafeHeight(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -34,7 +31,7 @@ class ImageProcessView extends StatelessWidget {
       listener: (context, state) {
         switch (state.status) {
           case ProcessImageStatus.initial:
-            bloc.add(LoadImage(imagePath: state.imagePath));
+            bloc.add(const LoadImage());
             break;
           case ProcessImageStatus.cropped:
             Navigator.of(context).pop();
@@ -76,7 +73,6 @@ class ImageProcessView extends StatelessWidget {
                               },
                               onDoubleTap: () => bloc.add(Crop(
                                 context: context,
-                                saveDir: saveDirectory,
                               )),
                               child: SizedBox(
                                 width: state.image!.width.toDouble(),
@@ -106,7 +102,6 @@ class ImageProcessView extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             onPressed: () => bloc.add(Crop(
               context: context,
-              saveDir: saveDirectory,
             )),
             backgroundColor: Colors.green,
             child: const Icon(Icons.save),

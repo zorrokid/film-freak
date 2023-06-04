@@ -93,29 +93,25 @@ class Submit extends AddOrEditReleaseEvent {
     this.name,
     this.barcode,
     this.notes,
-    this.saveDir,
   );
   final BuildContext context;
   final String name;
   final String barcode;
   final String notes;
-  final Directory saveDir;
   @override
   List<Object> get props => [
         context,
         name,
         barcode,
         notes,
-        saveDir,
       ];
 }
 
 class CropPic extends AddOrEditReleaseEvent {
-  const CropPic(this.context, this.saveDir);
+  const CropPic(this.context);
   final BuildContext context;
-  final Directory saveDir;
   @override
-  List<Object> get props => [context, saveDir];
+  List<Object> get props => [context];
 }
 
 class SelectProperties extends AddOrEditReleaseEvent {
@@ -141,10 +137,9 @@ class RemoveProduction extends AddOrEditReleaseEvent {
 }
 
 class SelectPic extends AddOrEditReleaseEvent {
-  const SelectPic(this.fileName);
-  final String fileName;
+  const SelectPic();
   @override
-  List<Object> get props => [fileName];
+  List<Object> get props => [];
 }
 
 class RemovePic extends AddOrEditReleaseEvent {

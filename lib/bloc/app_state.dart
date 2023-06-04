@@ -18,6 +18,7 @@ class AppState extends Equatable {
     this.releaseCount = 0,
     this.fileCount = 0,
     this.saveDirectory,
+    this.thumbnailDirectory,
     this.status = AppStatus.initial,
     this.cameras = const [],
   });
@@ -25,6 +26,7 @@ class AppState extends Equatable {
   final int collectionItemCount;
   final int releaseCount;
   final Directory? saveDirectory;
+  final Directory? thumbnailDirectory;
   final int fileCount;
   final AppStatus status;
   final List<CameraDescription> cameras;
@@ -34,6 +36,7 @@ class AppState extends Equatable {
     int? collectionItemCount,
     int? releaseCount,
     Directory? saveDirectory,
+    Directory? thumbnailDirectory,
     int? fileCount,
     AppStatus? status,
     List<CameraDescription>? cameras,
@@ -43,6 +46,7 @@ class AppState extends Equatable {
         collectionItemCount: collectionItemCount ?? this.collectionItemCount,
         releaseCount: releaseCount ?? this.releaseCount,
         saveDirectory: saveDirectory ?? this.saveDirectory,
+        thumbnailDirectory: thumbnailDirectory ?? this.thumbnailDirectory,
         fileCount: fileCount ?? this.fileCount,
         status: status ?? this.status,
         cameras: cameras ?? this.cameras,
@@ -54,6 +58,7 @@ class AppState extends Equatable {
         collectionItemCount,
         releaseCount,
         saveDirectory,
+        thumbnailDirectory,
         fileCount,
         status,
         cameras,
