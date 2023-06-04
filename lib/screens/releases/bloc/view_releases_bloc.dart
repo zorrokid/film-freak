@@ -1,3 +1,4 @@
+import 'package:film_freak/infrastructure/filesystem_service.dart';
 import 'package:film_freak/persistence/query_specs/release_query_specs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,7 +122,14 @@ class ReleasesBloc extends Bloc<ReleasesEvent, ReleasesState> {
     DeleteRelease event,
     Emitter<ReleasesState> emit,
   ) async {
-    final deleted = await releaseService.delete(event.releaseId, event.saveDir);
+    final releasePicsDir = await FilesystemService.releasePicsDir;
+    final releasePicsThumbnailDir =
+        await FilesystemService.releasePicsThumbnailDir;
+    final deleted = await releaseService.delete(
+      event.releaseId,
+      releasePicsDir,
+      releasePicsThumbnailDir,
+    );
     if (deleted > 0) {
       emit(state.copyWith(status: ReleasesStatus.releaseDeleted));
     } else {

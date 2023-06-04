@@ -12,14 +12,14 @@ typedef OnTapCallback = void Function(int id);
 class ReleaseFilterList extends StatelessWidget {
   const ReleaseFilterList({
     super.key,
-    required this.saveDir,
+    required this.thumbnailDirectory,
     required this.onCreate,
     required this.onDelete,
     required this.onEdit,
     required this.onTap,
     required this.releases,
   });
-  final Directory saveDir;
+  final Directory thumbnailDirectory;
   final OnCreateCallback onCreate;
   final OnEditCallback onEdit;
   final OnDeleteCallback onDelete;
@@ -38,7 +38,7 @@ class ReleaseFilterList extends StatelessWidget {
           onDelete: onDelete,
           onEdit: onEdit,
           onTap: onTap,
-          saveDir: saveDir,
+          thumbnailDirectory: thumbnailDirectory,
         );
       },
     );

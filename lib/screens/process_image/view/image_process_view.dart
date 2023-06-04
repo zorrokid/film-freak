@@ -31,7 +31,7 @@ class ImageProcessView extends StatelessWidget {
       listener: (context, state) {
         switch (state.status) {
           case ProcessImageStatus.initial:
-            bloc.add(LoadImage(imagePath: state.imagePath));
+            bloc.add(const LoadImage());
             break;
           case ProcessImageStatus.cropped:
             Navigator.of(context).pop();
@@ -71,8 +71,9 @@ class ImageProcessView extends StatelessWidget {
                                   y: details.localPosition.dy,
                                 ));
                               },
-                              onDoubleTap: () =>
-                                  bloc.add(Crop(context: context)),
+                              onDoubleTap: () => bloc.add(Crop(
+                                context: context,
+                              )),
                               child: SizedBox(
                                 width: state.image!.width.toDouble(),
                                 height: state.image!.height.toDouble(),
@@ -99,7 +100,9 @@ class ImageProcessView extends StatelessWidget {
             ),
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () => bloc.add(Crop(context: context)),
+            onPressed: () => bloc.add(Crop(
+              context: context,
+            )),
             backgroundColor: Colors.green,
             child: const Icon(Icons.save),
           ),

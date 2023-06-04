@@ -102,13 +102,10 @@ class _ReleaseFormState extends State<ReleaseForm> {
               onDelete: () => bloc.add(const RemovePic()),
             ),
             ReleasePictureCrop(
-              onCropPressed: () => bloc.add(CropPic(context, widget.saveDir)),
+              onCropPressed: () => bloc.add(CropPic(context)),
             ),
             ReleasePictureSelection(
-              onValueChanged: (String fileName) =>
-                  bloc.add(SelectPic(fileName)),
-              saveDir: widget.saveDir,
-            )
+                onSelectPicture: () => bloc.add(const SelectPic()))
           ]),
           Row(
             children: [
@@ -260,7 +257,6 @@ class _ReleaseFormState extends State<ReleaseForm> {
         _nameController.text,
         _barcodeController.text,
         _notesController.text,
-        saveDir,
       ));
     }
 

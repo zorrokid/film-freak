@@ -1,36 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as p;
+
+typedef OnSelectPicture = void Function();
 
 class ReleasePictureSelection extends StatelessWidget {
-  ReleasePictureSelection(
-      {required this.onValueChanged, required this.saveDir, super.key});
-  final ValueChanged<String> onValueChanged;
-  final ImagePicker imagePicker = ImagePicker();
-  final Directory saveDir;
-
-  Future<void> _processPickedFile(XFile? pickedFile) async {
-    final path = pickedFile?.path;
-    if (path == null) {
-      return;
-    }
-    final String newPath = p.join(saveDir.path, pickedFile!.name);
-
-    await pickedFile.saveTo(newPath);
-    onValueChanged(pickedFile.name);
-  }
-
-  Future<void> takePic() async {
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      _processPickedFile(pickedFile);
-    }
-  }
+  const ReleasePictureSelection({required this.onSelectPicture, super.key});
+  final OnSelectPicture onSelectPicture;
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(onPressed: takePic, icon: const Icon(Icons.camera));
+    return IconButton(
+      onPressed: onSelectPicture,
+      icon: const Icon(Icons.camera),
+    );
   }
 }

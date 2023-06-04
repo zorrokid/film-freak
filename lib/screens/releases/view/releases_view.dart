@@ -37,7 +37,7 @@ class ReleasesView extends StatelessWidget {
         bloc.add(ViewRelease(context, state.releaseId!));
         break;
       case ReleasesStatus.deleteConfirmed:
-        bloc.add(DeleteRelease(state.releaseId!, saveDir));
+        bloc.add(DeleteRelease(state.releaseId!));
         break;
       case ReleasesStatus.releaseDeleted:
         ScaffoldMessenger.of(context).showSnackBar(
@@ -61,7 +61,7 @@ class ReleasesView extends StatelessWidget {
   Widget buildContent(
     BuildContext context,
     ReleasesState state,
-    Directory saveDir,
+    Directory thumbnailDirectory,
   ) {
     switch (state.status) {
       case ReleasesStatus.loading:
@@ -73,7 +73,7 @@ class ReleasesView extends StatelessWidget {
             ? const Center(child: Text('No results'))
             : ReleaseFilterList(
                 releases: state.items,
-                saveDir: saveDir,
+                thumbnailDirectory: thumbnailDirectory,
                 onCreate: (int releaseId) => context
                     .read<ReleasesBloc>()
                     .add(CreateCollectionItem(context, releaseId)),
@@ -104,7 +104,7 @@ class ReleasesView extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('Releases'),
               ),
-              body: buildContent(context, state, appState.saveDirectory!),
+              body: buildContent(context, state, appState.thumbnailDirectory!),
               floatingActionButton: FloatingActionButton(
                 onPressed: () => bloc.add(ScanBarcode(context)),
                 backgroundColor: Colors.green,

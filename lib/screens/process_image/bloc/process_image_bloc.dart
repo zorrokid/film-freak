@@ -5,8 +5,10 @@ import 'dart:ui' as ui;
 import 'package:film_freak/screens/process_image/bloc/process_image_event.dart';
 import 'package:film_freak/screens/process_image/bloc/process_image_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart';
 
 import '../../../domain/enums/case_type.dart';
+import '../../../infrastructure/filesystem_service.dart';
 import '../../../utils/geometry_utils.dart';
 import '../../../utils/image_utils.dart';
 import '../painters/selection_painter.dart';
@@ -23,12 +25,14 @@ class ProcessImageBloc extends Bloc<ProcessImageEvent, ProcessImageState> {
   }
 
   void _onInitState(InitState event, Emitter<ProcessImageState> emit) {
-    emit(state.copyWith(imagePath: event.imagePath));
+    emit(state.copyWith(imageFilename: event.imageFilename));
   }
 
   Future _onLoadImage(LoadImage event, Emitter<ProcessImageState> emit) async {
     emit(state.copyWith(status: ProcessImageStatus.processing));
-    final image = await loadImage(File(event.imagePath));
+    final saveDir = await FilesystemService.releasePicsDir;
+    final image =
+        await loadImage(File(join(saveDir.path, state.imageFilename)));
     emit(state.copyWith(
       image: image,
       imageWidth: image.width,
@@ -41,8 +45,14 @@ class ProcessImageBloc extends Bloc<ProcessImageEvent, ProcessImageState> {
 
   Future _onCrop(Crop event, Emitter<ProcessImageState> emit) async {
     emit(state.copyWith(status: ProcessImageStatus.processing));
-    await cropToFile(
-        File(state.imagePath), state.selectionPoints, getRatio(state.caseType));
+    final releasePicSaveDir = await FilesystemService.releasePicsDir;
+    final releasePicThumbnailDir =
+        await FilesystemService.releasePicsThumbnailDir;
+    final file = File(join(releasePicSaveDir.path, state.imageFilename));
+    await cropToFile(file, state.selectionPoints, getRatio(state.caseType));
+    final fileName = basename(file.path);
+    await scaleToFile(file,
+        targetDirectory: releasePicThumbnailDir, targetFilename: fileName);
     emit(state.copyWith(image: null));
     emit(state.copyWith(status: ProcessImageStatus.cropped));
   }

@@ -5,19 +5,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/process_image_bloc.dart';
 
 class ImageProcessPage extends StatelessWidget {
-  const ImageProcessPage({super.key, required this.imagePath});
+  const ImageProcessPage({super.key, required this.imageFilename});
 
-  final String imagePath;
+  final String imageFilename;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) {
-        final bloc = ProcessImageBloc();
-        bloc.add(InitState(imagePath: imagePath));
-        return bloc;
-      },
-      child: const ImageProcessView(),
-    );
+        create: (_) {
+          final bloc = ProcessImageBloc();
+          bloc.add(InitState(imageFilename: imageFilename));
+          return bloc;
+        },
+        child: const ImageProcessView());
   }
 }

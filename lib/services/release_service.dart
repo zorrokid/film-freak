@@ -116,11 +116,17 @@ class ReleaseService {
     return releaseRepository.barcodeExists(barcode);
   }
 
-  Future<int> delete(int id, Directory saveDir) async {
+  Future<int> delete(
+    int id,
+    Directory releasePicDir,
+    Directory releasePicThumbnailDir,
+  ) async {
     // delete first related pictures
     final releasePictures = await releasePicturesRepository.getByReleaseId(id);
     final filenames = releasePictures.map((e) => e.filename).toList();
-    deleteFiles(filenames, saveDir);
+    deleteFiles(filenames, releasePicDir);
+    deleteFiles(filenames, releasePicThumbnailDir);
+
     // then delete the release and related entities
     return await releaseRepository.delete(id);
   }
