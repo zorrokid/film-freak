@@ -69,26 +69,22 @@ class ReleasesView extends StatelessWidget {
       case ReleasesStatus.failure:
         return ErrorDisplayWidget(state.error);
       case ReleasesStatus.loaded:
+      default:
+        final bloc = context.read<ReleasesBloc>();
         return state.items.isEmpty
             ? const Center(child: Text('No results'))
             : ReleaseFilterList(
                 releases: state.items,
                 thumbnailDirectory: thumbnailDirectory,
-                onCreate: (int releaseId) => context
-                    .read<ReleasesBloc>()
-                    .add(CreateCollectionItem(context, releaseId)),
-                onDelete: (int releaseId) => context
-                    .read<ReleasesBloc>()
-                    .add(ConfirmDelete(context, releaseId)),
-                onEdit: (int releaseId) => context
-                    .read<ReleasesBloc>()
-                    .add(EditRelease(context, releaseId)),
-                onTap: (int releaseId) => context
-                    .read<ReleasesBloc>()
-                    .add(ViewRelease(context, releaseId)),
+                onCreate: (int releaseId) =>
+                    bloc.add(CreateCollectionItem(context, releaseId)),
+                onDelete: (int releaseId) =>
+                    bloc.add(ConfirmDelete(context, releaseId)),
+                onEdit: (int releaseId) =>
+                    bloc.add(EditRelease(context, releaseId)),
+                onTap: (int releaseId) =>
+                    bloc.add(ViewRelease(context, releaseId)),
               );
-      default:
-        return const SizedBox.shrink();
     }
   }
 

@@ -74,7 +74,9 @@ class ReleaseService {
   Future<ReleaseViewModel> getModel(int releaseId) async {
     final release = await releaseRepository.get(releaseId);
     final releasePictures =
-        await releasePicturesRepository.getByReleaseId(releaseId);
+        (await releasePicturesRepository.getByReleaseId(releaseId));
+    final sortedReleasePictures = releasePictures.toList()
+      ..sort((a, b) => a.pictureType == PictureType.coverFront ? -1 : 1);
     final releaseProperties =
         await releasePropertiesRepository.getByReleaseId(releaseId);
     final releaseProductions =
@@ -88,7 +90,7 @@ class ReleaseService {
 
     return ReleaseViewModel(
       release: release,
-      pictures: releasePictures,
+      pictures: sortedReleasePictures,
       properties: releaseProperties,
       productions: productions,
       comments: comments,

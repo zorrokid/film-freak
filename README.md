@@ -91,6 +91,14 @@ To build, install and run this app you need to (more comprehensive instructions 
 - [Install Firebase related tools and register app to a Firebase account](https://firebase.google.com/docs/flutter/setup?platform=android)
 - [Install to your device](https://docs.flutter.dev/deployment/android#install-an-apk-on-a-device)
 
+To install all the dependecies:
+
+    flutter pub get
+
+To run in emulator or device:
+
+    flutter run
+
 ## Tests
 
 To run unit tests sqlite3 development libraries have to be installed.

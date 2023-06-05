@@ -51,7 +51,7 @@ class _MainDrawerState extends State<MainDrawer> {
               children: [
                 const DrawerHeader(
                   decoration: BoxDecoration(color: Colors.blue),
-                  child: Text('Drawer header'),
+                  child: Text('film_freak'),
                 ),
                 ListTile(
                   title: const Text('Releases'),
@@ -79,13 +79,13 @@ class _MainDrawerState extends State<MainDrawer> {
                   )),
             ),*/
                 ListTile(
-                  title: const Text('Delete'),
+                  title: const Text('Reset'),
                   onTap: () {
                     confirm(
                       context: context,
-                      title: 'Confirm DB delete',
+                      title: 'Confirm database reset',
                       message:
-                          'Are you really sure you want to delete all the data in database?',
+                          'Are you really sure you want to delete all the collection data?',
                       onConfirm: () =>
                           context.read<AppBloc>().add(const ResetDb()),
                     );
