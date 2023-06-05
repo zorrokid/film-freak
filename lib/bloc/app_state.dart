@@ -8,6 +8,7 @@ enum AppStatus {
   initializing,
   initialized,
   dbResetStart,
+  dbResetDone,
 }
 
 class AppState extends Equatable {

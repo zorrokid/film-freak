@@ -26,7 +26,7 @@ class ReleasesPage extends StatelessWidget {
       },
       child: BlocBuilder<AppBloc, AppState>(
         builder: (context, state) {
-          if (state.status != AppStatus.initializing) {
+          if (state.saveDirectory == null) {
             return const Spinner();
           }
           return ReleasesView(
