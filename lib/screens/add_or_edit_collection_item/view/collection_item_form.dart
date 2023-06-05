@@ -1,3 +1,4 @@
+import 'package:film_freak/screens/view_release/view/release_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -57,7 +58,11 @@ class _CollectionItemFormState extends State<CollectionItemForm> {
         }
         break;
       case AddOrEditCollectionItemStatus.submitted:
-        Navigator.of(context).pop();
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => ReleasePage(
+            releaseId: state.releaseId,
+          ),
+        ));
         break;
       default:
         // nothing to do
