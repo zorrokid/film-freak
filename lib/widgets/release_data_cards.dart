@@ -39,6 +39,7 @@ class ReleaseDataCards extends StatelessWidget {
           ],
         ),
         ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: productions.length,
           itemBuilder: (context, index) {
@@ -55,6 +56,7 @@ class ReleaseDataCards extends StatelessWidget {
           releaseProperties: viewModel.properties.toList(),
         ),
         ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: collectionItems.length,
           itemBuilder: (context, index) {
