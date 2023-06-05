@@ -69,7 +69,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     // trigger initialize by calling database getter
     await DatabaseProviderSqflite.instance.database;
     emit(state.copyWith(
-      status: AppStatus.dbResetDone,
+      status: AppStatus.initialized,
     ));
   }
 
