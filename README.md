@@ -95,9 +95,14 @@ To install all the dependecies:
 
     flutter pub get
 
-To run in emulator or device:
+To run in emulator or device in debug mode:
 
     flutter run
+
+To build an apk install package:
+
+    flutter build apk --split-per-abi
+
 
 ## Tests
 
@@ -110,3 +115,59 @@ My goal is to test especially blocs. Unit tests can be found under test-folder a
 To update mockito-mocks:
 
     dart run build_runner build
+
+## Flavors
+
+Create build flavors to build.gradle:
+
+```
+    flavorDimensions "default"
+
+    productFlavors {
+        dev {
+            dimension "default"
+            applicationIdSuffix ".dev"
+        }
+        prd {
+            dimension "default"
+            applicationIdSuffix ".prd"
+         }
+    }
+```
+
+Created a new firebase project for dev-build: filmfreak-dev
+
+I had already a firebase project filmfreak and google-services.json created with flutterfire CLI. I moved the existing google-services.json to a sub folder app/src/prod to be used for production build.
+
+Add config for development build: 
+
+    flutterfire config --project filmfreak-dev --android-app-id=com.zorrokid.film_freak.dev --out=lib/firebase_options_dev.dart
+
+Move generated new google-services.json to a sub folder app/src/dev
+
+Add config for production build accordingly.
+
+    flutterfire config --project filmfreak-prd --android-app-id=com.zorrokid.film_freak.prd --out=lib/firebase_options_prd.dart
+
+Move generated new google-services.json to a sub folder app/src/prd
+
+NOTE: separate firebase_options_*.dart files were created and they're used in separate build specific main_*.dart files accordingly.
+
+Build appbundle with flavor:
+
+development version:
+
+    flutter build appbundle --flavor dev
+
+## Build and install production version
+
+production version:
+
+    flutter build apk --split-per-abi --flavor prd
+
+install
+
+     flutter install --flavor prd  --use-application-binary=build/app/outputs/flutter-apk/app-armeabi-v7a-prd-release.apk
+
+
+
