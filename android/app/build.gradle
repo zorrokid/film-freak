@@ -76,6 +76,23 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        dbg {
+            dimension "default"
+            applicationIdSuffix ".debug"
+        }
+        dev {
+            dimension "default"
+            applicationIdSuffix ".dev"
+        }
+        prd {
+            dimension "default"
+            applicationIdSuffix ".prd"
+        }
+    }
 }
 
 flutter {
@@ -85,3 +102,4 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
