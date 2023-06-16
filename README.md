@@ -161,13 +161,16 @@ development version:
 
 ## Build and install production version
 
-production version:
+production version (arm64):
 
-    flutter build apk --split-per-abi --flavor prd
+    flutter build apk --flavor prd --target-platform android-arm64 --target=lib/main_prd.dart
 
-install
+install 
 
-     flutter install --flavor prd  --use-application-binary=build/app/outputs/flutter-apk/app-armeabi-v7a-prd-release.apk
+WARNING! running flutter install will first uninstall the previous version thus clearing also user data including local database! 
 
+    flutter install --flavor prd --use-application-binary=build/app/outputs/flutter-apk/app-prd-release.apk
 
+To retain local database use adb install instead (Thanks for this tip github copilot!)
 
+    adb install build/app/outputs/flutter-apk/app-prd-release.apk
