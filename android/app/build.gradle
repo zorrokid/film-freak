@@ -83,14 +83,17 @@ android {
         dbg {
             dimension "default"
             applicationIdSuffix ".debug"
+            resValue "string", "app_name", "Film Freak Debug"
         }
         dev {
             dimension "default"
             applicationIdSuffix ".dev"
+            resValue "string", "app_name", "Film Freak Dev"
         }
         prd {
             dimension "default"
             applicationIdSuffix ".prd"
+            resValue "string", "app_name", "Film Freak"
         }
     }
 }
