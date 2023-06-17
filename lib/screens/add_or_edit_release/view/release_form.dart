@@ -142,8 +142,11 @@ class _ReleaseFormState extends State<ReleaseForm> {
                 icon: const Icon(Icons.image),
               ),
               IconButton(
-                onPressed: () => bloc.add(
-                    SearchProduction(context, _movieSearchTextController.text)),
+                onPressed: () => bloc.add(SearchProduction(
+                    context,
+                    _movieSearchTextController.text.isNotEmpty
+                        ? _movieSearchTextController.text
+                        : _nameController.text)),
                 icon: const Icon(Icons.search),
               ),
             ],
