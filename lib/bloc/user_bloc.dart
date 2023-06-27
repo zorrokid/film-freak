@@ -12,17 +12,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(state.copyWith(
       status: UserStatus.loggedIn,
       token: event.token,
-      refreshToken: event.refreshToken,
-      expirationTime: event.expirationTime,
     ));
   }
 
   void _onLogOutUser(LogOutUser event, Emitter<UserState> emit) {
     emit(state.copyWith(
       status: UserStatus.loggedOut,
-      token: "",
-      refreshToken: "",
-      expirationTime: null,
+      token: null,
     ));
   }
 }

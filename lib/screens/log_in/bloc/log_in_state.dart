@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../api-models/token_model.dart';
+
 enum LogInStatus { initial, processing, loggedId, failed }
 
 class LogInState extends Equatable {
@@ -7,42 +9,29 @@ class LogInState extends Equatable {
     this.status = LogInStatus.initial,
     this.username = "",
     this.password = "",
-    this.token = "",
-    this.refreshToken = "",
-    this.expirationTime,
+    this.token,
   });
   final LogInStatus status;
   final String username;
   final String password;
-  final String token;
-  final String refreshToken;
-  final DateTime? expirationTime;
+  final TokenModel? token;
 
   LogInState copyWith({
     LogInStatus? status,
     String? username,
     String? password,
-    String? token,
     String? refreshToken,
     DateTime? expirationTime,
+    TokenModel? token,
   }) {
     return LogInState(
       status: status ?? this.status,
       username: username ?? this.username,
       password: password ?? this.password,
       token: token ?? this.token,
-      refreshToken: refreshToken ?? this.refreshToken,
-      expirationTime: expirationTime ?? this.expirationTime,
     );
   }
 
   @override
-  List<Object?> get props => [
-        status,
-        username,
-        password,
-        refreshToken,
-        token,
-        expirationTime,
-      ];
+  List<Object?> get props => [status, username, password, token];
 }

@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../api-models/token_model.dart';
+
 enum UserStatus {
   loggedOut,
   loggedIn,
@@ -8,32 +10,22 @@ enum UserStatus {
 class UserState extends Equatable {
   const UserState({
     this.status = UserStatus.loggedOut,
-    this.token = "",
-    this.refreshToken = "",
-    this.expirationTime,
+    this.token,
   });
   final UserStatus status;
-  final String token;
-  final String refreshToken;
-  final DateTime? expirationTime;
+  final TokenModel? token;
 
   UserState copyWith({
     UserStatus? status,
-    String? token,
-    String? refreshToken,
-    DateTime? expirationTime,
+    TokenModel? token,
   }) =>
       UserState(
         status: status ?? this.status,
         token: token ?? this.token,
-        refreshToken: refreshToken ?? this.refreshToken,
-        expirationTime: expirationTime ?? this.expirationTime,
       );
   @override
   List<Object?> get props => [
         status,
         token,
-        refreshToken,
-        expirationTime,
       ];
 }

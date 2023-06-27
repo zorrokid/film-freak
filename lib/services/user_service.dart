@@ -1,14 +1,18 @@
 import 'dart:convert';
 
-import 'package:film_freak/api-models/login_response.dart';
+import 'package:film_freak/api-models/token_model.dart';
 import 'package:http/http.dart' as http;
 
+import '../init/remote_config.dart';
+
 class UserService {
-  Future<LoginResponse> processLogin(String userName, String password) async {
+  final apiHost = remoteConfig.getString(remoteConfigKeyFilmFreakApiHost);
+
+  Future<TokenModel> processLogin(String userName, String password) async {
     final result = await http.post(
         Uri(
           scheme: 'https',
-          host: 'film-freak-api.fly.dev',
+          host: apiHost,
           path: '/api/login',
         ),
         body: jsonEncode(<String, String>{
@@ -21,7 +25,7 @@ class UserService {
 
     if (result.body.isEmpty) throw Exception("Login response empty");
     final jsonContent = json.decode(result.body);
-    final response = LoginResponse.fromJson(jsonContent);
+    final response = TokenModel.fromJson(jsonContent);
     return response;
   }
 }

@@ -8,7 +8,7 @@ const String tmdbHostUrl = 'api.themoviedb.org';
 const int tmdbDbApiVersion = 3;
 
 class TmdbSearchService {
-  final tmdbApiKey = remoteConfig.getString('tmdb_api_key');
+  final tmdbApiKey = remoteConfig.getString(remoteConfigKeyTmdbApiKey);
   Future<List<TmdbMovieResult>> getMovies(String searchText) async {
     final result = await http.get(
       Uri(

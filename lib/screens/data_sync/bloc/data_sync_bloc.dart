@@ -16,6 +16,12 @@ class DataSyncBloc extends Bloc<DataSyncEvent, DataSyncState> {
       batchSize: event.batchSize,
     ));
 
+    emit(state.copyWith(
+      status: DataSyncStatus.uploading,
+    ));
+
+    service.upload();
+
     // TODO
 
     // get total of release rows to be synchronized

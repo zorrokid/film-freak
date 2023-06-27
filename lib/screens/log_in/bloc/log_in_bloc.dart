@@ -21,21 +21,19 @@ class LogInBloc extends Bloc<LogInEvent, LogInState> {
       password: event.password,
     ));
     try {
-      final response =
+      final token =
           await userService.processLogin(event.username, event.password);
-      if (response.token.isEmpty) throw Exception("Log in failed.");
+      if (token.token.isEmpty) throw Exception("Log in failed.");
       emit(state.copyWith(
         status: LogInStatus.loggedId,
-        token: response.token,
-        expirationTime: response.expiration,
+        token: token,
       ));
     } catch (e) {
       emit(state.copyWith(
         status: LogInStatus.failed,
         username: '',
         password: '',
-        expirationTime: null,
-        token: '',
+        token: null,
       ));
     }
   }
