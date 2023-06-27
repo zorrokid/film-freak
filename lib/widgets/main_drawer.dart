@@ -1,6 +1,5 @@
 import 'package:film_freak/bloc/app_event.dart';
 import 'package:film_freak/screens/releases/view/releases_page.dart';
-import 'package:film_freak/screens/data_sync/view/data_sync_view.dart';
 import 'package:film_freak/utils/dialog_utls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +7,7 @@ import '../bloc/app_bloc.dart';
 import '../bloc/app_state.dart';
 import '../bloc/user_bloc.dart';
 import '../bloc/user_state.dart';
+import '../screens/data_sync/view/data_sync_page.dart';
 import '../screens/log_in/view/log_in_page.dart';
 import '/screens/view_about/about_view.dart';
 
@@ -51,7 +51,7 @@ class _MainDrawerState extends State<MainDrawer> {
               children: [
                 const DrawerHeader(
                   decoration: BoxDecoration(color: Colors.blue),
-                  child: Text('film_freak'),
+                  child: Text('Film Freak!!'),
                 ),
                 ListTile(
                   title: const Text('Releases'),
@@ -67,7 +67,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     : ListTile(
                         title: const Text('Data'),
                         onTap: () =>
-                            _navigateFromDrawer(context, const DataSyncView()),
+                            _navigateFromDrawer(context, const DataSyncPage()),
                       ),
                 /*ListTile(
               title: const Text('Import'),

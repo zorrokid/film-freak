@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../api-models/token_model.dart';
+
 abstract class UserEvent extends Equatable {
   const UserEvent();
 }
@@ -7,19 +9,11 @@ abstract class UserEvent extends Equatable {
 class LogInUser extends UserEvent {
   const LogInUser({
     required this.token,
-    required this.refreshToken,
-    required this.expirationTime,
   });
-  final String token;
-  final String refreshToken;
-  final DateTime expirationTime;
+  final TokenModel token;
 
   @override
-  List<Object?> get props => [
-        token,
-        refreshToken,
-        expirationTime,
-      ];
+  List<Object?> get props => [token];
 }
 
 class LogOutUser extends UserEvent {

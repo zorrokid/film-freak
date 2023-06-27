@@ -1,5 +1,5 @@
-class LoginResponse {
-  LoginResponse({
+class TokenModel {
+  TokenModel({
     required this.token,
     required this.refreshToken,
     required this.expiration,
@@ -8,8 +8,8 @@ class LoginResponse {
   final String refreshToken;
   final DateTime expiration;
 
-  static LoginResponse fromJson(Map<String, Object?> json) {
-    return LoginResponse(
+  static TokenModel fromJson(Map<String, Object?> json) {
+    return TokenModel(
       token: json["token"] != null ? json["token"] as String : "",
       refreshToken:
           json["refreshToken"] != null ? json["refreshToken"] as String : "",

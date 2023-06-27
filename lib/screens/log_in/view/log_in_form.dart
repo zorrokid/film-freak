@@ -3,6 +3,7 @@ import 'package:film_freak/bloc/user_state.dart';
 import 'package:film_freak/screens/log_in/bloc/log_in_bloc.dart';
 import 'package:film_freak/screens/log_in/bloc/log_in_event.dart';
 import 'package:film_freak/screens/log_in/bloc/log_in_state.dart';
+import 'package:film_freak/services/film_freak_api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -53,12 +54,11 @@ class _LogInFormState extends State<LogInForm> {
       return BlocConsumer<LogInBloc, LogInState>(
         listener: (context, state) {
           if (state.status == LogInStatus.loggedId) {
+            if (state.token == null) return;
+            final apiClient = FilmFreakApiClient();
+            apiClient.token = state.token!;
             userBloc.add(
-              LogInUser(
-                token: state.token,
-                refreshToken: state.refreshToken,
-                expirationTime: state.expirationTime ?? DateTime.now(),
-              ),
+              LogInUser(token: state.token!),
             );
             loginBloc.add(UserAdded(context));
           }
