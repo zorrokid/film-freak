@@ -22,6 +22,11 @@ class DataSyncService {
     if (releases.isEmpty) return;
     final firstRelease = releases.first;
 
-    final res = await apiClient.post('release', firstRelease);
+    final res = await apiClient.post('release', {
+      'id': firstRelease.id, // TODO: this shouldn't be here
+      'title': firstRelease.name,
+      'barcode': firstRelease.barcode,
+      'externalId': '${firstRelease.id}',
+    });
   }
 }
