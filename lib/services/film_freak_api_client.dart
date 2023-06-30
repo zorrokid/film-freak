@@ -61,13 +61,8 @@ class FilmFreakApiClient {
     return TokenModel.fromJson(response.data);
   }
 
-  Future<void> post(String path, ReleaseListModel firstRelease) async {
-    await _dio.post('release', data: {
-      'id': firstRelease.id,
-      'title': firstRelease.name,
-      'barcode': firstRelease.barcode,
-      'externalId': '${firstRelease.id}',
-    });
+  Future<void> post(String path, dynamic payload) async {
+    await _dio.post(path, data: payload);
   }
 
   Future<void> get(String path) async {
