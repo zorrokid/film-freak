@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import '../api-models/token_model.dart';
 import '../init/remote_config.dart';
+import '../models/list_models/release_list_model.dart';
 
 class FilmFreakApiClient {
   // named privavte constructor
@@ -51,23 +54,20 @@ class FilmFreakApiClient {
 
   Future<TokenModel> renewToken() async {
     if (token == null) throw Exception("Token not available");
-    final response = await _dio.post("/refreshtoken", data: {
+    final response = await _dio.post("refreshtoken", data: {
       "accessToken": token!.token,
       "refreshToken": token!.refreshToken
     });
     return TokenModel.fromJson(response.data);
   }
 
-  Future<void> post(String path, String body) async {
-    try {
-      await _dio.post(path,
-          data: body, options: Options(contentType: 'application/json'));
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
-        throw Exception('Unauthorized');
-      }
-      rethrow;
-    }
+  Future<void> post(String path, ReleaseListModel firstRelease) async {
+    await _dio.post('release', data: {
+      'id': firstRelease.id,
+      'title': firstRelease.name,
+      'barcode': firstRelease.barcode,
+      'externalId': '${firstRelease.id}',
+    });
   }
 
   Future<void> get(String path) async {
