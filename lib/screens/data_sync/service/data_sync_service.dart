@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:film_freak/services/release_service.dart';
 
 import '../../../init/remote_config.dart';
@@ -24,15 +22,6 @@ class DataSyncService {
     if (releases.isEmpty) return;
     final firstRelease = releases.first;
 
-    final res = await apiClient.post(
-        'release',
-        jsonEncode({
-          'id': firstRelease.id,
-          'createdTime': DateTime.now().toIso8601String(),
-          'modifiedTime': DateTime.now().toIso8601String(),
-          'name': firstRelease.name,
-          'barcode': firstRelease.barcode,
-          'externalId': firstRelease.id,
-        }));
+    final res = await apiClient.post('release', firstRelease);
   }
 }
